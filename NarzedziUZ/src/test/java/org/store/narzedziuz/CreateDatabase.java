@@ -1,5 +1,4 @@
 package org.store.narzedziuz;
-
 import java.sql.*;
 
 public class CreateDatabase {

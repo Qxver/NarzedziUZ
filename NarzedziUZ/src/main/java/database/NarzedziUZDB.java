@@ -1,5 +1,8 @@
 package database;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.time.LocalDate;
 
 public class NarzedziUZDB {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/NARZEDZIUZDB?useSSL=false&serverTimezone=UTC";
@@ -193,16 +196,65 @@ public class NarzedziUZDB {
     }
 
     // Insert do User
-    public static void insertUser(int addressId, String email, String password, String firstName, String lastName, String role, String createdAt) {
-        String sql = "INSERT INTO User(address_id, email, password, first_name, last_name, role, created_at) VALUES (?, ?, ?, ?, ?, ?, ?);";
+    public static void insertUser(
+            Integer addressId, String email, String password, String firstName,
+            String lastName, String role) {
+
+        StringBuilder columns = new StringBuilder();
+        StringBuilder placeholders = new StringBuilder();
+        List<Object> params = new ArrayList<>();
+        String createdAt = String.valueOf(LocalDate.now());
+
+        if (addressId != null) {
+            columns.append("address_id, ");
+            placeholders.append("?, ");
+            params.add(addressId);
+        }
+        if (email != null) {
+            columns.append("email, ");
+            placeholders.append("?, ");
+            params.add(email);
+        }
+        if (password != null) {
+            columns.append("password, ");
+            placeholders.append("?, ");
+            params.add(password);
+        }
+        if (firstName != null) {
+            columns.append("first_name, ");
+            placeholders.append("?, ");
+            params.add(firstName);
+        }
+        if (lastName != null) {
+            columns.append("last_name, ");
+            placeholders.append("?, ");
+            params.add(lastName);
+        }
+        if (role != null) {
+            columns.append("role, ");
+            placeholders.append("?, ");
+            params.add(role);
+        }
+        if (createdAt != null) {
+            columns.append("created_at, ");
+            placeholders.append("?, ");
+            params.add(createdAt);
+        }
+
+        // Usuwamy ostatnie przecinki i spacje
+        if (columns.length() > 0) {
+            columns.setLength(columns.length() - 2);
+            placeholders.setLength(placeholders.length() - 2);
+        } else {
+            throw new IllegalArgumentException("At least one field must be provided.");
+        }
+
+        String sql = "INSERT INTO User (" + columns.toString() + ") VALUES (" + placeholders.toString() + ")";
+
         try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, addressId);
-            pstmt.setString(2, email);
-            pstmt.setString(3, password);
-            pstmt.setString(4, firstName);
-            pstmt.setString(5, lastName);
-            pstmt.setString(6, role);
-            pstmt.setString(7, createdAt);
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -623,10 +675,5 @@ public class NarzedziUZDB {
 
     public static void main(String[] args) {
         createTables();
-        insertCategory("Elektronika");
-        insertManufacturer("Firma XYZ", "ul. Przykładowa 12");
-        insertUserAddress("ul. Kwiatowa 5", "Warszawa", "00-001");
-        insertUser(1, "user@example.com", "tajnehaslo", "Jan", "Kowalski", "Admin", "2025-10-26");
-        insertProduct("Myszka", 99.99, "Bezprzewodowa mysz", 20, 1, 1, null);
     }
 }
