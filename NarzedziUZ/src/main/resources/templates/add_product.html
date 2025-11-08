@@ -33,11 +33,12 @@
     </div>
 
     <div class="navbar-buttons">
-        <button class="navbar-button">Cart</button>
+        <a href="/cart" class="navbar-button">Cart</a>
         <a href="/login" class="navbar-button">Log in</a>
     </div>
 </div>
 
+<div class="content">
 <div class="product-form">
     <h1>Add product</h1>
     <form th:action="@{/add-product}" th:object="${product}" method="post">
@@ -55,6 +56,7 @@
 
         <button type="submit">Add product</button>
     </form>
+</div>
 </div>
 </body>
 </html>
