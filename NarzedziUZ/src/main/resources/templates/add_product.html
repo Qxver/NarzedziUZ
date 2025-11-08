@@ -3,10 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>Add product</title>
+    <link rel="stylesheet" th:href="@{/navbar.css}">
     <link rel="stylesheet" th:href="@{/add_product_style.css}">
 
 </head>
 <body>
+<div class="navbar">
+    <div class="logo">
+        <a href="/">NarzedziUZ</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products...">
+        <select>
+            <option value="">Filter</option>
+            <option value="filter1">By price (descending)</option>
+            <option value="filter2">By price (ascending)</option>
+            <option value="filter3">By rating (descending)</option>
+            <option value="filter4">By rating (ascending)</option>
+        </select>
+
+        <select>
+            <option value="">All Categories</option>
+            <option value="category1">Category1</option>
+            <option value="category2">Category2</option>
+            <option value="category3">Category3</option>
+        </select>
+        <button class="search-button">Search</button>
+    </div>
+
+    <div class="navbar-buttons">
+        <button class="navbar-button">Cart</button>
+        <a href="/login" class="navbar-button">Log in</a>
+    </div>
+</div>
+
 <div class="product-form">
     <h1>Add product</h1>
     <form th:action="@{/add-product}" th:object="${product}" method="post">

@@ -3,10 +3,13 @@ body {
     background-color: #f4f4f9;
     margin: 0;
     padding: 0;
+}
+
+.content {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: calc(100vh - 60px);
 }
 
 .register {

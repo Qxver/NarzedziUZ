@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/navbar.css}">
-    <link rel="stylesheet" th:href="@{/login_style.css}">
-    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/home_page_style.css}">
+    <title>NarzedziUZ</title>
 </head>
 <body>
 
@@ -37,19 +37,9 @@
     </div>
 </div>
 
-<div class="content">
-<div class="login">
-    <h1>Login</h1>
-    <form method="post" action="/login">
-        <input type="email" name="email" placeholder="E-mail" required>
-
-        <input type="password" name="password" placeholder="Password" required>
-
-        <button type="submit" onclick="window.location.href='/'">Login</button>
-    </form>
-
-    <a href="/register">Create a new account</a>
-</div>
+<div class="home-container">
+    <h1>NarzedziUZ</h1>
+    <p>Tutaj będą produkty potem</p>
 </div>
 </body>
 </html>
