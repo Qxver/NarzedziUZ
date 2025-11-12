@@ -673,6 +673,31 @@ public class NarzedziUZDB {
         }
     }
 
+    public static List<String> selectSmth(String table, String column, String conditionColumn, String conditionValue) throws SQLException {
+        List<String> results = new ArrayList<>();
+        String sql = "SELECT " + column + " FROM " + table;
+
+        boolean hasCondition = conditionColumn != null && !conditionColumn.isEmpty() && conditionValue != null && !conditionValue.isEmpty();
+        if (hasCondition) {
+            sql += " WHERE " + conditionColumn + " = ?";
+        }
+
+        try (Connection conn = connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            if (hasCondition) {
+                pstmt.setString(1, conditionValue);
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    results.add(rs.getString(column));
+                }
+            }
+        }
+        return results;
+    }
+
     public static void main(String[] args) {
         createTables();
     }
