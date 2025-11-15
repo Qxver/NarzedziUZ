@@ -3,13 +3,16 @@ body {
     background-color: #f4f4f9;
     margin: 0;
     padding: 0;
+}
+
+.content {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    padding-top: 60px;
 }
 
-.login {
+.register {
     background: #fff;
     padding: 30px;
     border-radius: 8px;
@@ -57,7 +60,7 @@ form button:hover {
     background-color: #0056b3;
 }
 
-a {
+.content a {
     display: block;
     margin-top: 15px;
     color: #007bff;
