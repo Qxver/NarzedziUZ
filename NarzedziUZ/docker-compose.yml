@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: narzedziuz-postgres
+    environment:
+      POSTGRES_DB: narzedziuz
+      POSTGRES_USER: narzedziuz_user
+      POSTGRES_PASSWORD: secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - narzedziuz-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U narzedziuz_user -d narzedziuz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: narzedziuz-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/narzedziuz
+      SPRING_DATASOURCE_USERNAME: narzedziuz_user
+      SPRING_DATASOURCE_PASSWORD: secure_password
+    ports:
+      - "8080:8080"
+    networks:
+      - narzedziuz-network
+
+volumes:
+  postgres_data:
+
+networks:
+  narzedziuz-network:
+    driver: bridge
