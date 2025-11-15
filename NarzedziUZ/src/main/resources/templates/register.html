@@ -5,6 +5,7 @@
   <link rel="stylesheet" th:href="@{/css/register.css}">
   <title>Register</title>
 </head>
+
 <body>
 
 <div class="navbar">
@@ -38,20 +39,180 @@
 </div>
 
 <div class="content">
-<div class="register">
-<h1>Create new account</h1>
-<form method="post" action="/register">
-  <input type="text" name="firstName" placeholder="First name" required><br><br>
-  <input type="text" name="lastName" placeholder="Last name" required><br><br>
-  <input type="text" name="username" placeholder="E-mail" required><br><br>
-  <input type="password" name="password" placeholder="Password" required><br><br>
-  <input type="password" name="confirmPassword" placeholder="Confirm password" required><br><br>
+  <div class="register">
+    <h1>Create new account</h1>
 
-  <button type="submit">Register</button>
-</form>
+    <div th:if="${error}" style="color: red; margin-bottom: 15px;">
+      <p th:text="${error}"></p>
+    </div>
 
-  <a href="/login">Already have an account? Login</a>
+    <form method="post" action="/register" id="registerForm" onsubmit="return validateForm()">
+      <input type="text" id="firstName" name="firstName" placeholder="First name" required>
+      <span class="error-message" id="firstNameError">First name is required</span>
+
+      <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
+      <span class="error-message" id="lastNameError">Last name is required</span>
+
+      <input type="email" id="email" name="email" placeholder="E-mail" required>
+      <span class="error-message" id="emailError">Please enter a valid email address</span>
+
+      <input type="password" id="password" name="password" placeholder="Password" required>
+      <div class="password-requirements">
+        <div class="requirement" id="lengthReq">✗ At least 8 characters</div>
+        <div class="requirement" id="uppercaseReq">✗ At least 1 uppercase letter</div>
+        <div class="requirement" id="numberReq">✗ At least 1 number</div>
+        <div class="requirement" id="specialReq">✗ At least 1 special character</div>
+      </div>
+      <span class="error-message" id="passwordError">Password does not meet requirements</span>
+
+      <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+      <span class="error-message" id="confirmPasswordError">Passwords do not match</span>
+
+      <button type="submit">Register</button>
+    </form>
+
+    <a href="/login">Already have an account? Login</a>
+  </div>
 </div>
-</div>
+
+<script>
+  const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+  const passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
+
+  // Password validation
+  document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+
+    // Min 8 characters
+    const lengthReq = document.getElementById('lengthReq');
+    if (password.length >= 8) {
+      lengthReq.classList.remove('invalid');
+      lengthReq.classList.add('valid');
+      lengthReq.textContent = '✓ At least 8 characters';
+    } else {
+      lengthReq.classList.remove('valid');
+      lengthReq.classList.add('invalid');
+      lengthReq.textContent = '✗ At least 8 characters';
+    }
+
+    // Min 1 uppercase
+    const uppercaseReq = document.getElementById('uppercaseReq');
+    if (/[A-Z]/.test(password)) {
+      uppercaseReq.classList.remove('invalid');
+      uppercaseReq.classList.add('valid');
+      uppercaseReq.textContent = '✓ At least 1 uppercase letter';
+    } else {
+      uppercaseReq.classList.remove('valid');
+      uppercaseReq.classList.add('invalid');
+      uppercaseReq.textContent = '✗ At least 1 uppercase letter';
+    }
+
+    // Min 1 number
+    const numberReq = document.getElementById('numberReq');
+    if (/[0-9]/.test(password)) {
+      numberReq.classList.remove('invalid');
+      numberReq.classList.add('valid');
+      numberReq.textContent = '✓ At least 1 number';
+    } else {
+      numberReq.classList.remove('valid');
+      numberReq.classList.add('invalid');
+      numberReq.textContent = '✗ At least 1 number';
+    }
+
+    // Min 1 special character
+    const specialReq = document.getElementById('specialReq');
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      specialReq.classList.remove('invalid');
+      specialReq.classList.add('valid');
+      specialReq.textContent = '✓ At least 1 special character';
+    } else {
+      specialReq.classList.remove('valid');
+      specialReq.classList.add('invalid');
+      specialReq.textContent = '✗ At least 1 special character';
+    }
+  });
+
+  // Confirm password validation
+  document.getElementById('confirmPassword').addEventListener('input', function() {
+    const password = document.getElementById('password').value;
+    const confirmPassword = this.value;
+    const errorSpan = document.getElementById('confirmPasswordError');
+
+    if (confirmPassword && password !== confirmPassword) {
+      this.classList.add('invalid');
+      errorSpan.classList.add('show');
+    } else {
+      this.classList.remove('invalid');
+      errorSpan.classList.remove('show');
+    }
+  });
+
+  function validateForm() {
+    let isValid = true;
+
+    // First name validation
+    const firstName = document.getElementById('firstName');
+    const firstNameError = document.getElementById('firstNameError');
+    if (firstName.value.trim() === '') {
+      firstName.classList.add('invalid');
+      firstNameError.classList.add('show');
+      isValid = false;
+    } else {
+      firstName.classList.remove('invalid');
+      firstNameError.classList.remove('show');
+    }
+
+    // Last name validation
+    const lastName = document.getElementById('lastName');
+    const lastNameError = document.getElementById('lastNameError');
+    if (lastName.value.trim() === '') {
+      lastName.classList.add('invalid');
+      lastNameError.classList.add('show');
+      isValid = false;
+    } else {
+      lastName.classList.remove('invalid');
+      lastNameError.classList.remove('show');
+    }
+
+    // Email validation
+    const email = document.getElementById('email');
+    const emailError = document.getElementById('emailError');
+    if (!emailPattern.test(email.value)) {
+      email.classList.add('invalid');
+      emailError.classList.add('show');
+      isValid = false;
+    } else {
+      email.classList.remove('invalid');
+      emailError.classList.remove('show');
+    }
+
+    // Password validation
+    const password = document.getElementById('password');
+    const passwordError = document.getElementById('passwordError');
+    if (!passwordPattern.test(password.value)) {
+      password.classList.add('invalid');
+      passwordError.classList.add('show');
+      isValid = false;
+    } else {
+      password.classList.remove('invalid');
+      passwordError.classList.remove('show');
+    }
+
+    // Confirm password validation
+    const confirmPassword = document.getElementById('confirmPassword');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    if (password.value !== confirmPassword.value) {
+      confirmPassword.classList.add('invalid');
+      confirmPasswordError.classList.add('show');
+      isValid = false;
+    } else {
+      confirmPassword.classList.remove('invalid');
+      confirmPasswordError.classList.remove('show');
+    }
+
+    return isValid;
+  }
+</script>
+
 </body>
 </html>
