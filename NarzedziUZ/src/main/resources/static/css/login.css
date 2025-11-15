@@ -9,10 +9,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 60px);
+    padding-top: 60px;
 }
 
-.register {
+.login {
     background: #fff;
     padding: 30px;
     border-radius: 8px;
@@ -60,7 +60,7 @@ form button:hover {
     background-color: #0056b3;
 }
 
-a {
+.content a {
     display: block;
     margin-top: 15px;
     color: #007bff;
