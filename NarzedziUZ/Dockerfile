@@ -3,7 +3,10 @@ WORKDIR /workspace/app
 
 COPY pom.xml .
 COPY src src
+COPY mvnw .
+COPY .mvn .mvn
 
+RUN find /app/src -name "*.html" -type f | head -10
 RUN mvn clean package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
@@ -13,4 +16,5 @@ ARG DEPENDENCY=/workspace/app/target/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
+COPY --from=build /workspace/app/src/main/resources /app
 ENTRYPOINT ["java","-cp","app:app/lib/*","org.store.narzedziuz.NarzedziUzApplication"]
