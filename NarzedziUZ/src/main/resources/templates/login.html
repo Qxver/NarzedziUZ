@@ -38,18 +38,22 @@
 </div>
 
 <div class="content">
-<div class="login">
-    <h1>Login</h1>
-    <form method="post" action="/login">
-        <input type="email" name="email" placeholder="E-mail" required>
+    <div class="login">
+        <h1>Login</h1>
 
-        <input type="password" name="password" placeholder="Password" required>
+        <div th:if="${error}" style="color: #dc3545; margin-bottom: 15px; padding: 10px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
+            <p th:text="${error}" style="margin: 0;"></p>
+        </div>
 
-        <button type="submit" onclick="window.location.href='/'">Login</button>
-    </form>
+        <form method="post" action="/login">
+            <input type="email" id="email" name="email" placeholder="E-mail" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
 
-    <a href="/register">Create a new account</a>
-</div>
+            <button type="submit">Login</button>
+        </form>
+
+        <a href="/register">Create a new account</a>
+    </div>
 </div>
 </body>
 </html>

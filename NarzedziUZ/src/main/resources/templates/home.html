@@ -33,13 +33,18 @@
 
     <div class="navbar-buttons">
         <a href="/cart" class="navbar-button">Cart</a>
-        <a href="/login" class="navbar-button">Log in</a>
+        <a th:if="${isLoggedIn}" th:href="@{/profile}" class="navbar-button" th:text="${userName}">User</a>
+        <a th:if="${!isLoggedIn}" th:href="@{/login}" class="navbar-button">Log in</a>
     </div>
 </div>
 
 <div class="home-container">
     <h1>NarzedziUZ</h1>
     <p>Tutaj będą produkty potem</p>
+
+    <div th:if="${isLoggedIn}">
+        <p th:text="'Welcome, ' + ${userName} + '!'"></p>
+    </div>
 </div>
 </body>
 </html>
