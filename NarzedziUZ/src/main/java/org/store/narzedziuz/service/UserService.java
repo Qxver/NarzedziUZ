@@ -81,9 +81,8 @@ public class UserService {
         return user;
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public List<User> getUsersByEmail(String email) {
+        return userRepository.findByEmailContainingIgnoreCase(email);
     }
 
     @Transactional
