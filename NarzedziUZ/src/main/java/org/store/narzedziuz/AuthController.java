@@ -30,8 +30,11 @@ public class AuthController {
                         HttpSession session) {
         try {
             User user = userService.loginUser(email, password);
-            // Store user in session
+            // Zmieniamy klucz na "loggedInUser", żeby pasował do UserProfileController
+            // ALBO zmieniamy w UserProfileController na "user".
+            // Zróbmy tak, żeby było spójnie wszędzie: "user"
             session.setAttribute("user", user);
+            // Reszta atrybutów (userId, userName) jest ok
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("userName", user.getFirstName());
             return "redirect:/";
@@ -81,13 +84,5 @@ public class AuthController {
         return "redirect:/";
     }
 
-    @GetMapping("/profile")
-    public String profilePage(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "profile";
-    }
+
 }

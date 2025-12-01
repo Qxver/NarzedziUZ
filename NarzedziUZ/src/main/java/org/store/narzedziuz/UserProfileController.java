@@ -35,13 +35,11 @@ public class UserProfileController {
     public String profile(HttpSession session, Model model) {
 
         // 1. Pobierz użytkownika z sesji
-        User sessionUser = (User) session.getAttribute("loggedInUser");
+        User sessionUser = (User) session.getAttribute("user");
 
-        // 2. Sprawdź czy jest zalogowany
         if (sessionUser == null) {
             return "redirect:/login";
         }
-
         System.out.println(">>> /user/profile hit for: " + sessionUser.getEmail());
 
         // 3. Opcjonalnie: Odśwież dane z bazy (zalecane, bo dane w sesji mogą być stare)

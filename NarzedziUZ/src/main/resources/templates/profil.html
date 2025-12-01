@@ -28,10 +28,11 @@
     </select>
     <button class="search-button">Search</button>
   </div>
-  <div class="navbar-buttons">
-    <a href="/cart" class="navbar-button">Cart</a>
-    <a th:href="@{/logout}" class="navbar-button">Log Out</a>
-  </div>
+    <div class="navbar-buttons">
+        <a href="/cart" class="navbar-button">Cart</a>
+
+        <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
+    </div>
 </div>
 
 <div class="profile-wrapper">
@@ -97,6 +98,9 @@
           </div>
           <div th:if="${ratings.isEmpty()}" class="no-data">Brak ocen</div>
         </div>
+          <div>
+              <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log Out</a>
+          </div>
       </div>
     </div>
   </div>

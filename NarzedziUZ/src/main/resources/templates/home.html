@@ -33,7 +33,7 @@
 
     <div class="navbar-buttons">
         <a href="/cart" class="navbar-button">Cart</a>
-        <a th:if="${isLoggedIn}" th:href="@{/profile}" class="navbar-button" th:text="${userName}">User</a>
+        <a th:if="${isLoggedIn}" th:href="@{/user/profile}" class="navbar-button" th:text="${userName}">User</a>
         <a th:if="${!isLoggedIn}" th:href="@{/login}" class="navbar-button">Log in</a>
     </div>
 </div>
