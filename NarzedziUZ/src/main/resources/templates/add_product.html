@@ -5,88 +5,18 @@
     <title>Add product</title>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/add_product.css}">
-
 </head>
+
 <body>
+
 <div class="navbar">
     <div class="logo">
         <a href="/">NarzedziUZ</a>
     </div>
 
-    <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/add_product.css}">
-    </head>
-    <body>
-    <div class="navbar">
-        <div class="logo">
-            <a href="/">NarzedziUZ</a>
-        </div>
-
-        <div class="search-bar">
-            <input type="text" placeholder="Search for products...">
-            <select>
-                <option value="">Filter</option>
-                <option value="filter1">By price (descending)</option>
-                <option value="filter2">By price (ascending)</option>
-                <option value="filter3">By rating (descending)</option>
-                <option value="filter4">By rating (ascending)</option>
-            </select>
-
-            <select>
-                <option value="">All Categories</option>
-                <option value="category1">Category1</option>
-                <option value="category2">Category2</option>
-                <option value="category3">Category3</option>
-            </select>
-            <button class="search-button">Search</button>
-        </div>
-
-        <div class="navbar-buttons">
-            <a href="/cart" class="navbar-button">Cart</a>
-            <a href="/login" class="navbar-button">Log in</a>
-        </div>
-    </div>
-
-    <div class="content">
-        <div class="product-form">
-            <h1>Add product</h1>
-
-            <div th:if="${successMessage}" class="alert alert-success">
-                <span th:text="${successMessage}"></span>
-            </div>
-
-            <div th:if="${errorMessage}" class="alert alert-error">
-                <span th:text="${errorMessage}"></span>
-            </div>
-
-            <form th:action="@{/add-product}" th:object="${product}" method="post" enctype="multipart/form-data">
-                <label for="name">Name:</label>
-                <input type="text" id="name" th:field="*{name}" required>
-
-                <label for="description">Description:</label>
-                <textarea id="description" th:field="*{description}" rows="3" required></textarea>
-
-                <label for="price">Price:</label>
-                <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required>
-
-                <label for="quantity">Quantity:</label>
-                <input type="number" id="quantity" th:field="*{quantity}" min="0" required>
-
-                <label for="categoryId">Category ID:</label>
-                <input type="number" id="categoryId" th:field="*{categoryId}" min="1" required>
-
-                <label for="manufacturer">Manufacturer:</label>
-                <input type="text" id="manufacturer" th:field="*{manufacturer}" required>
-
-                <label for="image">Image:</label>
-                <input type="file" id="image" th:field="*{image}" accept="image/*">
-
-                <button type="submit">Add product</button>
-            </form>
-        </div>
-
     <div class="search-bar">
         <input type="text" placeholder="Search for products...">
+
         <select>
             <option value="">Filter</option>
             <option value="filter1">By price (descending)</option>
@@ -101,6 +31,7 @@
             <option value="category2">Category2</option>
             <option value="category3">Category3</option>
         </select>
+
         <button class="search-button">Search</button>
     </div>
 
@@ -111,18 +42,44 @@
 </div>
 
 <div class="content">
-<div class="product-form">
-    <h1>Add product</h1>
-    <form th:action="@{/add-product}" th:object="${product}" method="post">
-        <label for="name">Name:</label>
-        <input type="text" id="name" th:field="*{name}" required>
+    <div class="product-form">
+        <h1>Add product</h1>
 
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span th:text="${successMessage}"></span>
+        </div>
 
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span th:text="${errorMessage}"></span>
+        </div>
 
+        <form th:action="@{/add-product}" th:object="${product}" method="post" enctype="multipart/form-data">
 
-        <button type="submit">Add product</button>
-    </form>
+            <label for="name">Name:</label>
+            <input type="text" id="name" th:field="*{name}" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" th:field="*{description}" rows="3" required></textarea>
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required>
+
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" th:field="*{quantity}" min="0" required>
+
+            <label for="categoryId">Category ID:</label>
+            <input type="number" id="categoryId" th:field="*{categoryId}" min="1" required>
+
+            <label for="manufacturer">Manufacturer:</label>
+            <input type="text" id="manufacturer" th:field="*{manufacturer}" required>
+
+            <label for="image">Image:</label>
+            <input type="file" id="image" th:field="*{image}" accept="image/*">
+
+            <button type="submit">Add product</button>
+        </form>
+    </div>
 </div>
-</div>
+
 </body>
 </html>
