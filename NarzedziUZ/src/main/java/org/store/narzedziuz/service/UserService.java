@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.regex.Pattern;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // Email validation regex
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
@@ -55,7 +57,10 @@ public class UserService {
 
         User user = new User();
         user.setEmail(email.trim().toLowerCase());
-        user.setPassword(password);
+
+        String hashedPassword = passwordEncoder.encode(password);
+        user.setPassword(hashedPassword);
+
         user.setFirstName(firstName.trim());
         user.setLastName(lastName.trim());
         user.setRole("USER");
@@ -67,7 +72,7 @@ public class UserService {
         User user = userRepository.findByEmail(email.trim().toLowerCase())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
 
-        if (!user.getPassword().equals(password)) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
 
