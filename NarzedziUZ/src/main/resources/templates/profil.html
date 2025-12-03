@@ -9,7 +9,10 @@
 </head>
 <body>
 <div class="navbar">
-  <div class="logo"><a href="/">NarzedziUZ</a></div>
+  <div class="logo">
+    <a href="/">NarzedziUZ</a>
+  </div>
+
   <div class="search-bar">
     <input type="text" placeholder="Search for products...">
     <select>
@@ -37,6 +40,14 @@
 
 <div class="profile-wrapper">
   <div class="profile-container">
+    <div class="profile-buttons">
+      <div>
+      <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Admin Panel</a>
+      </div>
+      <div>
+      <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Log Out</a>
+      </div>
+    </div>
     <div class="profile-header">
       <h1 class="profile-title" th:id="'pageTitle'" th:text="${pageTitle}">My Profile</h1>
       <p class="welcome-text" th:id="'welcomeMessage'" th:text="${welcomeMessage}">Welcome Back</p>
@@ -98,9 +109,7 @@
           </div>
           <div th:if="${ratings.isEmpty()}" class="no-data">Brak ocen</div>
         </div>
-          <div>
-              <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log Out</a>
-          </div>
+
       </div>
     </div>
   </div>

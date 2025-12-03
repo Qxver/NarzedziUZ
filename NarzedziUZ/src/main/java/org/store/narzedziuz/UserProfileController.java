@@ -26,15 +26,13 @@ import java.util.Objects;
 public class UserProfileController {
 
     private final UserRepository userRepository;
-    private final OrderService orderService;          // ten sam co w OrderController
+    private final OrderService orderService;
     private final ReviewRepository reviewRepository;
     private final CategoryRepository categoryRepository;
 
-    // 1. Usuń "Principal principal" z argumentów
     @GetMapping("/profile")
     public String profile(HttpSession session, Model model) {
 
-        // 1. Pobierz użytkownika z sesji
         User sessionUser = (User) session.getAttribute("user");
 
         if (sessionUser == null) {
@@ -42,7 +40,6 @@ public class UserProfileController {
         }
         System.out.println(">>> /user/profile hit for: " + sessionUser.getEmail());
 
-        // 3. Opcjonalnie: Odśwież dane z bazy (zalecane, bo dane w sesji mogą być stare)
         User user = userRepository.findById(sessionUser.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found in DB"));
 
