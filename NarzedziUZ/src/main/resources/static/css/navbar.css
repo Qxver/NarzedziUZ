@@ -1,5 +1,6 @@
 
 .navbar {
+    position: fixed;
     background-color: #007bff;
     padding: 10px 20px;
     display: flex;
