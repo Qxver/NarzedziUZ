@@ -1,6 +1,8 @@
-
 .navbar {
     position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background-color: #007bff;
     padding: 10px 20px;
     display: flex;
@@ -9,10 +11,13 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: #fff;
     line-height: 1.4;
+    z-index: 1000;
+    height: 60px;
+    box-sizing: border-box;
 }
 
 .navbar a {
-    display: inline-block;
+    text-decoration: none;
 }
 
 .logo a {
@@ -41,7 +46,7 @@
     border-radius: 4px;
 }
 
-.search-bar .search-button, .filter-button{
+.search-bar .search-button, .filter-button {
     padding: 8px 15px;
     background-color: #0056b3;
     color: #fff;
@@ -68,14 +73,35 @@
     cursor: pointer;
     font-size: 14px;
     text-decoration: none;
+    display: inline-block;
 }
 
 .navbar-button:hover {
     background-color: #003f8a;
 }
 
-.navbar {
-    position: relative !important;
+@media (max-width: 1200px) {
+    .search-bar input {
+        width: 200px;
+    }
 }
 
+@media (max-width: 992px) {
+    .navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px;
+    }
 
+    .search-bar {
+        order: 3;
+        width: 100%;
+        margin-top: 10px;
+        justify-content: center;
+    }
+
+    .search-bar input {
+        width: 100%;
+        max-width: 300px;
+    }
+}
