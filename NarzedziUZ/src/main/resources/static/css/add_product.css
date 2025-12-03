@@ -6,7 +6,7 @@ body {
 }
 
 .content {
-    padding: 100px 20px 40px;
+    padding: 100px 20px 40px !important;
     min-height: 100vh;
     box-sizing: border-box;
     display: flex;
@@ -58,7 +58,7 @@ textarea {
     min-height: 100px;
 }
 
-button {
+.product-form button[type="submit"] {
     width: 100%;
     padding: 12px;
     margin-top: 25px;
@@ -72,7 +72,7 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+.product-form button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
@@ -90,14 +90,14 @@ button:hover {
 }
 
 .alert-error {
-    background-color: #f8d7da;
+    background-color: #f8d8d7;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
 @media (max-width: 768px) {
     .content {
-        padding: 80px 15px 30px;
+        padding: 80px 15px 30px !important;
     }
 
     .product-form {
