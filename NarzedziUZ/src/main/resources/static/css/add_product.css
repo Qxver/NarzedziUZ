@@ -8,9 +8,13 @@ body {
 .content {
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: calc(100vh - 60px);
+    align-items: flex-start;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
+
 
 .product-form {
     background: #fff;
