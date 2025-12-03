@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+    <title th:text="${product.name} + ' - NarzedziUZ'">Product - NarzedziUZ</title>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">
+        <a href="/">NarzedziUZ</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products...">
+        <select>
+            <option value="">Filter</option>
+            <option value="filter1">By price (descending)</option>
+            <option value="filter2">By price (ascending)</option>
+            <option value="filter3">By rating (descending)</option>
+            <option value="filter4">By rating (ascending)</option>
+        </select>
+
+        <select>
+            <option value="">All Categories</option>
+            <option value="category1">Category1</option>
+            <option value="category2">Category2</option>
+            <option value="category3">Category3</option>
+        </select>
+        <button class="search-button">Search</button>
+    </div>
+
+    <div class="navbar-buttons">
+        <a href="/cart" class="navbar-button">Cart</a>
+        <a th:if="${isLoggedIn}" th:href="@{/profile}" class="navbar-button" th:text="${userName}">User</a>
+        <a th:if="${!isLoggedIn}" th:href="@{/login}" class="navbar-button">Log in</a>
+    </div>
+</div>
+
+<div class="product-container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> / <span th:text="${product.name}">Product</span>
+    </div>
+
+    <div class="product-details">
+        <div class="product-image-section">
+            <div class="main-image">
+                <img th:if="${product.photo != null}"
+                     th:src="@{/product/image/{id}(id=${product.productId})}"
+                     th:alt="${product.name}">
+                <div th:unless="${product.photo != null}" class="no-image-large">No Image Available</div>
+            </div>
+        </div>
+
+        <div class="product-info-section">
+            <h1 th:text="${product.name}">Product Name</h1>
+
+            <div class="product-manufacturer">
+                <strong>Manufacturer:</strong> <span th:text="${product.manufacturer}">Manufacturer</span>
+            </div>
+
+            <div class="product-price-section">
+                <div class="price" th:text="${product.price} + ' PLN'">0.00 PLN</div>
+            </div>
+
+            <div class="product-availability">
+                <div th:if="${product.quantity > 0}" class="in-stock">
+                    <strong>Availability:</strong> In stock (<span th:text="${product.quantity}">0</span> units)
+                </div>
+                <div th:unless="${product.quantity > 0}" class="out-of-stock">
+                    <strong>Availability:</strong> Out of stock
+                </div>
+            </div>
+
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <input type="number" id="quantity" value="1" min="1" th:max="${product.quantity}">
+                </div>
+                <button th:if="${product.quantity > 0}" class="add-to-cart-btn" onclick="addToCart()">
+                    Add to Cart
+                </button>
+                <button th:unless="${product.quantity > 0}" class="add-to-cart-btn" disabled>
+                    Out of Stock
+                </button>
+            </div>
+
+            <div class="product-description">
+                <h2>Description</h2>
+                <p th:text="${product.description}">Product description goes here.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    function addToCart() {
+        const quantity = document.getElementById('quantity').value;
+        const productId = [[${product.productId}]];
+
+        // TODO: Implement add to cart functionality
+        alert('Added ' + quantity + ' item(s) to cart!');
+    }
+</script>
+
+</body>
+</html>
