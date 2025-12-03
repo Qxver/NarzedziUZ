@@ -46,10 +46,10 @@
     <div class="product-details">
         <div class="product-image-section">
             <div class="main-image">
-                <img th:if="${product.photo != null}"
-                     th:src="@{/product/image/{id}(id=${product.productId})}"
+                <img th:if="${product.photo != null and !product.photo.isEmpty()}"
+                     th:src="@{${product.photo}}"
                      th:alt="${product.name}">
-                <div th:unless="${product.photo != null}" class="no-image-large">No Image Available</div>
+                <div th:if="${product.photo == null or product.photo.isEmpty()}" class="no-image-large">No Image Available</div>
             </div>
         </div>
 
