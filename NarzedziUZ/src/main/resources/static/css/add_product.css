@@ -5,12 +5,13 @@ body {
     padding: 0;
 }
 
-
 .content {
+    padding: 100px 20px 40px !important;
+    min-height: 100vh;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: calc(100vh - 60px);
+    align-items: flex-start;
 }
 
 .product-form {
@@ -18,41 +19,89 @@ body {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 400px;
+    width: 100%;
+    max-width: 500px;
+    margin-top: 20px;
 }
 
-.product-form h1 {
+h1 {
     text-align: center;
     color: #333;
+    margin-bottom: 30px;
 }
 
-.product-form label {
+label {
     display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.product-form input,
-.product-form textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.product-form button {
-    width: 100%;
-    padding: 10px;
     margin-top: 15px;
+    font-weight: bold;
+    color: #555;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.product-form button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 25px;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-.product-form button:hover {
-    background-color: #003f8a;
+.product-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d8d7;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+@media (max-width: 768px) {
+    .content {
+        padding: 80px 15px 30px !important;
+    }
+
+    .product-form {
+        padding: 20px;
+        margin-top: 0;
+    }
 }

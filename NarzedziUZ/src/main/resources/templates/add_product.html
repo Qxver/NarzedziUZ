@@ -2,30 +2,28 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Add product</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/add_product.css}">
+    <title>Add product</title>
 </head>
 
 <body>
 
-<div th:replace="navbar :: navbar"></div>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
 
 <div class="content">
     <div class="product-form">
         <h1>Add product</h1>
 
-        <div th:if="${successMessage}" class="alert alert-success">
-            <span th:text="${successMessage}"></span>
+        <div th:if="${param.success}" class="alert alert-success">
+            Product added successfully!
+        </div>
+        <div th:if="${param.error}" class="alert alert-error">
+            Error adding product. Please try again.
         </div>
 
-        <div th:if="${errorMessage}" class="alert alert-error">
-            <span th:text="${errorMessage}"></span>
-        </div>
-
-        <form th:action="@{/add-product}" th:object="${product}" method="post" enctype="multipart/form-data">
-
+        <form th:action="@{/add-product}" th:object="${product}" method="post">
             <label for="name">Name:</label>
             <input type="text" id="name" th:field="*{name}" required>
 
@@ -43,9 +41,6 @@
 
             <label for="manufacturer">Manufacturer:</label>
             <input type="text" id="manufacturer" th:field="*{manufacturer}" required>
-
-            <label for="image">Image:</label>
-            <input type="file" id="image" th:field="*{image}" accept="image/*">
 
             <button type="submit">Add product</button>
         </form>
