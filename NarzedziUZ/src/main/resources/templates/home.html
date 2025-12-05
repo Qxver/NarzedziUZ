@@ -39,11 +39,6 @@
 </div>
 
 <div class="home-container">
-    <h1>NarzedziUZ</h1>
-
-    <div th:if="${isLoggedIn}">
-        <p th:text="'Welcome, ' + ${userName} + '!'"></p>
-    </div>
 
     <div class="products-grid">
         <div class="product-card" th:each="product : ${products}">
