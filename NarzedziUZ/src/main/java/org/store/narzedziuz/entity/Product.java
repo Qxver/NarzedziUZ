@@ -28,8 +28,8 @@ public class Product {
 
     private String manufacturer;
 
-    @Lob
-    private byte[] photo;
+    @Column(name = "photo")
+    private String photo;
 
     @OneToMany(mappedBy = "product")
     private List<Review> reviews;
