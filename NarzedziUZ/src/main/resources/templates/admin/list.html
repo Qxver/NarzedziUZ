@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyszukiwanie Użytkowników</title>
+</head>
+<body>
+
+<h1>Wyszukiwanie Użytkowników</h1>
+
+<form th:action="@{/admin/search}" method="get">
+    <label for="emailInput">Szukaj po Email:</label>
+    <input type="text" id="emailInput" name="email" th:value="${searchTerm}" placeholder="Wprowadź email">
+    <button type="submit">Szukaj</button>
+    <a th:href="@{/admin/search}">Wyczyść</a>
+</form>
+
+<hr>
+
+<h2>Wyniki:</h2>
+
+<div th:if="${users.isEmpty()}">
+    <p>Brak użytkowników do wyświetlenia.</p>
+</div>
+<table border="1" th:unless="${users.isEmpty()}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Email</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.userId}">1</td> <td th:text="${user.email}">user.test@example.com</td>
+        <td th:text="${user.firstName}">Jan</td>
+        <td th:text="${user.lastName}">Kowalski</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

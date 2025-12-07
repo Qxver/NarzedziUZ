@@ -81,8 +81,8 @@ public class UserService {
         return user;
     }
 
-    public List<User> getUsersByEmail(String email) {
-        return userRepository.findByEmailContainingIgnoreCase(email);
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 
     @Transactional
@@ -93,12 +93,10 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    public List<User> searchUsersByEmail(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            findAllUsers();
+        }
+        return userRepository.findByEmailContainingIgnoreCase(query);
     }
 }

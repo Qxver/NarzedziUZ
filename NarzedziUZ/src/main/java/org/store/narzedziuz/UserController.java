@@ -1,6 +1,6 @@
 package org.store.narzedziuz;
 
-import jakarta.servlet.http.HttpSession;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,28 +11,22 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/admin/users")
+@RequestMapping("/admin/")
 public class UserController {
     private final UserService userService;
 
-
-    @GetMapping
-    public String listUsers(Model model) {
-        List<User> users = userService.getAllUsers();
-        model.addAttribute("users", users);
-        return "admin/users/list";
-    }
-
     @GetMapping("/search")
-    public String searchUsers(@RequestParam String query, Model model) {
+    public String searchUsers(@RequestParam(value = "email", required = false) String email, Model model) {
         List<User> users;
-        if (query != null && !query.trim().isEmpty()) {
-            users = userService.getUsersByEmail(query);
+        if (email != null && !email.isBlank()) {
+            users = userService.searchUsersByEmail(email);
+            model.addAttribute("searchTerm", email);
         } else {
-            users = userService.getAllUsers();
+            users = userService.findAllUsers();
         }
+
         model.addAttribute("users", users);
-        return "admin/users/list";
+        return "admin/list";
     }
 
     @PostMapping("/{id}/delete")
