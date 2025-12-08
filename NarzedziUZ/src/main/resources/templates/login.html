@@ -6,6 +6,9 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
     <title>Login</title>
+
+    <!-- Add Cap widget script to <head> -->
+    <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget@0.1.28"></script>
 </head>
 <body>
 
@@ -19,9 +22,19 @@
             <p th:text="${error}" style="margin: 0;"></p>
         </div>
 
-        <form method="post" action="/login">
+        <form th:action="@{/login}" method="post">
             <input type="email" id="email" name="email" placeholder="E-mail" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
+
+            <!-- Captcha Section -->
+            <div class="captcha-container">
+                <cap-widget
+                  data-cap-api-endpoint="http://localhost:8000/d2acb75376/"
+                  id="captcha-widget"
+                ></cap-widget>
+
+                <input type="hidden" id="captchaToken" name="captchaToken">
+            </div>
 
             <button type="submit">Login</button>
         </form>
@@ -29,5 +42,22 @@
         <a href="/register">Create a new account</a>
     </div>
 </div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const widget = document.getElementById('captcha-widget');
+        const token = widget.getResponse();
+
+        if (!token) {
+            alert('Please complete the CAPTCHA');
+            return;
+        }
+
+        document.getElementById('captchaToken').value = token;
+        this.submit();
+    });
+</script>
 </body>
 </html>

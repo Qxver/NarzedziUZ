@@ -2,10 +2,12 @@ package org.store.narzedziuz.controller;
 
 import org.store.narzedziuz.entity.User;
 import org.store.narzedziuz.service.UserService;
+import org.store.narzedziuz.service.CaptchaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
+    private final CaptchaService captchaService;
 
     @GetMapping("/login")
     public String loginPage(HttpSession session, Model model) {
@@ -26,9 +29,16 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
+                        @RequestParam(required = false) String captchaToken,
                         Model model,
                         HttpSession session) {
         try {
+            // Validate captcha
+            if (captchaToken == null || !captchaService.verifyCaptcha(captchaToken)) {
+                model.addAttribute("error", "Invalid Captcha");
+                return "login";
+            }
+
             User user = userService.loginUser(email, password);
             // Store user in session
             session.setAttribute("user", user);
@@ -56,9 +66,16 @@ public class AuthController {
                            @RequestParam String email,
                            @RequestParam String password,
                            @RequestParam String confirmPassword,
+                           @RequestParam(required = false) String captchaToken,
                            Model model,
                            HttpSession session) {
         try {
+            // Validate captcha
+            if (captchaToken == null || !captchaService.verifyCaptcha(captchaToken)) {
+                model.addAttribute("error", "Invalid Captcha");
+                return "register";
+            }
+
             if (!password.equals(confirmPassword)) {
                 model.addAttribute("error", "Passwords do not match");
                 return "register";
