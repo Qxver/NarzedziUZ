@@ -14,9 +14,6 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "address_id")
-    private Long addressId;
-
     private String email;
     private String password;
 
