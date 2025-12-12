@@ -23,7 +23,7 @@
             Error adding product. Please try again.
         </div>
 
-        <form th:action="@{/add-product}" th:object="${product}" method="post">
+        <form th:action="@{/add-product}" th:object="${product}" method="post" enctype="multipart/form-data">
             <label for="name">Name:</label>
             <input type="text" id="name" th:field="*{name}" required>
 
@@ -42,8 +42,12 @@
             <label for="manufacturer">Manufacturer:</label>
             <input type="text" id="manufacturer" th:field="*{manufacturer}" required>
 
+            <label for="image">Product Image:</label>
+            <input type="file" id="image" th:field="*{image}" accept="image/*" />
+
             <button type="submit">Add product</button>
         </form>
+
     </div>
 </div>
 

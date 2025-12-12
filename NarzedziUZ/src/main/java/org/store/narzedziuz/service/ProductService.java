@@ -9,11 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final FileStorageService fileStorageService;
+
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -63,9 +71,17 @@ public class ProductService {
         product.setManufacturer(productFormDto.getManufacturer());
 
         if (productFormDto.getImage() != null && !productFormDto.getImage().isEmpty()) {
-            product.setPhoto(productFormDto.getImage().getOriginalFilename());
+            try {
+                String imagePath = fileStorageService.storeFile(productFormDto.getImage());
+                product.setPhoto(imagePath);
+            } catch (IOException e) {
+                throw new RuntimeException("Could not store image file. Please try again.", e);
+            }
         }
 
         return productRepository.save(product);
     }
+
+
+
 }
