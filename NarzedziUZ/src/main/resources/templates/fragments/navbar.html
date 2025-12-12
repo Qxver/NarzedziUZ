@@ -9,13 +9,16 @@
     <div class="search-bar">
         <input type="text" placeholder="Search for products...">
 
-        <select>
-            <option value="">Filter</option>
-            <option value="filter1">By price (descending)</option>
-            <option value="filter2">By price (ascending)</option>
-            <option value="filter3">By rating (descending)</option>
-            <option value="filter4">By rating (ascending)</option>
-        </select>
+        <form method="get" action="/" id="sortForm" style="display:inline;">
+            <select name="sort" onchange="document.getElementById('sortForm').submit()">
+                <option value="">Filter</option>
+                <option value="price_desc">By price (descending)</option>
+                <option value="price_asc">By price (ascending)</option>
+                <option value="filter3">By rating (descending)</option>
+                <option value="filter4">By rating (ascending)</option>
+            </select>
+        </form>
+
 
         <select>
             <option value="">All Categories</option>

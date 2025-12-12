@@ -82,6 +82,19 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public List<Product> getAllProductsSorted(String sort) {
+        if ("price_asc".equals(sort)) {
+            return productRepository.findAllByOrderByPriceAsc();
+        }
+        if ("price_desc".equals(sort)) {
+            return productRepository.findAllByOrderByPriceDesc();
+        }
+
+        // domyślnie bez sortowania
+        return productRepository.findAll();
+    }
+
+
 
 
 }
