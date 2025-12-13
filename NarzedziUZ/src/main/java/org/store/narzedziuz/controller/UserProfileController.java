@@ -1,4 +1,4 @@
-package org.store.narzedziuz;
+package org.store.narzedziuz.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
