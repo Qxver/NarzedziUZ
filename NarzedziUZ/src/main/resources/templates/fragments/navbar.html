@@ -29,7 +29,8 @@
 
     <div class="navbar-buttons">
         <a href="/cart" class="navbar-button">Cart</a>
-        <a href="/login" class="navbar-button">Log in</a>
+        <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
+        <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
         <a href="/add-product" class="navbar-button">Add Product</a>
     </div>
 </nav>

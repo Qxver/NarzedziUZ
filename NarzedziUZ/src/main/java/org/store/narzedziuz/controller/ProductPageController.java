@@ -1,6 +1,7 @@
 package org.store.narzedziuz.controller;
 
 import org.store.narzedziuz.entity.Product;
+import org.store.narzedziuz.entity.User; // <--- Dodany import
 import org.store.narzedziuz.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,15 +21,24 @@ public class ProductPageController {
             Product product = productService.getProductById(id);
             model.addAttribute("product", product);
 
-            Object user = session.getAttribute("user");
-            if (user != null) {
-                model.addAttribute("userName", session.getAttribute("userName"));
-                model.addAttribute("isLoggedIn", true);
-            } else {
-                model.addAttribute("isLoggedIn", false);
+            // Pobieramy usera z sesji
+            User user = (User) session.getAttribute("user");
+
+            boolean isLoggedIn = (user != null);
+            boolean isInWishlist = false;
+
+            if (isLoggedIn) {
+                model.addAttribute("userName", session.getAttribute("userName")); // lub user.getFirstName()
+
+                // --- NOWA LOGIKA WISHLISTY ---
+                // Sprawdzamy czy produkt jest na liście tego usera
+                isInWishlist = productService.isProductInWishlist(user.getUserId(), id);
             }
 
-            return "product";
+            model.addAttribute("isLoggedIn", isLoggedIn);
+            model.addAttribute("isInWishlist", isInWishlist); // Przekazujemy flagę do widoku
+
+            return "product"; // Upewnij się, że Twój plik HTML nazywa się product.html
         } catch (RuntimeException e) {
             return "redirect:/";
         }

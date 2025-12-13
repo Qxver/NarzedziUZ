@@ -182,3 +182,41 @@ body {
         height: 400px;
     }
 }
+
+.wishlist-add-btn {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 50%; /* Okrągły przycisk */
+    width: 40px;
+    height: 40px;
+    color: #e74c3c; /* Czerwony kolor serca */
+    cursor: pointer;
+    font-size: 20px;
+    transition: transform 0.2s;
+}
+
+.wishlist-add-btn:hover {
+    transform: scale(1.1);
+    background-color: #fff0f0;
+}
+/* W pliku product.css */
+.wishlist-btn {
+    padding: 10px 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+    color: white;
+    background-color: #ffc107; /* Żółty */
+    transition: background-color 0.3s;
+}
+
+.wishlist-btn:hover {
+    background-color: #e0a800; /* Ciemniejszy żółty po najechaniu */
+}
+
+.wishlist-btn.disabled {
+    background-color: #cccccc; /* Szary */
+    color: #666;
+    cursor: not-allowed;
+}

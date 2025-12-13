@@ -7,36 +7,7 @@
 </head>
 <body>
 
-<div class="navbar">
-    <div class="logo">
-        <a href="/">NarzedziUZ</a>
-    </div>
-
-    <div class="search-bar">
-        <input type="text" placeholder="Search for products...">
-        <select>
-            <option value="">Filter</option>
-            <option value="filter1">By price (descending)</option>
-            <option value="filter2">By price (ascending)</option>
-            <option value="filter3">By rating (descending)</option>
-            <option value="filter4">By rating (ascending)</option>
-        </select>
-
-        <select>
-            <option value="">All Categories</option>
-            <option value="category1">Category1</option>
-            <option value="category2">Category2</option>
-            <option value="category3">Category3</option>
-        </select>
-        <button class="search-button">Search</button>
-    </div>
-
-    <div class="navbar-buttons">
-        <a href="/cart" class="navbar-button">Cart</a>
-        <a th:if="${isLoggedIn}" th:href="@{/profile}" class="navbar-button" th:text="${userName}">User</a>
-        <a th:if="${!isLoggedIn}" th:href="@{/login}" class="navbar-button">Log in</a>
-    </div>
-</div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="product-container">
     <div class="breadcrumb">
@@ -84,6 +55,16 @@
                 <button th:unless="${product.quantity > 0}" class="add-to-cart-btn" disabled>
                     Out of Stock
                 </button>
+                <form th:if="${!isInWishlist}" th:action="@{'/user/wish-list/add/' + ${product.productId}}" method="post" style="display: inline-block; margin-left: 10px;">
+                    <button type="submit" class="wishlist-btn">
+                        Add to Wishlist
+                    </button>
+                </form>
+
+                <button th:if="${isInWishlist}" class="wishlist-btn disabled" disabled>
+                    Already in Wishlist
+                </button>
+
             </div>
 
             <div class="product-description">

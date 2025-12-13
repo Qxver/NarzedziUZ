@@ -2,18 +2,23 @@ package org.store.narzedziuz.service;
 
 import org.store.narzedziuz.dto.ProductFormDto;
 import org.store.narzedziuz.entity.Product;
+import org.store.narzedziuz.entity.User;
 import org.store.narzedziuz.repository.ProductRepository;
+import org.store.narzedziuz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+
+    // --- PODSTAWOWE METODY ---
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -24,27 +29,29 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
+    // --- METODY WYMAGANE PRZEZ KONTROLER (te, których brakowało) ---
+
     public List<Product> getProductsByCategory(Long categoryId) {
-        return productRepository.findByCategoryId(categoryId);
+        // Upewnij się, że w ProductRepository masz: List<Product> findByCategoryCategoryId(Long id);
+        return productRepository.findByCategoryCategoryId(categoryId);
     }
 
     public List<Product> searchProducts(String query) {
+        // Upewnij się, że w ProductRepository masz: List<Product> findByNameContainingIgnoreCase(String name);
         return productRepository.findByNameContainingIgnoreCase(query);
     }
 
     @Transactional
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
-    }
+    public void updateProduct(Long id, Product updatedProduct) {
+        Product existingProduct = getProductById(id);
 
-    @Transactional
-    public Product updateProduct(Long id, Product productDetails) {
-        Product product = getProductById(id);
-        product.setName(productDetails.getName());
-        product.setPrice(productDetails.getPrice());
-        product.setDescription(productDetails.getDescription());
-        product.setQuantity(productDetails.getQuantity());
-        return productRepository.save(product);
+        existingProduct.setName(updatedProduct.getName());
+        existingProduct.setPrice(updatedProduct.getPrice());
+        existingProduct.setDescription(updatedProduct.getDescription());
+        existingProduct.setQuantity(updatedProduct.getQuantity());
+        // existingProduct.setCategory(updatedProduct.getCategory()); // odkomentuj jeśli aktualizujesz kategorię
+
+        productRepository.save(existingProduct);
     }
 
     @Transactional
@@ -53,19 +60,63 @@ public class ProductService {
     }
 
     @Transactional
-    public Product createProductFromForm(ProductFormDto productFormDto) {
+    public Product createProductFromForm(ProductFormDto formDto) {
         Product product = new Product();
-        product.setName(productFormDto.getName());
-        product.setPrice(productFormDto.getPrice());
-        product.setDescription(productFormDto.getDescription());
-        product.setQuantity(productFormDto.getQuantity());
-        product.setCategoryId(productFormDto.getCategoryId());
-        product.setManufacturer(productFormDto.getManufacturer());
+        product.setName(formDto.getName());
+        product.setPrice(formDto.getPrice());
+        product.setDescription(formDto.getDescription());
+        product.setQuantity(formDto.getQuantity());
 
-        if (productFormDto.getImage() != null && !productFormDto.getImage().isEmpty()) {
-            product.setPhoto(productFormDto.getImage().getOriginalFilename());
+        // Obsługa zdjęcia
+        if (formDto.getImage() != null && !formDto.getImage().isEmpty()) {
+            product.setPhoto(formDto.getImage().getOriginalFilename());
         }
 
+        return productRepository.save(product); // Teraz zwracamy obiekt!
+    }
+
+    // --- TWOJE METODY DO WISHLISTY ---
+
+    @Transactional
+    public void addToWishlist(Long userId, Long productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Product product = getProductById(productId);
+
+        user.getWishlist().add(product);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void removeFromWishlist(Long userId, Long productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Product product = getProductById(productId);
+
+        user.getWishlist().remove(product);
+        userRepository.save(user);
+    }
+
+    public Set<Product> getUserWishlist(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getWishlist();
+    }
+
+    @Transactional
+    public Product createProduct(Product product) {
         return productRepository.save(product);
     }
+    // W ProductService.java
+    public boolean isProductInWishlist(Long userId, Long productId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Sprawdzamy czy w zestawie wishlisty istnieje produkt o danym ID
+        return user.getWishlist().stream()
+                .anyMatch(product -> product.getProductId().equals(productId));
+    }
+
 }
