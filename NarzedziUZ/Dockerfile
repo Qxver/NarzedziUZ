@@ -9,6 +9,8 @@ COPY .mvn .mvn
 RUN find /app/src -name "*.html" -type f | head -10
 RUN mvn clean package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+RUN mkdir -p /app/product_image
+
 
 FROM eclipse-temurin:17-jre-alpine
 VOLUME /tmp
