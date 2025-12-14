@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.store.narzedziuz.entity.Product;
 import org.store.narzedziuz.service.ProductService;
-import org.store.narzedziuz.repository.CategoryRepository;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -16,13 +15,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeController {
     private final ProductService productService;
-    private final CategoryRepository categoryRepository;
 
     @GetMapping("/")
     public String index(
             @RequestParam(required = false) String q,
-            @RequestParam(required = false) Long categoryId,
-            @RequestParam(required = false) String sortBy,
             HttpSession session,
             Model model) {
 
