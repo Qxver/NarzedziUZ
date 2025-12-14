@@ -63,11 +63,7 @@ public class ProductService {
         product.setManufacturer(productFormDto.getManufacturer());
 
         if (productFormDto.getImage() != null && !productFormDto.getImage().isEmpty()) {
-            try {
-                product.setPhoto(productFormDto.getImage().getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to process image", e);
-            }
+            product.setPhoto(productFormDto.getImage().getOriginalFilename());
         }
 
         return productRepository.save(product);

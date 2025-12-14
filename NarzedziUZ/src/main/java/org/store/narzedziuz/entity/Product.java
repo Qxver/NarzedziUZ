@@ -22,14 +22,14 @@ public class Product {
     @Column(name = "category_id")
     private Long categoryId;
 
-    private String manufacturer;
-
-    @Lob
-    private byte[] photo;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
+
+    private String manufacturer;
+
+    @Column(name = "photo")
+    private String photo;
 
     @OneToMany(mappedBy = "product")
     private List<Review> reviews;
