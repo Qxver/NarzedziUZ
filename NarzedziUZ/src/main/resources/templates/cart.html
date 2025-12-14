@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
-    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
     <title>Twój Koszyk - NarzedziUZ</title>
 </head>
 <body>
@@ -15,32 +15,38 @@
 
     <div class="products-grid">
         <div class="product-card" th:each="item : ${cartItems}">
-            <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-link">
-                <div class="product-image">
-                    <img th:if="${item.product.photo != null and !item.product.photo.isEmpty()}"
-                         th:src="@{${item.product.photo}}"
-                         th:alt="${item.product.name}">
-                    <div th:if="${item.product.photo == null or item.product.photo.isEmpty()}" class="no-image">Brak Zdjęcia</div>
-                </div>
-            </a>
 
-            <div class="product-info">
-                <h3 th:text="${item.product.name}">Nazwa Produktu</h3>
+            <div class="product-image-container">
+                <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-link">
+                    <div class="product-image">
+                        <img th:if="${item.product.photo != null and !item.product.photo.isEmpty()}"
+                             th:src="@{${item.product.photo}}"
+                             th:alt="${item.product.name}">
+                        <div th:if="${item.product.photo == null or item.product.photo.isEmpty()}" class="no-image">Brak Zdjęcia</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="product-details">
+                <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-title-link">
+                    <h3 th:text="${item.product.name}">Nazwa Produktu</h3>
+                </a>
+
                 <p class="product-manufacturer" th:text="${item.product.manufacturer}">Producent</p>
-                <p class="product-price">
-                    Cena jednostkowa: <span th:text="${item.product.price} + ' PLN'">0.00 PLN</span>
-                </p>
                 <p class="product-quantity">
                     Ilość: <span th:text="${item.quantity}">1</span>
                 </p>
-                <p class="product-total-price">
-                    **Suma: <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span>**
-                </p>
 
-                <form th:action="@{/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}" method="post">
-                    <input type="hidden" name="_method" value="delete" />
-                    <button type="submit" class="remove-button">Usuń z Koszyka</button>
-                </form>
+                <div class="price-and-remove">
+                    <p class="product-total-price">
+                        Suma: <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span>
+                    </p>
+
+                    <form th:action="@{/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}" method="post">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit" class="remove-button">Usuń</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
