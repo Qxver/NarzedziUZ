@@ -6,8 +6,10 @@
         <a th:href="@{/}">NarzedziUZ</a>
     </div>
 
-    <div class="search-bar">
-        <input type="text" placeholder="Search for products...">
+    <form class="search-bar" method="get" action="/">
+        <input type="text"
+               name="q"
+               placeholder="Search for products..."/>
 
         <select>
             <option value="">Filter</option>
@@ -16,7 +18,6 @@
             <option value="filter3">By rating (descending)</option>
             <option value="filter4">By rating (ascending)</option>
         </select>
-
         <select>
             <option value="">All Categories</option>
             <option value="category1">Category1</option>
@@ -24,12 +25,13 @@
             <option value="category3">Category3</option>
         </select>
 
-        <button class="search-button">Search</button>
-    </div>
+        <button type="submit" class="search-button">Search</button>
+    </form>
 
     <div class="navbar-buttons">
         <a href="/cart" class="navbar-button">Cart</a>
-        <a href="/login" class="navbar-button">Log in</a>
+        <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
+        <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
         <a href="/add-product" class="navbar-button">Add Product</a>
     </div>
 </nav>

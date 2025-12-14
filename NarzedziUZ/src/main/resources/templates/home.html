@@ -9,10 +9,9 @@
 </head>
 <body>
 
-<div th:insert="~{fragments/navbar :: navbar}"></div>
+<div th:insert="~{fragments/navbar :: navbar(searchQuery=${searchQuery}, selectedCategory=${selectedCategory}, selectedSort=${selectedSort})}"></div>
 
 <div class="home-container">
-
     <div class="products-grid">
         <div class="product-card" th:each="product : ${products}">
             <a th:href="@{/product/{id}(id=${product.productId})}" class="product-link">
@@ -34,7 +33,12 @@
     </div>
 
     <div th:if="${#lists.isEmpty(products)}" class="no-products">
-        <p>No products available at the moment.</p>
+        <p th:if="${searchPerformed}">
+            No products found matching "<span th:text="${searchQuery}"></span>".
+        </p>
+        <p th:if="${!searchPerformed}">
+            No products available at the moment.
+        </p>
     </div>
 </div>
 </body>
