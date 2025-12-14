@@ -1,6 +1,5 @@
-package org.store.narzedziuz;
+package org.store.narzedziuz.controller;
 
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.store.narzedziuz.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

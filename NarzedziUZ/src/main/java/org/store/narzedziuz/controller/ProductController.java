@@ -1,4 +1,4 @@
-package org.store.narzedziuz;
+package org.store.narzedziuz.controller;
 
 import org.store.narzedziuz.entity.Product;
 import org.store.narzedziuz.service.ProductService;

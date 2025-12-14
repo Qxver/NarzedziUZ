@@ -1,4 +1,4 @@
-package org.store.narzedziuz;
+package org.store.narzedziuz.controller;
 
 
 import lombok.RequiredArgsConstructor;
@@ -37,11 +37,5 @@ public class UserController {
             System.err.println("Błąd podczas usuwania użytkownika: " + e.getMessage());
         }
         return "redirect:/admin/users";
-    }
-
-    @GetMapping("/test")
-    @ResponseBody
-    public String test() {
-        return "Test działa!" ;
     }
 }
