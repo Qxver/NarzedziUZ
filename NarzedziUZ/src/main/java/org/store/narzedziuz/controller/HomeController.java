@@ -2,18 +2,26 @@ package org.store.narzedziuz.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.store.narzedziuz.entity.Product;
 import org.store.narzedziuz.service.ProductService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
     private final ProductService productService;
 
-    @RequestMapping("/")
-    public String index(HttpSession session, Model model) {
+    @GetMapping("/")
+    public String index(
+            @RequestParam(required = false) String q,
+            HttpSession session,
+            Model model) {
+
         Object user = session.getAttribute("user");
         if (user != null) {
             model.addAttribute("userName", session.getAttribute("userName"));
@@ -22,7 +30,20 @@ public class HomeController {
             model.addAttribute("isLoggedIn", false);
         }
 
-        model.addAttribute("products", productService.getAllProducts());
+        List<Product> products;
+
+        // Search product by name
+        if (q != null && !q.trim().isEmpty()) {
+            products = productService.searchProducts(q.trim());
+            model.addAttribute("searchPerformed", true);
+            model.addAttribute("searchQuery", q.trim());
+        } else {
+            products = productService.getAllProducts();
+            model.addAttribute("searchPerformed", false);
+            model.addAttribute("searchQuery", "");
+        }
+
+        model.addAttribute("products", products);
 
         return "home";
     }
