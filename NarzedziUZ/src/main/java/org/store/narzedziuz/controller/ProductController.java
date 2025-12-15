@@ -1,6 +1,9 @@
 package org.store.narzedziuz.controller;
 
+import jakarta.servlet.http.HttpSession;
+import org.springframework.ui.Model;
 import org.store.narzedziuz.entity.Product;
+import org.store.narzedziuz.entity.User;
 import org.store.narzedziuz.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,9 +46,9 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity updateProduct(
             @PathVariable Long id, @RequestBody Product product) {
-        return ResponseEntity.ok(productService.updateProduct(id, product));
+        return (ResponseEntity) ResponseEntity.ok();
     }
 
     @DeleteMapping("/{id}")

@@ -6,43 +6,20 @@
   <title th:text="${pageTitle}">Profil Klienta - Sklep z Narzędziami</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link th:href="@{/css/profil.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar.css}" rel="stylesheet">
 </head>
 <body>
-<div class="navbar">
-  <div class="logo">
-    <a href="/">NarzedziUZ</a>
-  </div>
 
-  <div class="search-bar">
-    <input type="text" placeholder="Search for products...">
-    <select>
-      <option value="">Filter</option>
-      <option value="filter1">By price (descending)</option>
-      <option value="filter2">By price (ascending)</option>
-      <option value="filter3">By rating (descending)</option>
-      <option value="filter4">By rating (ascending)</option>
-    </select>
-
-    <select>
-      <option value="">All Categories</option>
-      <option value="category1">Category1</option>
-      <option value="category2">Category2</option>
-      <option value="category3">Category3</option>
-    </select>
-    <button class="search-button">Search</button>
-  </div>
-    <div class="navbar-buttons">
-        <a href="/cart" class="navbar-button">Cart</a>
-
-        <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
-    </div>
-</div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="profile-wrapper">
   <div class="profile-container">
     <div class="profile-buttons">
       <div>
       <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Admin Panel</a>
+      </div>
+      <div>
+        <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button">wish list</a>
       </div>
       <div>
       <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Log Out</a>
@@ -119,7 +96,6 @@
 <script th:inline="javascript">
   /*<![CDATA[*/
   window.userConfig = /*[[${userConfig}]]*/ {};
-  window.currentUser = /*[[${user}]]*/ {};
   /*]]>*/
 </script>
 </body>

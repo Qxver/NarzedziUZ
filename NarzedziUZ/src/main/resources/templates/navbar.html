@@ -26,7 +26,10 @@
 
     <div class="navbar-buttons">
         <a href="/cart" class="navbar-button">Cart</a>
-        <a th:if="${isLoggedIn}" th:href="@{/profile}" class="navbar-button" th:text="${userName}">User</a>
-        <a th:if="${!isLoggedIn}" th:href="@{/login}" class="navbar-button">Log in</a>
+
+        <!-- ZAMIAST isLoggedIn UŻYWAJ session.user -->
+        <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
+        <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
     </div>
+
 </div>
