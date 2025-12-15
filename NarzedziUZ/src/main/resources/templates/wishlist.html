@@ -22,7 +22,7 @@
             <a th:href="@{/product/{id}(id=${product.productId})}" class="product-link">
                 <div class="product-image">
                     <img th:if="${product.photo != null and !product.photo.isEmpty()}"
-                         th:src="@{${product.photo}}"
+                         th:src="@{'/' + ${product.photo}}"
                          th:alt="${product.name}">
                     <div th:if="${product.photo == null or product.photo.isEmpty()}" class="no-image">No Image</div>
                 </div>

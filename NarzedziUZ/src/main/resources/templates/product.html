@@ -18,7 +18,7 @@
         <div class="product-image-section">
             <div class="main-image">
                 <img th:if="${product.photo != null and !product.photo.isEmpty()}"
-                     th:src="@{${product.photo}}"
+                     th:src="@{|/${product.photo}|}"
                      th:alt="${product.name}">
                 <div th:if="${product.photo == null or product.photo.isEmpty()}" class="no-image-large">No Image Available</div>
             </div>
@@ -40,7 +40,7 @@
                     <strong>Availability:</strong> In stock (<span th:text="${product.quantity}">0</span> units)
                 </div>
                 <div th:unless="${product.quantity > 0}" class="out-of-stock">
-                    <strong>Availability:</strong> Out of stock
+                    <strong>Availability:</strong> Out oexitf stock
                 </div>
             </div>
 
