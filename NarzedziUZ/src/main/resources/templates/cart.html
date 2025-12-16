@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" th:href="@{/css/purchase_form.css}">
     <title>Twój Koszyk - NarzedziUZ</title>
 </head>
 <body>
@@ -61,8 +62,44 @@
             <h3>Suma Całkowita: <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span></h3>
         </div>
 
-        <button class="checkout-button">Przejdź do Kasy</button>
+        <button class="checkout-button" onclick=openForm()>Przejdź do Kasy</button>
     </div>
+    <div class="form-popup" id="myForm">
+        <form action="/action_page.php" class="form-container">
+            <h1>Login</h1>
+
+            <label><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="email" required>
+
+            <label><b>Country</b></label>
+            <input type="password" placeholder="Enter Country" name="psw" required>
+
+            <label><b>City</b></label>
+            <input type="password" placeholder="Enter City" name="psw" required>
+
+            <label><b>Zipcode</b></label>
+            <input type="password" placeholder="Enter Zipcode" name="psw" required>
+
+            <label><b>Street name</b></label>
+            <input type="password" placeholder="Enter Street name" name="psw" required>
+
+            <label><b>Home number</b></label>
+            <input type="password" placeholder="Enter Home number" name="psw" required>
+
+            <button type="submit" class="btn">Login</button>
+            <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        </form>
+    </div>
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
 </div>
+
 </body>
 </html>
