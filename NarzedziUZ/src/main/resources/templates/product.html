@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
@@ -13,6 +13,10 @@
     <div class="breadcrumb">
         <a href="/">Home</a> / <span th:text="${product.name}">Product</span>
     </div>
+
+    <!-- Success/Error Messages -->
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
 
     <div class="product-details">
         <div class="product-image-section">
@@ -31,6 +35,19 @@
                 <strong>Manufacturer:</strong> <span th:text="${product.manufacturer}">Manufacturer</span>
             </div>
 
+            <div class="product-rating-summary" th:if="${reviewCount > 0}">
+                <div class="rating-stars" th:attr="data-rating=${averageRating}">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                     th:text="${i <= averageRating} ? '★' : '☆'">★</span>
+                </div>
+                <span class="rating-text">
+                    <strong th:text="${#numbers.formatDecimal(averageRating, 0, 1)}">0.0</strong>
+                (<span th:text="${reviewCount}">0</span>
+                <span th:text="${reviewCount == 1 ? 'review' : 'reviews'}">reviews</span>)
+                </span>
+            </div>
+
+
             <div class="product-price-section">
                 <div class="price" th:text="${product.price} + ' PLN'">0.00 PLN</div>
             </div>
@@ -40,7 +57,7 @@
                     <strong>Availability:</strong> In stock (<span th:text="${product.quantity}">0</span> units)
                 </div>
                 <div th:unless="${product.quantity > 0}" class="out-of-stock">
-                    <strong>Availability:</strong> Out oexitf stock
+                    <strong>Availability:</strong> Out of stock
                 </div>
             </div>
 
@@ -55,22 +72,101 @@
                 <button th:unless="${product.quantity > 0}" class="add-to-cart-btn" disabled>
                     Out of Stock
                 </button>
-                <form th:if="${!isInWishlist}" th:action="@{'/user/wish-list/add/' + ${product.productId}}" method="post" style="display: inline-block; margin-left: 10px;">
+                <form th:if="${!isInWishlist}" th:action="@{'/user/wish-list/add/' + ${product.productId}}" method="post" style="display: inline-block;">
                     <button type="submit" class="wishlist-btn">
                         Add to Wishlist
                     </button>
                 </form>
-
                 <button th:if="${isInWishlist}" class="wishlist-btn disabled" disabled>
                     Already in Wishlist
                 </button>
-
             </div>
 
             <div class="product-description">
                 <h2>Description</h2>
                 <p th:text="${product.description}">Product description goes here.</p>
             </div>
+        </div>
+    </div>
+
+    <div class="reviews-section">
+        <h2>Customer Reviews</h2>
+
+        <div th:if="${isLoggedIn}" class="review-form">
+            <h3>Add your review</h3>
+            <form th:action="@{'/review/add/' + ${product.productId}}" method="post" onsubmit="return validateReview()">
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">Rating:</label>
+                    <div class="star-rating">
+                        <input type="radio" name="rating" value="5" id="star5">
+                        <label for="star5" title="5 stars">★</label>
+
+                        <input type="radio" name="rating" value="4" id="star4">
+                        <label for="star4" title="4 stars">★</label>
+
+                        <input type="radio" name="rating" value="3" id="star3">
+                        <label for="star3" title="3 stars">★</label>
+
+                        <input type="radio" name="rating" value="2" id="star2">
+                        <label for="star2" title="2 stars">★</label>
+
+                        <input type="radio" name="rating" value="1" id="star1">
+                        <label for="star1" title="1 star">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="comment" style="display: block; margin-bottom: 10px; font-weight: 600;">
+                        Your review:
+                    </label>
+                    <textarea
+                            id="comment"
+                            name="comment"
+                            class="comment-input"
+                            placeholder="Write your review..."
+                            minlength="10"
+                            maxlength="1000"
+                            required></textarea>
+
+                    <div style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 15px;">
+                        Minimum 10 characters, maximum 1000 characters
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-review-btn">Submit review</button>
+            </form>
+        </div>
+
+
+        <div th:unless="${isLoggedIn}" class="login-prompt">
+            <p><a th:href="@{/login}">Zaloguj się</a>, aby dodać opinię o produkcie</p>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list" th:if="${!#lists.isEmpty(reviews)}">
+            <div class="review-item" th:each="review : ${reviews}">
+                <div class="review-header">
+                    <span class="review-user"
+                          th:text="${review.user.firstName + ' ' + review.user.lastName}">User Name</span>
+                    <span class="review-date"
+                          th:text="${#temporals.format(review.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024</span>
+                </div>
+
+                <div class="review-stars">
+                    <span th:each="i : ${#numbers.sequence(1, 5)}"
+                          th:text="${i <= review.rating} ? '★' : '☆'">★</span>
+                    <span style="margin-left: 10px; color: #666; font-size: 16px;">
+                        (<span th:text="${review.rating}">0</span>/5)
+                    </span>
+                </div>
+
+                <p class="review-comment" th:text="${review.comment}">Review comment</p>
+            </div>
+        </div>
+
+        <div class="no-reviews" th:if="${#lists.isEmpty(reviews)}">
+            <p>Brak opinii o tym produkcie. Bądź pierwszy!</p>
         </div>
     </div>
 </div>
@@ -82,9 +178,10 @@
         const productId = [[${product.productId}]];
 
         if (quantity < 1 || quantity > [[${product.quantity}]]) {
-            alert('Add correct quantity.');
+            alert('Podaj prawidłową ilość.');
             return;
         }
+
         const data = {
             productId: productId,
             quantity: quantity
@@ -99,20 +196,42 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Prodcut added to cart!');
+                    alert('Produkt dodany do koszyka!');
                 } else if (response.status === 401) {
-                    alert('You have to be logged to add product to cart.');
+                    alert('Musisz być zalogowany, aby dodać produkt do koszyka.');
                     window.location.href = '/login';
                 } else if (response.status === 400 || response.status === 404) {
-                    response.text().then(errorMessage => alert('Error : ' + errorMessage));
+                    response.text().then(errorMessage => alert('Błąd: ' + errorMessage));
                 } else {
-                    alert('Unknow error while adding product to cart.');
+                    alert('Nieznany błąd podczas dodawania produktu do koszyka.');
                 }
             })
             .catch(error => {
-                console.error('Network or server error:', error);
-                alert('Cannot connect to server.');
+                console.error('Błąd sieci lub serwera:', error);
+                alert('Nie można połączyć się z serwerem.');
             });
+    }
+
+    function validateReview() {
+        const rating = document.querySelector('input[name="rating"]:checked');
+        const comment = document.getElementById('comment').value.trim();
+
+        if (!rating) {
+            alert('Wybierz ocenę gwiazdkową');
+            return false;
+        }
+
+        if (comment.length < 10) {
+            alert('Opinia musi mieć minimum 10 znaków');
+            return false;
+        }
+
+        if (comment.length > 1000) {
+            alert('Opinia może mieć maksymalnie 1000 znaków');
+            return false;
+        }
+
+        return true;
     }
 </script>
 

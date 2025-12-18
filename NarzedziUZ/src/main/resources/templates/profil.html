@@ -70,27 +70,39 @@
       </div>
 
       <div class="section">
-        <h2 class="section-title" th:id="'ratingsTitle'" th:text="${ratingsTitle}">Your Ratings</h2>
-        <div th:id="'ratingsList'">
-          <div th:each="rating : ${ratings}" class="rating-card">
-            <div class="rating-header">
-              <span class="product-name" th:text="${rating.productName}">Wiertarka Bosch</span>
-              <div class="stars" th:data-rating="${rating.stars}">
-                                    <span th:each="i : ${#numbers.sequence(1,5)}"
-                                          th:class="${i <= rating.stars} ? 'star filled' : 'star'"
-                                          th:text="${i <= rating.stars} ? '⭐' : '☆'">⭐</span>
-              </div>
+        <h2 class="section-title">Your Ratings</h2>
+
+        <div th:each="rating : ${ratings}" class="rating-card">
+          <div class="rating-header">
+            <span class="product-name"
+                  th:text="${rating.product.name}">
+                Product name
+            </span>
+
+            <div class="stars" th:data-rating="${rating.rating}">
+                <span th:each="i : ${#numbers.sequence(1,5)}"
+                      th:class="${i <= rating.rating} ? 'star filled' : 'star'"
+                      th:text="${i <= rating.rating} ? '⭐' : '☆'">⭐</span>
             </div>
-            <div class="rating-comment" th:text="${rating.comment}">Świetny produkt!</div>
-            <div class="rating-date" th:text="${'Oceniono: ' + rating.formattedDate}">Oceniono: 18 grudnia 2024</div>
           </div>
-          <div th:if="${ratings.isEmpty()}" class="no-data">Brak ocen</div>
+
+          <div class="rating-comment"
+               th:text="${rating.comment}">
+            Comment
+          </div>
+
+          <div class="rating-date"
+               th:text="${'Rated: ' + #temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
+          </div>
         </div>
 
+        <div th:if="${ratings.isEmpty()}" class="no-data">
+          No ratings
+        </div>
       </div>
     </div>
+    </div>
   </div>
-</div>
 
 <script th:src="@{/js/profil.js}"></script>
 <script th:inline="javascript">
