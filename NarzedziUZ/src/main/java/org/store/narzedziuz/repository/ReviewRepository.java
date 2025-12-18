@@ -21,6 +21,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     // Sprawdzenie czy user już ocenił produkt
     boolean existsByUserIdAndProductId(Long userId, Long productId);
 
+    // Znajdź opinię użytkownika dla konkretnego produktu
+    Review findByUserIdAndProductId(Long userId, Long productId);
+
     // Liczba ocen danego produktu
     long countByProductId(Long productId);
 

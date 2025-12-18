@@ -92,7 +92,7 @@
           </div>
 
           <div class="rating-date"
-               th:text="${'Rated: ' + #temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
+               th:text="${#temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
           </div>
         </div>
 

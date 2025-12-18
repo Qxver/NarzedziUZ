@@ -37,9 +37,51 @@ public class ReviewService {
         review.setUserId(userId);
         review.setProductId(productId);
         review.setRating(rating);
-        review.setComment(comment.trim());
+
+        if (comment != null && !comment.trim().isEmpty()) {
+            review.setComment(comment.trim());
+        } else {
+            review.setComment(null);
+        }
 
         return reviewRepository.save(review);
+    }
+
+    @Transactional
+    public Review updateReview(Long reviewId, Long userId, Integer rating, String comment) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Opinia nie znaleziona"));
+
+        // Verify that the review belongs to the user
+        if (!review.getUserId().equals(userId)) {
+            throw new RuntimeException("Nie masz uprawnień do edycji tej opinii");
+        }
+
+        review.setRating(rating);
+
+        if (comment != null && !comment.trim().isEmpty()) {
+            review.setComment(comment.trim());
+        } else {
+            review.setComment(null);
+        }
+
+        return reviewRepository.save(review);
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId, Long userId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new RuntimeException("Opinia nie znaleziona"));
+
+        if (!review.getUserId().equals(userId)) {
+            throw new RuntimeException("Nie masz uprawnień do usunięcia tej opinii");
+        }
+
+        reviewRepository.delete(review);
+    }
+
+    public Review getUserReviewForProduct(Long userId, Long productId) {
+        return reviewRepository.findByUserIdAndProductId(userId, productId);
     }
 
     public List<Review> getProductReviews(Long productId) {

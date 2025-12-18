@@ -38,7 +38,7 @@
             <div class="product-rating-summary" th:if="${reviewCount > 0}">
                 <div class="rating-stars" th:attr="data-rating=${averageRating}">
                     <span th:each="i : ${#numbers.sequence(1, 5)}"
-                     th:text="${i <= averageRating} ? '★' : '☆'">★</span>
+                          th:text="${i <= averageRating} ? '★' : '☆'">★</span>
                 </div>
                 <span class="rating-text">
                     <strong th:text="${#numbers.formatDecimal(averageRating, 0, 1)}">0.0</strong>
@@ -92,7 +92,101 @@
     <div class="reviews-section">
         <h2>Customer Reviews</h2>
 
-        <div th:if="${isLoggedIn}" class="review-form">
+        <!-- User Already Has a Review - Show Edit Option -->
+        <div th:if="${isLoggedIn and hasReviewed}" class="review-form">
+            <h3>Your Review</h3>
+            <div id="viewReviewMode">
+                <div class="existing-review-display">
+                    <div class="review-stars" style="margin-bottom: 15px;">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}"
+                              th:text="${i <= userReview.rating} ? '★' : '☆'"
+                              style="color: #ffc107; font-size: 24px;">★</span>
+                        <span style="margin-left: 10px; color: #666;">
+                            (<span th:text="${userReview.rating}">0</span>/5)
+                        </span>
+                    </div>
+                    <p th:if="${userReview.comment != null and !userReview.comment.isEmpty()}"
+                       class="review-comment"
+                       th:text="${userReview.comment}"
+                       style="background: #f8f9fa; padding: 15px; border-radius: 8px; line-height: 1.6;">Review comment</p>
+                    <p th:if="${userReview.comment == null or userReview.comment.isEmpty()}"
+                       style="background: #f8f9fa; padding: 15px; border-radius: 8px; color: #999; font-style: italic;">
+
+                    </p>
+                    <div style="margin-top: 15px; color: #999; font-size: 14px;">
+                        <span th:text="${#temporals.format(userReview.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="submit-review-btn" onclick="enableEditMode()">
+                        Edit Review
+                    </button>
+                    <form th:action="@{'/review/delete/' + ${userReview.reviewId}}" method="post"
+                          style="display: inline-block;"
+                          onsubmit="return confirm('Are you sure you want to delete this review? This action cannot be undone.');">
+                        <input type="hidden" name="productId" th:value="${product.productId}">
+                        <button type="submit" class="submit-review-btn delete-review-btn">
+                            Delete Review
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <form th:action="@{'/review/update/' + ${userReview.reviewId}}" method="post"
+                  onsubmit="return validateReview()" id="editReviewForm" style="display: none;">
+                <input type="hidden" name="productId" th:value="${product.productId}">
+
+                <div class="form-group">
+                    <label style="display: block; margin-bottom: 10px; font-weight: 600;">Rating:</label>
+                    <div class="star-rating">
+                        <input type="radio" name="rating" value="5" id="edit-star5"
+                               th:checked="${userReview.rating == 5}">
+                        <label for="edit-star5" title="5 stars">★</label>
+
+                        <input type="radio" name="rating" value="4" id="edit-star4"
+                               th:checked="${userReview.rating == 4}">
+                        <label for="edit-star4" title="4 stars">★</label>
+
+                        <input type="radio" name="rating" value="3" id="edit-star3"
+                               th:checked="${userReview.rating == 3}">
+                        <label for="edit-star3" title="3 stars">★</label>
+
+                        <input type="radio" name="rating" value="2" id="edit-star2"
+                               th:checked="${userReview.rating == 2}">
+                        <label for="edit-star2" title="2 stars">★</label>
+
+                        <input type="radio" name="rating" value="1" id="edit-star1"
+                               th:checked="${userReview.rating == 1}">
+                        <label for="edit-star1" title="1 star">★</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-comment" style="display: block; margin-bottom: 10px; font-weight: 600;">
+                        Your review:
+                    </label>
+                    <textarea
+                            id="edit-comment"
+                            name="comment"
+                            class="comment-input"
+                            placeholder="Write your review..."
+                            maxlength="1000"
+                            th:text="${userReview.comment}"></textarea>
+
+                    <div style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 15px;">
+                        Maximum 1000 characters
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="submit-review-btn">Update Review</button>
+                    <button type="button" class="submit-review-btn" onclick="cancelEdit()"
+                            style="background-color: #6c757d;">Cancel</button>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${isLoggedIn and !hasReviewed}" class="review-form">
             <h3>Add your review</h3>
             <form th:action="@{'/review/add/' + ${product.productId}}" method="post" onsubmit="return validateReview()">
 
@@ -125,12 +219,10 @@
                             name="comment"
                             class="comment-input"
                             placeholder="Write your review..."
-                            minlength="10"
-                            maxlength="1000"
-                            required></textarea>
+                            maxlength="1000"></textarea>
 
                     <div style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 15px;">
-                        Minimum 10 characters, maximum 1000 characters
+                        Maximum 1000 characters
                     </div>
                 </div>
 
@@ -140,11 +232,11 @@
 
 
         <div th:unless="${isLoggedIn}" class="login-prompt">
-            <p><a th:href="@{/login}">Zaloguj się</a>, aby dodać opinię o produkcie</p>
+            <p><a th:href="@{/login}">Log in</a> to add a review</p>
         </div>
 
-        <!-- Reviews List -->
         <div class="reviews-list" th:if="${!#lists.isEmpty(reviews)}">
+            <h3 style="margin: 30px 0 20px 0; font-size: 24px; color: #333;">All Reviews</h3>
             <div class="review-item" th:each="review : ${reviews}">
                 <div class="review-header">
                     <span class="review-user"
@@ -161,12 +253,19 @@
                     </span>
                 </div>
 
-                <p class="review-comment" th:text="${review.comment}">Review comment</p>
+                <p th:if="${review.comment != null and !review.comment.isEmpty()}"
+                   class="review-comment"
+                   th:text="${review.comment}">Review comment</p>
+                <p th:if="${review.comment == null or review.comment.isEmpty()}"
+                   class="review-comment"
+                   style="color: #999; font-style: italic;">
+
+                </p>
             </div>
         </div>
 
         <div class="no-reviews" th:if="${#lists.isEmpty(reviews)}">
-            <p>Brak opinii o tym produkcie. Bądź pierwszy!</p>
+            <p>No reviews for this product yet. Be the first!</p>
         </div>
     </div>
 </div>
@@ -178,7 +277,7 @@
         const productId = [[${product.productId}]];
 
         if (quantity < 1 || quantity > [[${product.quantity}]]) {
-            alert('Podaj prawidłową ilość.');
+            alert('Please enter a valid quantity.');
             return;
         }
 
@@ -196,42 +295,48 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Produkt dodany do koszyka!');
+                    alert('Product added to cart!');
                 } else if (response.status === 401) {
-                    alert('Musisz być zalogowany, aby dodać produkt do koszyka.');
+                    alert('You must be logged in to add products to cart.');
                     window.location.href = '/login';
                 } else if (response.status === 400 || response.status === 404) {
-                    response.text().then(errorMessage => alert('Błąd: ' + errorMessage));
+                    response.text().then(errorMessage => alert('Error: ' + errorMessage));
                 } else {
-                    alert('Nieznany błąd podczas dodawania produktu do koszyka.');
+                    alert('Unknown error while adding product to cart.');
                 }
             })
             .catch(error => {
-                console.error('Błąd sieci lub serwera:', error);
-                alert('Nie można połączyć się z serwerem.');
+                console.error('Network or server error:', error);
+                alert('Unable to connect to server.');
             });
     }
 
     function validateReview() {
         const rating = document.querySelector('input[name="rating"]:checked');
-        const comment = document.getElementById('comment').value.trim();
+        const commentField = document.querySelector('form:not([style*="display: none"]) textarea[name="comment"]');
+        const comment = commentField ? commentField.value.trim() : '';
 
         if (!rating) {
-            alert('Wybierz ocenę gwiazdkową');
-            return false;
-        }
-
-        if (comment.length < 10) {
-            alert('Opinia musi mieć minimum 10 znaków');
+            alert('Please select a star rating');
             return false;
         }
 
         if (comment.length > 1000) {
-            alert('Opinia może mieć maksymalnie 1000 znaków');
+            alert('Review can be maximum 1000 characters');
             return false;
         }
 
         return true;
+    }
+
+    function enableEditMode() {
+        document.getElementById('viewReviewMode').style.display = 'none';
+        document.getElementById('editReviewForm').style.display = 'block';
+    }
+
+    function cancelEdit() {
+        document.getElementById('viewReviewMode').style.display = 'block';
+        document.getElementById('editReviewForm').style.display = 'none';
     }
 </script>
 

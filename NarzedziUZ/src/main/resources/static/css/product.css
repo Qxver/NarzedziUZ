@@ -404,3 +404,16 @@ body {
     color: #666;
     cursor: not-allowed;
 }
+
+.delete-review-btn {
+    background-color: #dc3545 !important;
+}
+
+.delete-review-btn:hover {
+    background-color: #c82333 !important;
+}
+
+.submit-review-btn {
+    display: inline-block;
+    margin: 0;
+}

@@ -30,14 +30,18 @@ public class ProductPageController {
 
             boolean isLoggedIn = (user != null);
             boolean isInWishlist = false;
+            Review userReview = null;
 
             if (isLoggedIn) {
                 model.addAttribute("userName", session.getAttribute("userName"));
                 isInWishlist = productService.isProductInWishlist(user.getUserId(), id);
+                userReview = reviewService.getUserReviewForProduct(user.getUserId(), id);
             }
 
             model.addAttribute("isLoggedIn", isLoggedIn);
             model.addAttribute("isInWishlist", isInWishlist);
+            model.addAttribute("userReview", userReview);
+            model.addAttribute("hasReviewed", userReview != null);
 
             List<Review> reviews = reviewService.getProductReviews(id);
             model.addAttribute("reviews", reviews);
