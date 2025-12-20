@@ -53,14 +53,14 @@ public class CartController {
         }
         try {
             CartItem item = cartService.findCartItemById(cartItemId)
-                    .orElseThrow(() -> new RuntimeException("Element koszyka nie znaleziony."));
+                    .orElseThrow(() -> new RuntimeException("Item not found"));
 
             if (!item.getCart().getUserId().equals(userId)) {
-                redirectAttributes.addFlashAttribute("errorMessage", "Brak uprawnień do usunięcia tego elementu.");
+                redirectAttributes.addFlashAttribute("errorMessage", "You cannot delete this item.");
                 return "redirect:/cart";
             }
             cartService.removeCartItem(cartItemId);
-            redirectAttributes.addFlashAttribute("successMessage", "Produkt usunięty z koszyka.");
+            redirectAttributes.addFlashAttribute("successMessage", "Product deleted from cart.");
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
