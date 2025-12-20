@@ -198,7 +198,24 @@ body {
     gap: 12px;
 }
 
-.product-name { font-weight: 600; font-size: 18px; color: #1a202c; }
+.product-name {
+    font-weight: 600;
+    font-size: 18px;
+    color: #1a202c;
+}
+
+.product-name-link {
+    font-weight: 600;
+    font-size: 18px;
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.product-name-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
 
 .stars { display: flex; gap: 4px; font-size: 24px; }
 

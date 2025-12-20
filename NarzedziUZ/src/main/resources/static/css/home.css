@@ -92,6 +92,25 @@ body {
     font-weight: 600;
 }
 
+.product-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 5px 0;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 2px;
+    font-size: 16px;
+    color: #ffc107;
+}
+
+.rating-text {
+    font-size: 14px;
+    color: #666;
+}
+
 .product-price {
     color: #007bff;
     font-size: 28px;
