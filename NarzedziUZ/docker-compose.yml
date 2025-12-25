@@ -25,14 +25,27 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      captcha-service:
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/narzedziuz
       SPRING_DATASOURCE_USERNAME: narzedziuz_user
       SPRING_DATASOURCE_PASSWORD: secure_password
+      CAPTCHA_URL: http://captcha-service:3000
     ports:
       - "8080:8080"
     networks:
       - narzedziuz-network
+
+  captcha-service:
+    image: tiago2/cap:latest
+    ports:
+      - "8000:3000"
+    networks:
+      - narzedziuz-network
+    environment:
+      ADMIN_KEY: Ys4X7YfmZGUUa0mmP8U6aS7ZTllZsV
+      HIDE_RATELIMIT_IP_WARNING: "true"
 
 volumes:
   postgres_data:
