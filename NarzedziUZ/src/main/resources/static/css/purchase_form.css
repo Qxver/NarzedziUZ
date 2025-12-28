@@ -69,3 +69,77 @@
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+details {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 5px;
+    background-color: #f9f9f9;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary::after {
+    content: '\25BC'; /* Kod znaku strzałki w dół */
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+details[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.number-input-wrapper {
+    display: none;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f0f0f0;
+    border-radius: 4px;
+}
+
+form:has(#blik-choose:checked) .blik-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* --- Skopiuj to do swojego pliku CSS --- */
+
+/* Istniejąca reguła dla BLIKa (zostaw lub podmień) */
+form:has(#blik-choose:checked) .blik-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* NOWE reguły dla pozostałych metod */
+form:has(#transfer-choose:checked) .transfer-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+form:has(#card-choose:checked) .card-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+form:has(#paypal-choose:checked) .paypal-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Poprawka stylów dla summary, żeby tekst był czytelny */
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
