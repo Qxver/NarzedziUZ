@@ -19,17 +19,20 @@ public class Review {
     @Column(name = "user_id")
     private Long userId;
 
+    @Column(nullable = false)
     private Integer rating;
+
+    @Column(length = 1000)
     private String comment;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
     private Product product;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
