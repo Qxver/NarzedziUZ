@@ -92,13 +92,6 @@ details[open] summary::after {
     transform: rotate(180deg);
 }
 
-.number-input-wrapper {
-    display: none;
-    margin-top: 10px;
-    padding: 10px;
-    background: #f0f0f0;
-    border-radius: 4px;
-}
 
 form:has(#blik-choose:checked) .blik-enter {
     display: block;
@@ -133,7 +126,6 @@ form:has(#paypal-choose:checked) .paypal-enter {
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* Poprawka stylów dla summary, żeby tekst był czytelny */
 summary {
     cursor: pointer;
     font-weight: bold;
@@ -142,4 +134,56 @@ summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+.form-container input.invalid,
+.form-container select.invalid {
+    border: 2px solid #ff4d4d;
+    background-color: #ffe6e6;
+}
+
+.invalid + .error-text {
+    display: block;
+}
+
+/* --- WKLEJ TO (ZAMIAST USUNIĘTYCH) --- */
+
+/* Naprawa kontenera - wymuszenie układu pionowego */
+.number-input-wrapper {
+    display: none;       /* Domyślnie ukryty (JS to zmienia na flex/block) */
+    flex-direction: column; /* Ustaw elementy jeden pod drugim */
+    margin-top: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 4px;
+}
+
+/* Kiedy JS pokazuje element, wymuszamy flex, żeby zachować układ pionowy */
+form:has(#blik-choose:checked) .blik-enter,
+form:has(#transfer-choose:checked) .transfer-enter,
+form:has(#card-choose:checked) .card-enter,
+form:has(#paypal-choose:checked) .paypal-enter {
+    display: flex !important; /* Ważne: Flex zamiast Block */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Naprawa pola Input wewnątrz sekcji płatności */
+.number-input-wrapper input {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+}
+
+/* Naprawa tekstu błędu - usunięcie ujemnego marginesu */
+.error-text {
+    color: #ff4d4d;
+    font-size: 0.85em;
+    margin-top: 2px;    /* Lekki odstęp od pola */
+    margin-bottom: 10px;
+    display: none;
+    font-weight: bold;
+}
+
+.form-container input.invalid + .error-text {
+    display: block;
 }
