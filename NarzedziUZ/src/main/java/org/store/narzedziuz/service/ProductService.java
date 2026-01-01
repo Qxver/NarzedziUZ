@@ -66,13 +66,33 @@ public class ProductService {
         product.setPrice(formDto.getPrice());
         product.setDescription(formDto.getDescription());
         product.setQuantity(formDto.getQuantity());
+        product.setCategoryId(formDto.getCategoryId());
+        product.setManufacturer(formDto.getManufacturer());
 
         // Obsługa zdjęcia
-        if (formDto.getImage() != null && !formDto.getImage().isEmpty()) {
-            product.setPhoto(formDto.getImage().getOriginalFilename());
+        if (formDto.getImageFilename() != null && !formDto.getImageFilename().isEmpty()) {
+            product.setPhoto(formDto.getImageFilename());
         }
 
-        return productRepository.save(product); // Teraz zwracamy obiekt!
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public void updateProductFromForm(Long id, ProductFormDto formDto) {
+        Product product = getProductById(id);
+        product.setName(formDto.getName());
+        product.setPrice(formDto.getPrice());
+        product.setDescription(formDto.getDescription());
+        product.setQuantity(formDto.getQuantity());
+        product.setCategoryId(formDto.getCategoryId());
+        product.setManufacturer(formDto.getManufacturer());
+
+        // Update photo only if a new one was uploaded
+        if (formDto.getImageFilename() != null && !formDto.getImageFilename().isEmpty()) {
+            product.setPhoto(formDto.getImageFilename());
+        }
+
+        productRepository.save(product);
     }
 
     // --- TWOJE METODY DO WISHLISTY ---
