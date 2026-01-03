@@ -34,6 +34,13 @@
         <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
         <a href="/add-product" class="navbar-button">Add Product</a>
     </div>
+
+    <ul>
+        <!-- Admin panel link, visible only to logged-in users with ADMIN role -->
+        <li th:if="${session.user != null && session.user.role == 'ADMIN'}">
+            <a th:href="@{/admin}">Admin Panel</a>
+        </li>
+    </ul>
 </nav>
 </body>
 </html>

@@ -23,6 +23,19 @@
                 </div>
                 <div class="product-info">
                     <h3 th:text="${product.name}">Product Name</h3>
+
+                    <div class="product-rating"
+                         th:if="${reviewCounts.get(product.productId) > 0}">
+                        <div class="rating-stars">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}"
+                                  th:text="${i <= productRatings.get(product.productId)} ? '★' : '☆'">★</span>
+                        </div>
+                        <span class="rating-text">
+                            <span th:text="${#numbers.formatDecimal(productRatings.get(product.productId), 0, 1)}">0.0</span>
+                            (<span th:text="${reviewCounts.get(product.productId)}">0</span>)
+                        </span>
+                    </div>
+
                     <p class="product-price" th:text="${product.price} + ' PLN'">0.00 PLN</p>
                     <p class="product-manufacturer" th:text="${product.manufacturer}">Manufacturer</p>
                     <p class="product-stock" th:if="${product.quantity > 0}" th:text="'In stock: ' + ${product.quantity}">In stock</p>

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${pageTitle}">Profil Klienta - Sklep z Narzędziami</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link th:href="@{/css/profil.css}" rel="stylesheet">
-    <link th:href="@{/css/navbar.css}" rel="stylesheet">
+  <link th:href="@{/css/profile.css}" rel="stylesheet">
+  <link th:href="@{/css/navbar.css}" rel="stylesheet">
 </head>
 <body>
 
@@ -16,13 +16,13 @@
   <div class="profile-container">
     <div class="profile-buttons">
       <div>
-      <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Admin Panel</a>
+        <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Admin Panel</a>
       </div>
       <div>
         <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button">wish list</a>
       </div>
       <div>
-      <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Log Out</a>
+        <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Log Out</a>
       </div>
     </div>
     <div class="profile-header">
@@ -70,23 +70,36 @@
       </div>
 
       <div class="section">
-        <h2 class="section-title" th:id="'ratingsTitle'" th:text="${ratingsTitle}">Your Ratings</h2>
-        <div th:id="'ratingsList'">
-          <div th:each="rating : ${ratings}" class="rating-card">
-            <div class="rating-header">
-              <span class="product-name" th:text="${rating.productName}">Wiertarka Bosch</span>
-              <div class="stars" th:data-rating="${rating.stars}">
-                                    <span th:each="i : ${#numbers.sequence(1,5)}"
-                                          th:class="${i <= rating.stars} ? 'star filled' : 'star'"
-                                          th:text="${i <= rating.stars} ? '⭐' : '☆'">⭐</span>
-              </div>
+        <h2 class="section-title">Your Ratings</h2>
+
+        <div th:each="rating : ${ratings}" class="rating-card">
+          <div class="rating-header">
+            <a th:href="@{/product/{id}(id=${rating.product.productId})}"
+               class="product-name-link"
+               th:text="${rating.product.name}">
+              Product name
+            </a>
+
+            <div class="stars" th:data-rating="${rating.rating}">
+                <span th:each="i : ${#numbers.sequence(1,5)}"
+                      th:class="${i <= rating.rating} ? 'star filled' : 'star'"
+                      th:text="${i <= rating.rating} ? '⭐' : '☆'">⭐</span>
             </div>
-            <div class="rating-comment" th:text="${rating.comment}">Świetny produkt!</div>
-            <div class="rating-date" th:text="${'Oceniono: ' + rating.formattedDate}">Oceniono: 18 grudnia 2024</div>
           </div>
-          <div th:if="${ratings.isEmpty()}" class="no-data">Brak ocen</div>
+
+          <div class="rating-comment"
+               th:text="${rating.comment}">
+            Comment
+          </div>
+
+          <div class="rating-date"
+               th:text="${#temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
+          </div>
         </div>
 
+        <div th:if="${ratings.isEmpty()}" class="no-data">
+          No ratings
+        </div>
       </div>
     </div>
   </div>

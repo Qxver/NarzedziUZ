@@ -15,7 +15,6 @@ import org.store.narzedziuz.repository.CategoryRepository;
 import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -93,6 +92,6 @@ public class UserProfileController {
         }
         model.addAttribute("initials", initials.toUpperCase());
 
-        return "profil";
+        return "profile";
     }
 }
