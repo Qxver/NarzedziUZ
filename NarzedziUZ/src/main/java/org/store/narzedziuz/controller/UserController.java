@@ -36,6 +36,6 @@ public class UserController {
         } catch (RuntimeException e) {
             System.err.println("Błąd podczas usuwania użytkownika: " + e.getMessage());
         }
-        return "redirect:/admin/users";
+        return "redirect:/admin/search";
     }
 }
