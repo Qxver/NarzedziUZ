@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - NarzedziUZ</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">
+        <a th:href="@{/}">NarzedziUZ</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products...">
+        <select>
+            <option value="">Filter</option>
+            <option value="filter1">By price (descending)</option>
+            <option value="filter2">By price (ascending)</option>
+        </select>
+        <button class="search-button">Search</button>
+    </div>
+
+    <div class="navbar-buttons">
+        <a th:href="@{/admin/dashboard}" class="navbar-button">Admin Panel</a>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="navbar-button" style="cursor: pointer; background: none; border: 1px solid white; color: white;">Log out</button>
+        </form>
+    </div>
+</div>
+
+<div class="user-list-container">
+
+    <div class="page-header">
+        <h1>User Search & Management</h1>
+        <p>Manage users of the NarzedziUZ system</p>
+    </div>
+
+    <div class="search-container">
+        <form th:action="@{/admin/search}" method="get" class="search-form">
+            <input type="text"
+                   id="emailInput"
+                   name="email"
+                   th:value="${searchTerm}"
+                   placeholder="Enter user email..."
+                   class="search-input">
+            <button type="submit" class="search-btn">Search</button>
+            <a th:href="@{/admin/search}" class="search-btn" style="background-color: #6c757d; text-decoration: none; text-align: center; display: inline-block;">Clear</a>
+        </form>
+    </div>
+
+    <div th:if="${users == null || users.isEmpty()}" class="no-users">
+        <p>No users found.</p>
+        <a th:href="@{/admin/search}" class="add-user-btn">Show all</a>
+    </div>
+
+    <table th:unless="${users == null || users.isEmpty()}" class="users-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Registration Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.userId}">1</td>
+            <td class="user-name" th:text="${user.firstName}">John</td>
+            <td class="user-name" th:text="${user.lastName}">Doe</td>
+            <td class="user-email" th:text="${user.email}">user@example.com</td>
+            <td>
+                <span th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm') : 'No data'}">01-01-2024</span>
+            </td>
+            <td class="actions-cell">
+                <a th:href="@{/admin/users/{id}(id=${user.userId})}" class="actions-btn view-btn" style="text-decoration: none;">
+                    <span class="btn-icon">👁️</span> Details
+                </a>
+                <form th:action="@{/admin/{id}/delete(id=${user.userId})}"
+                      method="post"
+                      style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to delete this user?');">
+                    <button type="submit" class="actions-btn delete-btn">
+                        <span class="btn-icon">🗑️</span> Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html><!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - NarzedziUZ</title>
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/list.css}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">
+        <a th:href="@{/}">NarzedziUZ</a>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" placeholder="Search for products...">
+        <select>
+            <option value="">Filter</option>
+            <option value="filter1">By price (descending)</option>
+            <option value="filter2">By price (ascending)</option>
+        </select>
+        <button class="search-button">Search</button>
+    </div>
+
+    <div class="navbar-buttons">
+        <a th:href="@{/admin/dashboard}" class="navbar-button">Admin Panel</a>
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <button type="submit" class="navbar-button" style="cursor: pointer; background: none; border: 1px solid white; color: white;">Log out</button>
+        </form>
+    </div>
+</div>
+
+<div class="user-list-container">
+
+    <div class="page-header">
+        <h1>User Search & Management</h1>
+        <p>Manage users of the NarzedziUZ system</p>
+    </div>
+
+    <div class="search-container">
+        <form th:action="@{/admin/search}" method="get" class="search-form">
+            <input type="text"
+                   id="emailInput"
+                   name="email"
+                   th:value="${searchTerm}"
+                   placeholder="Enter user email..."
+                   class="search-input">
+            <button type="submit" class="search-btn">Search</button>
+            <a th:href="@{/admin/search}" class="search-btn" style="background-color: #6c757d; text-decoration: none; text-align: center; display: inline-block;">Clear</a>
+        </form>
+    </div>
+
+    <div th:if="${users == null || users.isEmpty()}" class="no-users">
+        <p>No users found.</p>
+        <a th:href="@{/admin/search}" class="add-user-btn">Show all</a>
+    </div>
+
+    <table th:unless="${users == null || users.isEmpty()}" class="users-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Registration Date</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.userId}">1</td>
+            <td class="user-name" th:text="${user.firstName}">John</td>
+            <td class="user-name" th:text="${user.lastName}">Doe</td>
+            <td class="user-email" th:text="${user.email}">user@example.com</td>
+            <td>
+                <span th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm') : 'No data'}">01-01-2024</span>
+            </td>
+            <td class="actions-cell">
+                <a th:href="@{/admin/users/{id}(id=${user.userId})}" class="actions-btn view-btn" style="text-decoration: none;">
+                    <span class="btn-icon">👁️</span> Details
+                </a>
+                <form th:action="@{/admin/{id}/delete(id=${user.userId})}"
+                      method="post"
+                      style="display: inline;"
+                      onsubmit="return confirm('Are you sure you want to delete this user?');">
+                    <button type="submit" class="actions-btn delete-btn">
+                        <span class="btn-icon">🗑️</span> Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
