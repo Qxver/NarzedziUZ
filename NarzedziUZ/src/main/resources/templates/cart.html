@@ -22,29 +22,29 @@
                         <img th:if="${item.product.photo != null and !item.product.photo.isEmpty()}"
                              th:src="@{${item.product.photo}}"
                              th:alt="${item.product.name}">
-                        <div th:if="${item.product.photo == null or item.product.photo.isEmpty()}" class="no-image">Brak Zdjęcia</div>
+                        <div th:if="${item.product.photo == null or item.product.photo.isEmpty()}" class="no-image">No Image</div>
                     </div>
                 </a>
             </div>
 
             <div class="product-details">
                 <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-title-link">
-                    <h3 th:text="${item.product.name}">Nazwa Produktu</h3>
+                    <h3 th:text="${item.product.name}">Product Name</h3>
                 </a>
 
-                <p class="product-manufacturer" th:text="${item.product.manufacturer}">Producent</p>
+                <p class="product-manufacturer" th:text="${item.product.manufacturer}">Manufacturer</p>
                 <p class="product-quantity">
-                    Ilość: <span th:text="${item.quantity}">1</span>
+                    Quantity: <span th:text="${item.quantity}">1</span>
                 </p>
 
                 <div class="price-and-remove">
                     <p class="product-total-price">
-                        Suma: <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span>
+                        Total: <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span>
                     </p>
 
                     <form th:action="@{/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}" method="post">
                         <input type="hidden" name="_method" value="delete" />
-                        <button type="submit" class="remove-button">Usuń</button>
+                        <button type="submit" class="remove-button">Delete</button>
                     </form>
                 </div>
             </div>
@@ -52,16 +52,16 @@
     </div>
 
     <div th:if="${#lists.isEmpty(cartItems)}" class="no-products">
-        <p>Twój koszyk jest pusty.</p>
-        <p><a th:href="@{/}">Wróć do strony głównej i zacznij zakupy.</a></p>
+        <p>Your cart is empty.</p>
+        <p><a th:href="@{/}">Return to the homepage to start shopping.</a></p>
     </div>
 
     <div th:if="${not #lists.isEmpty(cartItems)}" class="cart-summary">
         <div th:with="totalAmount=${#aggregates.sum(cartItems.![product.price * quantity])}">
-            <h3>Suma Całkowita: <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span></h3>
+            <h3>Grand Total: <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span></h3>
         </div>
 
-        <button class="checkout-button">Przejdź do Kasy</button>
+        <button class="checkout-button">Proceed to Checkout</button>
     </div>
 </div>
 </body>
