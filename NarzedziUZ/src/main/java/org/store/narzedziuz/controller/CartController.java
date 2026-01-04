@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.store.narzedziuz.DiscountCodeProvider;
 import org.store.narzedziuz.dto.AddToCartRequest;
 import org.store.narzedziuz.entity.Cart;
 import org.store.narzedziuz.entity.CartItem;
+import org.store.narzedziuz.entity.DiscountCode;
 import org.store.narzedziuz.service.CartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,17 +19,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
+    private final DiscountCodeProvider discountCodeProvider;
 
-    @GetMapping("/cart")
-    public String showCartPage(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return "redirect:/login";
-        }
-        Cart cart = cartService.getOrCreateCartByUserId(userId);
-        model.addAttribute("cartItems", cart.getCartItems());
-        return "cart";
-    }
+
 
     @PostMapping("/api/cart/add")
     public ResponseEntity<?> addToCart(@RequestBody AddToCartRequest request, HttpSession session) {
@@ -66,4 +60,47 @@ public class CartController {
         }
         return "redirect:/cart";
     }
+
+    @PostMapping("/cart/apply-discount")
+    public String applyDiscount(@RequestParam String code,
+                                HttpSession session,
+                                RedirectAttributes redirectAttributes) {
+
+        discountCodeProvider.findByCode(code)
+                .ifPresentOrElse(
+                        discount -> {
+                            session.setAttribute("discountCode", discount);
+                            redirectAttributes.addFlashAttribute(
+                                    "successMessage",
+                                    "Kod rabatowy zastosowany: -" + discount.getPercent() + "%"
+                            );
+                        },
+                        () -> redirectAttributes.addFlashAttribute(
+                                "errorMessage",
+                                "Nieprawidłowy kod rabatowy"
+                        )
+                );
+
+        return "redirect:/cart";
+    }
+
+    @GetMapping("/cart")
+    public String showCartPage(HttpSession session, Model model) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+
+        Cart cart = cartService.getOrCreateCartByUserId(userId);
+
+        DiscountCode discount =
+                (DiscountCode) session.getAttribute("discountCode");
+
+        model.addAttribute("cartItems", cart.getCartItems());
+        model.addAttribute("discount", discount);
+
+        return "cart";
+    }
+
+
 }
