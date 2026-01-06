@@ -14,4 +14,5 @@ public class ProductFormDto {
     private String manufacturer;
     private MultipartFile image;
     private String imageFilename;  // For storing the saved filename
+    private String tagsInput;
 }

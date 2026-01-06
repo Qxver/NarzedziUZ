@@ -86,6 +86,18 @@
                 <h2>Description</h2>
                 <p th:text="${product.description}">Product description goes here.</p>
             </div>
+            <div class="card-body">
+                <h5 class="card-title" th:text="${product.name}">Nazwa</h5>
+
+                <!-- Sekcja tagów -->
+                <div class="tags mb-2">
+                    <span th:each="tag : ${product.tags}"
+                    class="badge bg-secondary me-1"
+                    th:text="${tag.name}">Tag</span>
+                </div>
+
+                <p class="card-text" th:text="${product.price} + ' PLN'">Cena</p>
+            </div>
         </div>
     </div>
 

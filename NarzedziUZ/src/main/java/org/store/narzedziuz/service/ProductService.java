@@ -2,13 +2,16 @@ package org.store.narzedziuz.service;
 
 import org.store.narzedziuz.dto.ProductFormDto;
 import org.store.narzedziuz.entity.Product;
+import org.store.narzedziuz.entity.Tag; // <--- Importuj
 import org.store.narzedziuz.entity.User;
 import org.store.narzedziuz.repository.ProductRepository;
+import org.store.narzedziuz.repository.TagRepository; // <--- Importuj
 import org.store.narzedziuz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet; // <--- Importuj HashSet
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +20,7 @@ import java.util.Set;
 public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final TagRepository tagRepository; // <--- 1. Wstrzyknięcie repozytorium tagów
 
     // --- PODSTAWOWE METODY ---
 
@@ -29,28 +33,21 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
-    // --- METODY WYMAGANE PRZEZ KONTROLER (te, których brakowało) ---
-
     public List<Product> getProductsByCategory(Long categoryId) {
-        // Upewnij się, że w ProductRepository masz: List<Product> findByCategoryCategoryId(Long id);
         return productRepository.findByCategoryCategoryId(categoryId);
     }
 
     public List<Product> searchProducts(String query) {
-        // Upewnij się, że w ProductRepository masz: List<Product> findByNameContainingIgnoreCase(String name);
         return productRepository.findByNameContainingIgnoreCase(query);
     }
 
     @Transactional
     public void updateProduct(Long id, Product updatedProduct) {
         Product existingProduct = getProductById(id);
-
         existingProduct.setName(updatedProduct.getName());
         existingProduct.setPrice(updatedProduct.getPrice());
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setQuantity(updatedProduct.getQuantity());
-        // existingProduct.setCategory(updatedProduct.getCategory()); // odkomentuj jeśli aktualizujesz kategorię
-
         productRepository.save(existingProduct);
     }
 
@@ -58,6 +55,8 @@ public class ProductService {
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+
+    // --- METODY FORMULARZOWE Z OBSŁUGĄ TAGÓW ---
 
     @Transactional
     public Product createProductFromForm(ProductFormDto formDto) {
@@ -72,6 +71,12 @@ public class ProductService {
         // Obsługa zdjęcia
         if (formDto.getImageFilename() != null && !formDto.getImageFilename().isEmpty()) {
             product.setPhoto(formDto.getImageFilename());
+        }
+
+        // <--- 2. Obsługa Tagów (Nowe)
+        if (formDto.getTagsInput() != null) {
+            Set<Tag> tags = parseAndSaveTags(formDto.getTagsInput());
+            product.setTags(tags);
         }
 
         return productRepository.save(product);
@@ -92,18 +97,51 @@ public class ProductService {
             product.setPhoto(formDto.getImageFilename());
         }
 
+        // <--- 3. Obsługa Tagów (Aktualizacja)
+        // Uwaga: To nadpisze stare tagi nowymi. Jeśli pole jest puste, usuwa wszystkie tagi.
+        if (formDto.getTagsInput() != null) {
+            Set<Tag> tags = parseAndSaveTags(formDto.getTagsInput());
+            product.setTags(tags);
+        }
+
         productRepository.save(product);
     }
 
-    // --- TWOJE METODY DO WISHLISTY ---
+    // --- METODA POMOCNICZA (PRIVATE) ---
+
+    // <--- 4. Logika parsująca tekst na obiekty Tag
+    private Set<Tag> parseAndSaveTags(String tagsInput) {
+        Set<Tag> tags = new HashSet<>();
+
+        if (tagsInput == null || tagsInput.trim().isEmpty()) {
+            return tags;
+        }
+
+        String[] tagNames = tagsInput.split(",");
+
+        for (String name : tagNames) {
+            String cleanName = name.trim();
+            if (!cleanName.isEmpty()) {
+                // Znajdź istniejący LUB stwórz nowy
+                Tag tag = tagRepository.findByName(cleanName)
+                        .orElseGet(() -> {
+                            Tag newTag = new Tag();
+                            newTag.setName(cleanName);
+                            return tagRepository.save(newTag);
+                        });
+                tags.add(tag);
+            }
+        }
+        return tags;
+    }
+
+    // --- TWOJE METODY DO WISHLISTY (bez zmian) ---
 
     @Transactional
     public void addToWishlist(Long userId, Long productId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         Product product = getProductById(productId);
-
         user.getWishlist().add(product);
         userRepository.save(user);
     }
@@ -112,9 +150,7 @@ public class ProductService {
     public void removeFromWishlist(Long userId, Long productId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         Product product = getProductById(productId);
-
         user.getWishlist().remove(product);
         userRepository.save(user);
     }
@@ -129,14 +165,11 @@ public class ProductService {
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
-    // W ProductService.java
+
     public boolean isProductInWishlist(Long userId, Long productId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Sprawdzamy czy w zestawie wishlisty istnieje produkt o danym ID
         return user.getWishlist().stream()
                 .anyMatch(product -> product.getProductId().equals(productId));
     }
-
 }

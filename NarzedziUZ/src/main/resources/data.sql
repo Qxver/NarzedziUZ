@@ -296,3 +296,62 @@ FROM category c WHERE c.name = 'Osprzęt i akcesoria'
 UNION ALL
 SELECT 'Zestaw wierteł do metalu DeWalt PRO', 'Zestaw wierteł tytanowych.', 171.97, 13, c.category_id, 'DeWalt', 'products_images/zestaw_generic.jpg'
 FROM category c WHERE c.name = 'Osprzęt i akcesoria';
+
+-- ==========================================
+-- POPRAWIONA SEKCJA: TAGI I POWIĄZANIA
+-- (Używamy p.product_id zamiast p.id)
+-- ==========================================
+
+-- 11. Wstawianie definicji Tagów
+INSERT INTO tag (name) VALUES
+                           ('Profesjonalne'),
+                           ('Akumulatorowe'),
+                           ('Zestaw'),
+                           ('Promocja'),
+                           ('Bestseller'),
+                           ('Ogród i Dom');
+
+-- 12. Przypisywanie tagów (Poprawione nazwy kolumn)
+
+-- A. Profesjonalne
+INSERT INTO product_tags (product_id, tag_id)
+SELECT p.product_id, t.id
+FROM product p
+         JOIN tag t ON t.name = 'Profesjonalne'
+WHERE p.name LIKE '%PRO' OR p.manufacturer = 'DeWalt';
+
+-- B. Akumulatorowe
+INSERT INTO product_tags (product_id, tag_id)
+SELECT p.product_id, t.id
+FROM product p
+         JOIN tag t ON t.name = 'Akumulatorowe'
+WHERE p.name LIKE '%akumulatorowa%' OR p.name LIKE '%18V%' OR p.name LIKE '%12V%' OR p.name LIKE '%20V%';
+
+-- C. Zestaw
+INSERT INTO product_tags (product_id, tag_id)
+SELECT p.product_id, t.id
+FROM product p
+         JOIN tag t ON t.name = 'Zestaw'
+WHERE p.name LIKE 'Zestaw%';
+
+-- D. Ogród i Dom
+INSERT INTO product_tags (product_id, tag_id)
+SELECT p.product_id, t.id
+FROM product p
+         JOIN category c ON p.category_id = c.category_id
+         JOIN tag t ON t.name = 'Ogród i Dom'
+WHERE c.name = 'Ogród';
+
+-- E. Bestseller (<10 sztuk)
+INSERT INTO product_tags (product_id, tag_id)
+SELECT p.product_id, t.id
+FROM product p
+         JOIN tag t ON t.name = 'Bestseller'
+WHERE p.quantity < 10 AND p.quantity > 0;
+
+-- F. Promocja (Neo Tools)
+INSERT INTO product_tags (product_id, tag_id)
+SELECT p.product_id, t.id
+FROM product p
+         JOIN tag t ON t.name = 'Promocja'
+WHERE p.manufacturer = 'Neo Tools';

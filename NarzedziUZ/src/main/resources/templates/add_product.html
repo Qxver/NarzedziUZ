@@ -37,6 +37,16 @@
             <label for="description">Description:</label>
             <textarea id="description" th:field="*{description}" rows="3" required></textarea>
 
+            <div class="mb-3">
+                <label for="tags" class="form-label">Tagi (oddzielone przecinkami)</label>
+                <input type="text"
+                       class="form-control"
+                       id="tags"
+                       name="tagsInput"
+                       placeholder="np. Promocja, Nowość, Do drewna">
+                <div class="form-text">Wpisz tagi ręcznie. Jeśli tag nie istnieje, zostanie utworzony automatycznie.</div>
+            </div>
+
             <label for="price">Price:</label>
             <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required>
 
