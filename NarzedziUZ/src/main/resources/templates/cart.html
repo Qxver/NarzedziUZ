@@ -51,17 +51,28 @@
         </div>
     </div>
 
-    <div th:if="${#lists.isEmpty(cartItems)}" class="no-products">
-        <p>Twój koszyk jest pusty.</p>
-        <p><a th:href="@{/}">Wróć do strony głównej i zacznij zakupy.</a></p>
-    </div>
-
     <div th:if="${not #lists.isEmpty(cartItems)}" class="cart-summary">
-        <div th:with="totalAmount=${#aggregates.sum(cartItems.![product.price * quantity])}">
-            <h3>Suma Całkowita: <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span></h3>
+        <div th:with="totalAmount=${#aggregates.sum(cartItems.![product.price * quantity])}, freeShippingLimit=300">
+
+            <div class="free-shipping-container">
+                <p th:if="${totalAmount < freeShippingLimit}">
+                    You are <strong><span th:text="${#numbers.formatDecimal(freeShippingLimit - totalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN</strong> short of free shiping!
+                </p>
+                <p th:if="${totalAmount >= freeShippingLimit}" class="success-msg">
+                    🎉 Free shipping, but you can spend more!
+                </p>
+
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill"
+                         th:style="'width: ' + (${totalAmount >= freeShippingLimit ? 100 : (totalAmount / freeShippingLimit * 100)}) + '%'">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Total price: <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')} + ' PLN'">0.00 PLN</span></h3>
         </div>
 
-        <button class="checkout-button">Przejdź do Kasy</button>
+        <button class="checkout-button">Checkout</button>
     </div>
 </div>
 </body>

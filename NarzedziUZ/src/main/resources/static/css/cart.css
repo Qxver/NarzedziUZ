@@ -211,6 +211,28 @@ body {
     }
 }
 
+.free-shipping-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.progress-bar-bg {
+    background-color: #e9ecef;
+    border-radius: 10px;
+    height: 12px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, #ffc107, #28a745);
+    height: 100%;
+    transition: width 0.6s ease-in-out;
+}
+
 @media (max-width: 550px) {
     .product-card {
         flex-direction: column;
