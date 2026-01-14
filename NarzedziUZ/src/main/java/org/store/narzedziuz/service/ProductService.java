@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +35,48 @@ public class ProductService {
     // --- METODY WYMAGANE PRZEZ KONTROLER (te, których brakowało) ---
 
     public List<Product> getProductsByCategory(Long categoryId) {
-        // Upewnij się, że w ProductRepository masz: List<Product> findByCategoryCategoryId(Long id);
         return productRepository.findByCategoryCategoryId(categoryId);
     }
 
     public List<Product> searchProducts(String query) {
-        // Upewnij się, że w ProductRepository masz: List<Product> findByNameContainingIgnoreCase(String name);
         return productRepository.findByNameContainingIgnoreCase(query);
+    }
+
+    /**
+     * Sort products based on the selected criteria
+     * @param products List of products to sort
+     * @param sortBy Sorting criteria: "price-asc", "price-desc", "rating-asc", "rating-desc"
+     * @param productRatings Map of product IDs to their average ratings
+     * @param reviewCounts Map of product IDs to their review counts
+     * @return Sorted list of products
+     */
+    public List<Product> sortProducts(List<Product> products, String sortBy,
+                                      Map<Long, Double> productRatings,
+                                      Map<Long, Long> reviewCounts) {
+        return switch (sortBy) {
+            case "price-asc" -> products.stream()
+                    .sorted(Comparator.comparing(Product::getPrice))
+                    .collect(Collectors.toList());
+
+            case "price-desc" -> products.stream()
+                    .sorted(Comparator.comparing(Product::getPrice).reversed())
+                    .collect(Collectors.toList());
+
+            case "rating-asc" -> products.stream()
+                    .sorted(Comparator
+                            .comparing((Product p) -> reviewCounts.getOrDefault(p.getProductId(), 0L) > 0 ? 0 : 1)
+                            .thenComparingDouble(p -> productRatings.getOrDefault(p.getProductId(), 0.0)))
+                    .collect(Collectors.toList());
+
+            case "rating-desc" -> products.stream()
+                    .sorted(Comparator
+                            .comparing((Product p) -> reviewCounts.getOrDefault(p.getProductId(), 0L) > 0 ? 0 : 1)
+                            .thenComparing(Comparator.comparingDouble((Product p) ->
+                                    productRatings.getOrDefault(p.getProductId(), 0.0)).reversed()))
+                    .collect(Collectors.toList());
+
+            default -> products;
+        };
     }
 
     @Transactional
@@ -49,7 +87,6 @@ public class ProductService {
         existingProduct.setPrice(updatedProduct.getPrice());
         existingProduct.setDescription(updatedProduct.getDescription());
         existingProduct.setQuantity(updatedProduct.getQuantity());
-        // existingProduct.setCategory(updatedProduct.getCategory()); // odkomentuj jeśli aktualizujesz kategorię
 
         productRepository.save(existingProduct);
     }
@@ -69,7 +106,6 @@ public class ProductService {
         product.setCategoryId(formDto.getCategoryId());
         product.setManufacturer(formDto.getManufacturer());
 
-        // Obsługa zdjęcia
         if (formDto.getImageFilename() != null && !formDto.getImageFilename().isEmpty()) {
             product.setPhoto(formDto.getImageFilename());
         }
@@ -87,7 +123,6 @@ public class ProductService {
         product.setCategoryId(formDto.getCategoryId());
         product.setManufacturer(formDto.getManufacturer());
 
-        // Update photo only if a new one was uploaded
         if (formDto.getImageFilename() != null && !formDto.getImageFilename().isEmpty()) {
             product.setPhoto(formDto.getImageFilename());
         }
@@ -129,14 +164,12 @@ public class ProductService {
     public Product createProduct(Product product) {
         return productRepository.save(product);
     }
-    // W ProductService.java
+
     public boolean isProductInWishlist(Long userId, Long productId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Sprawdzamy czy w zestawie wishlisty istnieje produkt o danym ID
         return user.getWishlist().stream()
                 .anyMatch(product -> product.getProductId().equals(productId));
     }
-
 }
