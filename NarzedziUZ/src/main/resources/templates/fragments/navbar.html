@@ -6,23 +6,28 @@
         <a th:href="@{/}">NarzedziUZ</a>
     </div>
 
-    <form class="search-bar" method="get" action="/">
+    <form class="search-bar" method="get" action="/" id="filterForm">
         <input type="text"
                name="q"
+               th:value="${searchQuery}"
                placeholder="Search for products..."/>
 
-        <select>
-            <option value="">Filter</option>
-            <option value="filter1">By price (descending)</option>
-            <option value="filter2">By price (ascending)</option>
-            <option value="filter3">By rating (descending)</option>
-            <option value="filter4">By rating (ascending)</option>
+        <select name="sortBy" id="sortBy" onchange="document.getElementById('filterForm').submit()">
+            <option value="">Sort By</option>
+            <option value="price-asc" th:selected="${selectedSort == 'price-asc'}">Price: Low to High</option>
+            <option value="price-desc" th:selected="${selectedSort == 'price-desc'}">Price: High to Low</option>
+            <option value="rating-asc" th:selected="${selectedSort == 'rating-asc'}">Rating: Low to High</option>
+            <option value="rating-desc" th:selected="${selectedSort == 'rating-desc'}">Rating: High to Low</option>
         </select>
-        <select>
+
+        <select name="categoryId" id="categoryId" onchange="document.getElementById('filterForm').submit()">
             <option value="">All Categories</option>
-            <option value="category1">Category1</option>
-            <option value="category2">Category2</option>
-            <option value="category3">Category3</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.name}"
+                    th:selected="${selectedCategory == category.categoryId}">
+                Category
+            </option>
         </select>
 
         <button type="submit" class="search-button">Search</button>
@@ -36,7 +41,6 @@
     </div>
 
     <ul>
-        <!-- Admin panel link, visible only to logged-in users with ADMIN role -->
         <li th:if="${session.user != null && session.user.role == 'ADMIN'}">
             <a th:href="@{/admin}">Admin Panel</a>
         </li>

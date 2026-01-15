@@ -19,10 +19,13 @@ import java.util.Map;
 public class HomeController {
     private final ProductService productService;
     private final ReviewService reviewService;
+    private final org.store.narzedziuz.repository.CategoryRepository categoryRepository;
 
     @GetMapping("/")
     public String index(
             @RequestParam(required = false) String q,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) Long categoryId,
             HttpSession session,
             Model model) {
 
@@ -41,12 +44,16 @@ public class HomeController {
             products = productService.searchProducts(q.trim());
             model.addAttribute("searchPerformed", true);
             model.addAttribute("searchQuery", q.trim());
+        } else if (categoryId != null) {
+            products = productService.getProductsByCategory(categoryId);
+            model.addAttribute("searchPerformed", false);
         } else {
             products = productService.getAllProducts();
             model.addAttribute("searchPerformed", false);
             model.addAttribute("searchQuery", "");
         }
 
+        // Calculate ratings for sorting
         Map<Long, Double> productRatings = new HashMap<>();
         Map<Long, Long> reviewCounts = new HashMap<>();
 
@@ -58,9 +65,19 @@ public class HomeController {
             reviewCounts.put(product.getProductId(), reviewCount);
         }
 
+        // Apply sorting if requested
+        if (sortBy != null && !sortBy.isEmpty()) {
+            products = productService.sortProducts(products, sortBy, productRatings, reviewCounts);
+            model.addAttribute("selectedSort", sortBy);
+        } else {
+            model.addAttribute("selectedSort", "");
+        }
+
         model.addAttribute("products", products);
         model.addAttribute("productRatings", productRatings);
         model.addAttribute("reviewCounts", reviewCounts);
+        model.addAttribute("selectedCategory", categoryId != null ? categoryId : "");
+        model.addAttribute("categories", categoryRepository.findAll());
 
         return "home";
     }
