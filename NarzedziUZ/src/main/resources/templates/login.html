@@ -8,7 +8,7 @@
     <title>Login</title>
 
     <!-- Add Cap widget script to <head> -->
-    <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget@0.1.28"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget@0.1.32"></script>
 </head>
 <body>
 
@@ -44,19 +44,29 @@
 </div>
 
 <script>
-    document.querySelector('form').addEventListener('submit', function(e) {
-        e.preventDefault();
+    let captchaToken = null;
 
+    // Wait for the widget to be ready
+    window.addEventListener('DOMContentLoaded', function() {
         const widget = document.getElementById('captcha-widget');
-        const token = widget.getResponse();
+        console.log('Widget element:', widget);
 
-        if (!token) {
-            alert('Please complete the CAPTCHA');
-            return;
-        }
+        // Listen for the solve event from the captcha widget
+        widget.addEventListener('solve', function(e) {
+            console.log('CAPTCHA solved! Event:', e);
+            console.log('Token:', e.detail.token);
+            captchaToken = e.detail.token;
+            document.getElementById('captchaToken').value = captchaToken;
+        });
 
-        document.getElementById('captchaToken').value = token;
-        this.submit();
+        // Also listen for other possible events
+        widget.addEventListener('error', function(e) {
+            console.error('CAPTCHA error:', e);
+        });
+
+        widget.addEventListener('load', function(e) {
+            console.log('CAPTCHA widget loaded:', e);
+        });
     });
 </script>
 </body>

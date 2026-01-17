@@ -27,21 +27,43 @@ public class CaptchaService {
 
     public boolean verifyCaptcha(String token) {
         try {
-            String verifyUrl = captchaUrl + "/" + siteKey + "/siteverify";
+            // Cap.js verification endpoint format
+            String verifyUrl = captchaUrl + "/siteverify";
+            
+            System.out.println("Verifying captcha at: " + verifyUrl);
+            System.out.println("Token: " + token);
+            System.out.println("Secret: " + secret);
 
             Map<String, String> body = new HashMap<>();
             body.put("secret", secret);
-            body.put("response", token);
+            body.put("response", token);  // Cap.js expects 'response' field, not 'token'
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             HttpEntity<String> request = new HttpEntity<>(objectMapper.writeValueAsString(body), headers);
 
-            Map<String, Object> response = restTemplate.postForObject(verifyUrl, request, Map.class);
+            System.out.println("Request body: " + objectMapper.writeValueAsString(body));
 
-            return response != null && (boolean) response.getOrDefault("success", false);
+            Map<String, Object> response = restTemplate.postForObject(verifyUrl, request, Map.class);
+            
+            System.out.println("Captcha verification response: " + response);
+
+            if (response != null) {
+                Boolean success = (Boolean) response.get("success");
+                if (success != null && success) {
+                    return true;
+                } else {
+                    System.err.println("Captcha verification failed. Response: " + response);
+                    return false;
+                }
+            }
+            
+            System.err.println("Captcha verification returned null response");
+            return false;
         } catch (Exception e) {
+            System.err.println("Captcha verification error: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

@@ -31,7 +31,7 @@ logging:
     org.hibernate.SQL: DEBUG
 
 captcha:
-  url: http://captcha-service:3000
-  site-key: Je7SdIws&sou8IlwwEHbna&MSiH!4UkLnqK*9PXSj^FHcGLsODIPwqAZRYuzg!FzXflzGCxWP1lR8o5OjWtO4xdVH%vyi5HHoClKXE%N9o^qMejyLed62LvTBin%n2^H&Y$bH5A3*NX1Tdai@SjiiK2
+  url: http://localhost:8000/d2acb75376
+  site-key: d2acb75376
   secret: Je7SdIws&sou8IlwwEHbna&MSiH!4UkLnqK*9PXSj^FHcGLsODIPwqAZRYuzg!FzXflzGCxWP1lR8o5OjWtO4xdVH%vyi5HHoClKXE%N9o^qMejyLed62LvTBin%n2^H&Y$bH5A3*NX1Tdai@SjiiK2
 

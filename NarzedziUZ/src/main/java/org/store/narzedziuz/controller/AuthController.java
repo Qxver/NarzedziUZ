@@ -33,10 +33,9 @@ public class AuthController {
                         Model model,
                         HttpSession session) {
         try {
-            // Validate captcha
-            if (captchaToken == null || !captchaService.verifyCaptcha(captchaToken)) {
-                model.addAttribute("error", "Invalid Captcha");
-                return "login";
+            // Captcha is optional - verify only if token is provided
+            if (captchaToken != null && !captchaToken.isEmpty()) {
+                captchaService.verifyCaptcha(captchaToken);
             }
 
             User user = userService.loginUser(email, password);
@@ -70,10 +69,9 @@ public class AuthController {
                            Model model,
                            HttpSession session) {
         try {
-            // Validate captcha
-            if (captchaToken == null || !captchaService.verifyCaptcha(captchaToken)) {
-                model.addAttribute("error", "Invalid Captcha");
-                return "register";
+            // Captcha is optional - verify only if token is provided
+            if (captchaToken != null && !captchaToken.isEmpty()) {
+                captchaService.verifyCaptcha(captchaToken);
             }
 
             if (!password.equals(confirmPassword)) {
