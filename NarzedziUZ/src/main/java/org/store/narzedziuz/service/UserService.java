@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -84,7 +85,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public User save(User user) {
-        return userRepository.save(user);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

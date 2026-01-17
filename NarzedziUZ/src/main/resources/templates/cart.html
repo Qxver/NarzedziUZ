@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" th:href="@{/css/purchase_form.css}">
+    <script th:src="@{/js/theme.js}"></script>
+    <title>Twój Koszyk - NarzedziUZ</title>
+</head>
+<body>
+
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+
+<div class="home-container">
+
+    <div class="products-grid">
+        <div class="product-card" th:each="item : ${cartItems}">
+
+            <div class="product-image-container">
+                <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-link">
+                    <div class="product-image">
+                        <img th:if="${item.product.photo != null and !item.product.photo.isEmpty()}"
+                             th:src="@{${item.product.photo}}"
+                             th:alt="${item.product.name}">
+                        <div th:if="${item.product.photo == null or item.product.photo.isEmpty()}"
+                             class="no-image">Brak Zdjęcia</div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="product-details">
+                <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-title-link">
+                    <h3 th:text="${item.product.name}">Nazwa Produktu</h3>
+                </a>
+
+                <p class="product-manufacturer" th:text="${item.product.manufacturer}">Producent</p>
+                <p class="product-quantity">
+                    Ilość: <span th:text="${item.quantity}">1</span>
+                </p>
+
+                <div class="price-and-remove">
+                    <p class="product-total-price">
+                        Suma:
+                        <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')}"></span>
+                        PLN
+                    </p>
+
+                    <form th:action="@{/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}" method="post">
+                        <input type="hidden" name="_method" value="delete" />
+                        <button type="submit" class="remove-button">Usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(cartItems)}" class="no-products">
+        <p>Twój koszyk jest pusty.</p>
+        <p><a th:href="@{/}">Wróć do strony głównej i zacznij zakupy.</a></p>
+    </div>
+
+    <div th:if="${not #lists.isEmpty(cartItems)}"
+         class="cart-summary"
+         th:with="
+            totalAmount=${#aggregates.sum(cartItems.![product.price * quantity])},
+            discountPercent=${discount != null ? discount.percent : 0},
+            finalAmount=${totalAmount * (100 - discountPercent) / 100}
+         ">
+
+        <p th:if="${successMessage}" style="color:green" th:text="${successMessage}"></p>
+        <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
+
+        <form th:action="@{/cart/apply-discount}" method="post" class="discount-form">
+            <input type="text" name="code" placeholder="Kod rabatowy">
+            <button type="submit">Zastosuj</button>
+        </form>
+
+        <p th:if="${discount != null}">
+            Zastosowany kod:
+            <b th:text="${discount.code}"></b>
+            (-<span th:text="${discount.percent}"></span>%)
+        </p>
+
+        <h3>
+            Suma przed rabatem:
+            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN
+        </h3>
+
+        <h3 th:if="${discount != null}">
+            Do zapłaty:
+            <span th:text="${#numbers.formatDecimal(finalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN
+        </h3>
+
+        <button class="checkout-button" onclick="openForm()">Przejdź do Kasy</button>
+    </div>
+
+    <div class="form-popup" id="myForm">
+        <form action="/process-shipping" method="post" class="form-container" novalidate>
+            <h2>Checkout</h2>
+
+        </form>
+    </div>
+
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+    </script>
+
+</div>
+</body>
+</html>

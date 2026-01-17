@@ -1,0 +1,237 @@
+/* Theme CSS Variables */
+:root {
+    /* Light Theme (Default) */
+    --bg-primary: #f4f4f9;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f9f9f9;
+    --bg-input: #ffffff;
+    --bg-navbar: #007bff;
+    --bg-navbar-button: #0056b3;
+    --bg-navbar-button-hover: #003f8a;
+    
+    --text-primary: #333333;
+    --text-secondary: #555555;
+    --text-muted: #666666;
+    --text-light: #999999;
+    --text-navbar: #ffffff;
+    
+    --border-color: #e0e0e0;
+    --border-light: #f0f0f0;
+    --border-input: #cccccc;
+    --border-focus: #007bff;
+    
+    --accent-primary: #007bff;
+    --accent-primary-hover: #0056b3;
+    --accent-success: #28a745;
+    --accent-danger: #dc3545;
+    --accent-warning: #ffc107;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+    --shadow-navbar: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    
+    /* Input specific */
+    --input-bg: #f1f1f1;
+    --input-focus-bg: #ddd;
+    --input-error-bg: #ffe6e6;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --bg-card: #16213e;
+    --bg-card-hover: #1a2744;
+    --bg-input: #0f3460;
+    --bg-navbar: #0f3460;
+    --bg-navbar-button: #1a5276;
+    --bg-navbar-button-hover: #2980b9;
+    
+    --text-primary: #e8e8e8;
+    --text-secondary: #c4c4c4;
+    --text-muted: #a0a0a0;
+    --text-light: #808080;
+    --text-navbar: #ffffff;
+    
+    --border-color: #2c3e50;
+    --border-light: #34495e;
+    --border-input: #34495e;
+    --border-focus: #3498db;
+    
+    --accent-primary: #3498db;
+    --accent-primary-hover: #2980b9;
+    --accent-success: #2ecc71;
+    --accent-danger: #e74c3c;
+    --accent-warning: #f39c12;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-navbar: 0 4px 6px rgba(0, 0, 0, 0.3);
+    
+    --overlay-bg: rgba(0, 0, 0, 0.7);
+    
+    /* Input specific */
+    --input-bg: #1a2744;
+    --input-focus-bg: #0f3460;
+    --input-error-bg: #4a1a1a;
+}
+
+/* Theme Toggle Button Styles */
+.theme-toggle {
+    background: transparent;
+    border: 2px solid var(--text-navbar);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+    margin-left: 10px;
+}
+
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(15deg);
+}
+
+.theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--text-navbar);
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle .sun-icon {
+    display: none;
+}
+
+.theme-toggle .moon-icon {
+    display: block;
+}
+
+[data-theme="dark"] .theme-toggle .sun-icon {
+    display: block;
+}
+
+[data-theme="dark"] .theme-toggle .moon-icon {
+    display: none;
+}
+
+/* Smooth transitions for theme change */
+body,
+body *:not(.theme-toggle):not(.theme-toggle *) {
+    transition: background-color 0.3s ease, 
+                color 0.3s ease, 
+                border-color 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+/* Base body styles using theme variables */
+body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Common elements theme support */
+a {
+    color: var(--accent-primary);
+}
+
+a:hover {
+    color: var(--accent-primary-hover);
+}
+
+/* Form elements */
+input,
+textarea,
+select {
+    background-color: var(--bg-input);
+    border-color: var(--border-input);
+    color: var(--text-primary);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-light);
+}
+
+/* Buttons */
+button,
+.btn {
+    background-color: var(--accent-primary);
+    color: #ffffff;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+button:hover,
+.btn:hover {
+    background-color: var(--accent-primary-hover);
+}
+
+/* Cards */
+.card,
+.product-card,
+.admin-card {
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    box-shadow: var(--shadow-md);
+}
+
+/* Tables */
+table {
+    background-color: var(--bg-card);
+}
+
+thead {
+    background-color: var(--bg-tertiary);
+}
+
+th {
+    color: var(--text-primary);
+}
+
+td {
+    color: var(--text-secondary);
+    border-bottom-color: var(--border-color);
+}
+
+th, td {
+    border-bottom-color: var(--border-color);
+}
+
+/* Scrollbar styling for dark theme */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}

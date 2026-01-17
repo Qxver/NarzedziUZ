@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - NarzedziUZ</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/wishlist.css}">
+    <script th:src="@{/js/theme.js}"></script>
+</head>
+<body>
+
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+
+<div class="wish-container">
+    <h1>My Wishlist</h1>
+
+    <div class="products-grid">
+        <div class="product-card" th:each="product : ${wishlistItems}">
+
+            <!-- Product Link Section -->
+            <a th:href="@{/product/{id}(id=${product.productId})}" class="product-link">
+                <div class="product-image">
+                    <img th:if="${product.photo != null and !product.photo.isEmpty()}"
+                         th:src="@{'/' + ${product.photo}}"
+                         th:alt="${product.name}">
+                    <div th:if="${product.photo == null or product.photo.isEmpty()}" class="no-image">No Image</div>
+                </div>
+                <div class="product-info">
+                    <h3 th:text="${product.name}">Product Name</h3>
+                    <p class="product-price" th:text="${product.price} + ' PLN'">0.00 PLN</p>
+                    <p class="product-manufacturer" th:text="${product.manufacturer}">Manufacturer</p>
+                    <p class="product-stock" th:if="${product.quantity > 0}">In Stock</p>
+                    <p class="product-stock out-of-stock" th:if="${product.quantity <= 0}">Out of Stock</p>
+                </div>
+            </a>
+
+            <!-- Actions Section -->
+            <div class="wishlist-actions">
+                <form th:action="@{/cart/add/{id}(id=${product.productId})}" method="post">
+                    <button type="submit" class="action-btn add-to-cart-btn">Add to Cart</button>
+                </form>
+
+                <form th:action="@{/user/wish-list/remove/{id}(id=${product.productId})}" method="post">
+                    <button type="submit" class="action-btn remove-btn">Remove</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div th:if="${#lists.isEmpty(wishlistItems)}" class="no-products">
+        <p>Your wishlist is currently empty.</p>
+        <a th:href="@{/}" class="back-link">Continue Shopping</a>
+    </div>
+</div>
+
+</body>
+</html>

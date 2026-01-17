@@ -1,0 +1,196 @@
+.form-popup {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Półprzezroczyste tło */
+    z-index: 1000; /* Zawsze na wierzchu */
+    overflow-y: auto;
+}
+
+.form-container {
+    max-width: 500px;
+    padding: 20px;
+    background-color: var(--bg-card, white);
+    margin: 5% auto; /* Wyśrodkowanie w pionie i poziomie */
+    border-radius: 10px;
+    box-shadow: var(--shadow-lg, 0 4px 8px rgba(0,0,0,0.2));
+    position: relative;
+    /* Opcjonalnie: animacja pojawiania się */
+    animation: fadeIn 0.3s;
+}
+
+/* Pola tekstowe na pełną szerokość */
+.form-container input[type=text],
+.form-container input[type=email],
+.form-container select {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 16px 0;
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+    background: var(--input-bg, #f1f1f1);
+    color: var(--text-primary, #333);
+    box-sizing: border-box; /* Ważne, żeby padding nie rozpychał szerokości */
+}
+
+/* Fokus na polach */
+.form-container input:focus,
+.form-container select:focus {
+    background-color: var(--input-focus-bg, #ddd);
+    outline: none;
+}
+
+/* Przyciski */
+.form-container .btn {
+    background-color: var(--accent-success, #04AA6D);
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+.form-container .cancel {
+    background-color: var(--accent-danger, #ff4d4d);
+}
+
+.form-container .btn:hover {
+    opacity: 1;
+}
+
+/* Animacja (opcjonalnie) */
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+details {
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 5px;
+    margin: 10px 0;
+    padding: 5px;
+    background-color: var(--bg-tertiary, #f9f9f9);
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+summary::after {
+    content: '\25BC'; /* Kod znaku strzałki w dół */
+    font-size: 12px;
+    transition: transform 0.2s;
+}
+
+details[open] summary::after {
+    transform: rotate(180deg);
+}
+
+
+form:has(#blik-choose:checked) .blik-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* --- Skopiuj to do swojego pliku CSS --- */
+
+/* Istniejąca reguła dla BLIKa (zostaw lub podmień) */
+form:has(#blik-choose:checked) .blik-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* NOWE reguły dla pozostałych metod */
+form:has(#transfer-choose:checked) .transfer-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+form:has(#card-choose:checked) .card-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+form:has(#paypal-choose:checked) .paypal-enter {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-primary, #333);
+}
+.form-container input.invalid,
+.form-container select.invalid {
+    border: 2px solid var(--accent-danger, #ff4d4d);
+    background-color: var(--input-error-bg, #ffe6e6);
+}
+
+.invalid + .error-text {
+    display: block;
+}
+
+/* --- WKLEJ TO (ZAMIAST USUNIĘTYCH) --- */
+
+/* Naprawa kontenera - wymuszenie układu pionowego */
+.number-input-wrapper {
+    display: none;       /* Domyślnie ukryty (JS to zmienia na flex/block) */
+    flex-direction: column; /* Ustaw elementy jeden pod drugim */
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--bg-tertiary, #f9f9f9);
+    border-radius: 4px;
+}
+
+/* Kiedy JS pokazuje element, wymuszamy flex, żeby zachować układ pionowy */
+form:has(#blik-choose:checked) .blik-enter,
+form:has(#transfer-choose:checked) .transfer-enter,
+form:has(#card-choose:checked) .card-enter,
+form:has(#paypal-choose:checked) .paypal-enter {
+    display: flex !important; /* Ważne: Flex zamiast Block */
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Naprawa pola Input wewnątrz sekcji płatności */
+.number-input-wrapper input {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+}
+
+/* Naprawa tekstu błędu - usunięcie ujemnego marginesu */
+.error-text {
+    color: var(--accent-danger, #ff4d4d);
+    font-size: 0.85em;
+    margin-top: 2px;    /* Lekki odstęp od pola */
+    margin-bottom: 10px;
+    display: none;
+    font-weight: bold;
+}
+
+.form-container input.invalid + .error-text {
+    display: block;
+}
+
+.payment-info-text {
+    font-size: 0.9em;
+    color: var(--text-secondary, #555);
+}

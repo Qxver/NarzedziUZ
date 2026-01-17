@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">Profil Klienta - Sklep z Narzędziami</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link th:href="@{/css/theme.css}" rel="stylesheet">
+  <link th:href="@{/css/profile.css}" rel="stylesheet">
+  <link th:href="@{/css/navbar.css}" rel="stylesheet">
+  <script th:src="@{/js/theme.js}"></script>
+</head>
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="profile-wrapper">
+  <div class="profile-container">
+    <div class="profile-buttons">
+      <div>
+        <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Admin Panel</a>
+      </div>
+      <div>
+        <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button">wish list</a>
+      </div>
+      <div>
+        <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Log Out</a>
+      </div>
+    </div>
+    <div class="profile-header">
+      <h1 class="profile-title" th:id="'pageTitle'" th:text="${pageTitle}">My Profile</h1>
+      <p class="welcome-text" th:id="'welcomeMessage'" th:text="${welcomeMessage}">Welcome Back</p>
+      <div class="profile-avatar" th:id="'avatar'" th:text="${initials}">JK</div>
+      <div class="profile-info">
+        <div class="info-item">
+          <div class="info-label">Purchases</div>
+          <div class="info-value" th:id="'totalPurchases'" th:text="${totalPurchases}">12</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Spent</div>
+          <div class="info-value" th:id="'totalSpent'" th:text="${totalSpent} + ' zł'">3 450 zł</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Ratings</div>
+          <div class="info-value" th:id="'totalRatings'" th:text="${totalRatings}">8</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-content">
+      <div class="section">
+        <h2 class="section-title" th:id="'purchaseHistoryTitle'" th:text="${purchaseHistoryTitle}">Purchase History</h2>
+        <div th:id="'purchasesList'">
+          <div th:each="purchase : ${purchases}" class="purchase-card" th:id="'purchase-'+${purchase.id}">
+            <div class="purchase-header">
+              <div class="purchase-date" th:text="${purchase.formattedDate}">15 grudnia 2024</div>
+              <div class="purchase-status" th:text="${purchase.status}">Dostarczone</div>
+            </div>
+            <div class="purchase-items">
+              <div th:each="item : ${purchase.items}" class="purchase-item">
+                <span class="item-name" th:text="${item.productName}">Wiertarka</span>
+                <span class="item-price" th:text="${item.price}">899 zł</span>
+              </div>
+            </div>
+            <div class="purchase-total">
+              <span class="total-label">Suma:</span>
+              <span class="total-amount" th:text="${purchase.total}">988 zł</span>
+            </div>
+          </div>
+          <div th:if="${purchases.isEmpty()}" class="no-data">Brak zakupów</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2 class="section-title">Your Ratings</h2>
+
+        <div th:each="rating : ${ratings}" class="rating-card">
+          <div class="rating-header">
+            <a th:href="@{/product/{id}(id=${rating.product.productId})}"
+               class="product-name-link"
+               th:text="${rating.product.name}">
+              Product name
+            </a>
+
+            <div class="stars" th:data-rating="${rating.rating}">
+                <span th:each="i : ${#numbers.sequence(1,5)}"
+                      th:class="${i <= rating.rating} ? 'star filled' : 'star'"
+                      th:text="${i <= rating.rating} ? '⭐' : '☆'">⭐</span>
+            </div>
+          </div>
+
+          <div class="rating-comment"
+               th:text="${rating.comment}">
+            Comment
+          </div>
+
+          <div class="rating-date"
+               th:text="${#temporals.format(rating.createdAt, 'dd.MM.yyyy')}">
+          </div>
+        </div>
+
+        <div th:if="${ratings.isEmpty()}" class="no-data">
+          No ratings
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/js/profil.js}"></script>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  window.userConfig = /*[[${userConfig}]]*/ {};
+  /*]]>*/
+</script>
+</body>
+</html>
