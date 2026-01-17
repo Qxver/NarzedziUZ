@@ -13,10 +13,10 @@
 .form-container {
     max-width: 500px;
     padding: 20px;
-    background-color: white;
+    background-color: var(--bg-card, white);
     margin: 5% auto; /* Wyśrodkowanie w pionie i poziomie */
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-lg, 0 4px 8px rgba(0,0,0,0.2));
     position: relative;
     /* Opcjonalnie: animacja pojawiania się */
     animation: fadeIn 0.3s;
@@ -29,22 +29,23 @@
     width: 100%;
     padding: 12px;
     margin: 8px 0 16px 0;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color, #ccc);
     border-radius: 4px;
-    background: #f1f1f1;
+    background: var(--input-bg, #f1f1f1);
+    color: var(--text-primary, #333);
     box-sizing: border-box; /* Ważne, żeby padding nie rozpychał szerokości */
 }
 
 /* Fokus na polach */
 .form-container input:focus,
 .form-container select:focus {
-    background-color: #ddd;
+    background-color: var(--input-focus-bg, #ddd);
     outline: none;
 }
 
 /* Przyciski */
 .form-container .btn {
-    background-color: #04AA6D;
+    background-color: var(--accent-success, #04AA6D);
     color: white;
     padding: 16px 20px;
     border: none;
@@ -57,7 +58,7 @@
 }
 
 .form-container .cancel {
-    background-color: #ff4d4d;
+    background-color: var(--accent-danger, #ff4d4d);
 }
 
 .form-container .btn:hover {
@@ -71,11 +72,11 @@
 }
 
 details {
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color, #ccc);
     border-radius: 5px;
     margin: 10px 0;
     padding: 5px;
-    background-color: #f9f9f9;
+    background-color: var(--bg-tertiary, #f9f9f9);
 }
 
 summary::-webkit-details-marker {
@@ -134,11 +135,12 @@ summary {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--text-primary, #333);
 }
 .form-container input.invalid,
 .form-container select.invalid {
-    border: 2px solid #ff4d4d;
-    background-color: #ffe6e6;
+    border: 2px solid var(--accent-danger, #ff4d4d);
+    background-color: var(--input-error-bg, #ffe6e6);
 }
 
 .invalid + .error-text {
@@ -153,7 +155,7 @@ summary {
     flex-direction: column; /* Ustaw elementy jeden pod drugim */
     margin-top: 10px;
     padding: 10px;
-    background: #f9f9f9;
+    background: var(--bg-tertiary, #f9f9f9);
     border-radius: 4px;
 }
 
@@ -176,7 +178,7 @@ form:has(#paypal-choose:checked) .paypal-enter {
 
 /* Naprawa tekstu błędu - usunięcie ujemnego marginesu */
 .error-text {
-    color: #ff4d4d;
+    color: var(--accent-danger, #ff4d4d);
     font-size: 0.85em;
     margin-top: 2px;    /* Lekki odstęp od pola */
     margin-bottom: 10px;
@@ -186,4 +188,9 @@ form:has(#paypal-choose:checked) .paypal-enter {
 
 .form-container input.invalid + .error-text {
     display: block;
+}
+
+.payment-info-text {
+    font-size: 0.9em;
+    color: var(--text-secondary, #555);
 }

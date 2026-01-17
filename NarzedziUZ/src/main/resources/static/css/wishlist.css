@@ -7,7 +7,7 @@
 }
 
 .wish-container h1 {
-    color: #333;
+    color: var(--text-primary, #333);
     margin-bottom: 20px;
     text-align: center;
 }
@@ -22,9 +22,9 @@
 
 /* Karta produktu - układ poziomy (row) */
 .product-card {
-    background: #fff;
+    background: var(--bg-card, #fff);
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md, 0 2px 8px rgba(0, 0, 0, 0.1));
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
@@ -35,7 +35,7 @@
 
 .product-card:hover {
     transform: translateX(5px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg, 0 4px 16px rgba(0, 0, 0, 0.15));
 }
 
 /* Link obejmujący zdjęcie i opis (ale nie przyciski) */
@@ -52,7 +52,7 @@
     width: 200px;
     min-width: 200px;
     height: 100%; /* Rozciągnij na wysokość karty */
-    background-color: #f0f0f0;
+    background-color: var(--bg-tertiary, #f0f0f0);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -66,7 +66,7 @@
 }
 
 .no-image {
-    color: #999;
+    color: var(--text-light, #999);
     font-size: 16px;
 }
 
@@ -81,33 +81,33 @@
 
 .product-info h3 {
     margin: 0 0 10px 0;
-    color: #333;
+    color: var(--text-primary, #333);
     font-size: 18px;
     font-weight: 600;
 }
 
 .product-price {
-    color: #007bff;
+    color: var(--accent-primary, #007bff);
     font-size: 24px;
     font-weight: bold;
     margin: 10px 0;
 }
 
 .product-manufacturer {
-    color: #666;
+    color: var(--text-muted, #666);
     font-size: 14px;
     margin: 5px 0;
 }
 
 .product-stock {
-    color: #28a745;
+    color: var(--accent-success, #28a745);
     font-size: 14px;
     margin: 10px 0 0 0;
     font-weight: 500;
 }
 
 .product-stock.out-of-stock {
-    color: #dc3545;
+    color: var(--accent-danger, #dc3545);
 }
 
 /* --- Nowa sekcja: Przyciski akcji po prawej stronie --- */
@@ -117,9 +117,9 @@
     justify-content: center;
     gap: 10px;
     padding: 20px;
-    border-left: 1px solid #eee;
+    border-left: 1px solid var(--border-color, #eee);
     min-width: 140px;
-    background-color: #fcfcfc;
+    background-color: var(--bg-tertiary, #fcfcfc);
 }
 
 .wishlist-actions form {
@@ -138,23 +138,23 @@
 }
 
 .add-to-cart-btn {
-    background-color: #007bff;
+    background-color: var(--accent-primary, #007bff);
     color: white;
 }
 
 .add-to-cart-btn:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-primary-hover, #0056b3);
 }
 
 .remove-btn {
-    background-color: white;
-    color: #dc3545;
-    border: 1px solid #dc3545;
+    background-color: var(--bg-card, white);
+    color: var(--accent-danger, #dc3545);
+    border: 1px solid var(--accent-danger, #dc3545);
     margin-top: 5px;
 }
 
 .remove-btn:hover {
-    background-color: #dc3545;
+    background-color: var(--accent-danger, #dc3545);
     color: white;
 }
 
@@ -162,14 +162,14 @@
 .no-products {
     text-align: center;
     padding: 60px 20px;
-    color: #666;
+    color: var(--text-muted, #666);
     font-size: 18px;
 }
 
 .back-link {
     display: inline-block;
     margin-top: 20px;
-    color: #007bff;
+    color: var(--accent-primary, #007bff);
     text-decoration: none;
     font-weight: bold;
 }

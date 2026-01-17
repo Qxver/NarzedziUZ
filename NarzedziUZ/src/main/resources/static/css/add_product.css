@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: var(--bg-primary, #f4f4f9);
     margin: 0;
     padding: 0;
 }
@@ -15,10 +15,10 @@ body {
 }
 
 .product-form {
-    background: #fff;
+    background: var(--bg-card, #fff);
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
     width: 100%;
     max-width: 500px;
     margin-top: 20px;
@@ -26,7 +26,7 @@ body {
 
 h1 {
     text-align: center;
-    color: #333;
+    color: var(--text-primary, #333);
     margin-bottom: 30px;
 }
 
@@ -34,22 +34,24 @@ label {
     display: block;
     margin-top: 15px;
     font-weight: bold;
-    color: #555;
+    color: var(--text-secondary, #555);
 }
 
 input, textarea, select {
     width: 100%;
     padding: 12px;
     margin-top: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color, #ddd);
     border-radius: 4px;
     box-sizing: border-box;
     font-size: 14px;
+    background-color: var(--bg-input, #fff);
+    color: var(--text-primary, #333);
 }
 
 input:focus, textarea:focus, select:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--border-focus, #007bff);
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
@@ -62,7 +64,7 @@ textarea {
     width: 100%;
     padding: 12px;
     margin-top: 25px;
-    background-color: #007bff;
+    background-color: var(--accent-primary, #007bff);
     color: white;
     border: none;
     border-radius: 4px;
@@ -73,7 +75,7 @@ textarea {
 }
 
 .product-form button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-primary-hover, #0056b3);
 }
 
 .alert {
@@ -84,15 +86,32 @@ textarea {
 }
 
 .alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background-color: rgba(40, 167, 69, 0.15);
+    color: var(--accent-success, #155724);
+    border: 1px solid var(--accent-success, #c3e6cb);
 }
 
 .alert-error {
-    background-color: #f8d8d7;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+    background-color: var(--input-error-bg, #f8d8d7);
+    color: var(--accent-danger, #721c24);
+    border: 1px solid var(--accent-danger, #f5c6cb);
+}
+
+.current-image-wrapper {
+    margin-bottom: 10px;
+}
+
+.current-image-preview {
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.image-hint {
+    font-size: 12px;
+    color: var(--text-muted, #666);
+    margin-top: 5px;
 }
 
 @media (max-width: 768px) {

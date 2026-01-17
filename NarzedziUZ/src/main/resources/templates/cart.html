@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/cart.css}">
     <link rel="stylesheet" th:href="@{/css/purchase_form.css}">
+    <script th:src="@{/js/theme.js}"></script>
     <title>Twój Koszyk - NarzedziUZ</title>
 </head>
 <body>
@@ -327,7 +329,7 @@
 
                         <!-- Bank Transfer Section -->
                         <div class="number-input-wrapper transfer-enter">
-                            <p style="font-size: 0.9em; color: #555;">
+                            <p class="payment-info-text">
                                 Payment details will be sent to your email address.
                             </p>
                         </div>
@@ -357,7 +359,7 @@
 
                         <!-- PayPal Section -->
                         <div class="number-input-wrapper paypal-enter">
-                            <p style="font-size: 0.9em; color: #555;">
+                            <p class="payment-info-text">
                                 You will be redirected to PayPal to complete your purchase.
                             </p>
                         </div>
