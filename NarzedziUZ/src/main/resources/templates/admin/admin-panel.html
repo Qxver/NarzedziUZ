@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/admin-panel.css}">
+    <script th:src="@{/js/theme.js}"></script>
+    <title>Admin Panel</title>
+</head>
+<body>
+
+<div th:insert="~{fragments/navbar :: navbar}"></div>
+
+<div class="content">
+    <div class="admin-container">
+        <h1>Admin Panel</h1>
+        <p>Welcome, <span th:text="${userName}">Admin</span></p>
+
+        <div class="admin-menu">
+            <div class="admin-card">
+                <h2>User Management</h2>
+                <p>Manage all registered users</p>
+                <a href="/admin/users" class="btn">Manage Users</a>
+            </div>
+
+            <div class="admin-card">
+                <h2>Product Management</h2>
+                <p>Add, edit or remove products</p>
+                <a href="/admin/products" class="btn">Manage Products</a>
+            </div>
+
+            <div class="admin-card">
+                <h2>Order Management</h2>
+                <p>View and manage orders</p>
+                <a href="#" class="btn">Manage Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

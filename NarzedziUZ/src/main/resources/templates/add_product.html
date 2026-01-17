@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/add_product.css}">
-    <title>Add product</title>
+    <script th:src="@{/js/theme.js}"></script>
+    <title th:text="${isEdit} ? 'Edit Product' : 'Add Product'">Add product</title>
 </head>
 
 <body>
@@ -14,16 +16,23 @@
 
 <div class="content">
     <div class="product-form">
-        <h1>Add product</h1>
+        <h1 th:text="${isEdit} ? 'Edit Product' : 'Add Product'">Add product</h1>
 
         <div th:if="${param.success}" class="alert alert-success">
             Product added successfully!
         </div>
+        <div th:if="${param.updated}" class="alert alert-success">
+            Product updated successfully!
+        </div>
         <div th:if="${param.error}" class="alert alert-error">
-            Error adding product. Please try again.
+            Error processing product. Please try again.
         </div>
 
-        <form th:action="@{/add-product}" th:object="${product}" method="post">
+        <form th:action="${isEdit} ? @{/admin/products/edit/{id}(id=${productId})} : @{/admin/products/add}" 
+              th:object="${product}" 
+              method="post" 
+              enctype="multipart/form-data">
+            
             <label for="name">Name:</label>
             <input type="text" id="name" th:field="*{name}" required>
 
@@ -36,13 +45,33 @@
             <label for="quantity">Quantity:</label>
             <input type="number" id="quantity" th:field="*{quantity}" min="0" required>
 
-            <label for="categoryId">Category ID:</label>
-            <input type="number" id="categoryId" th:field="*{categoryId}" min="1" required>
+            <label for="categoryId">Category:</label>
+            <select id="categoryId" th:field="*{categoryId}" required>
+                <option value="">-- Select Category --</option>
+                <option th:each="category : ${categories}" 
+                        th:value="${category.categoryId}" 
+                        th:text="${category.name}">
+                    Category Name
+                </option>
+            </select>
 
             <label for="manufacturer">Manufacturer:</label>
             <input type="text" id="manufacturer" th:field="*{manufacturer}" required>
 
-            <button type="submit">Add product</button>
+            <label for="image">Product Image:</label>
+            <div th:if="${currentPhoto}" class="current-image-wrapper">
+                <img th:src="@{/product_image/{photo}(photo=${currentPhoto})}" 
+                     alt="Current product image" 
+                     class="current-image-preview">
+                <p class="image-hint">Current image</p>
+            </div>
+            <input type="file" id="image" th:field="*{image}" accept="image/*">
+            <p class="image-hint">
+                <span th:if="${isEdit}">Leave empty to keep current image</span>
+            </p>
+
+            <button type="submit" th:text="${isEdit} ? 'Update Product' : 'Add Product'">Add product</button>
+            <a th:if="${isEdit}" href="/admin/products" class="btn" style="margin-left: 10px; text-decoration: none;">Cancel</a>
         </form>
     </div>
 </div>

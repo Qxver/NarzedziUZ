@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/product.css}">
+    <script th:src="@{/js/theme.js}"></script>
     <title th:text="${product.name} + ' - NarzedziUZ'">Product - NarzedziUZ</title>
 </head>
 <body>
@@ -97,23 +101,22 @@
             <h3>Your Review</h3>
             <div id="viewReviewMode">
                 <div class="existing-review-display">
-                    <div class="review-stars" style="margin-bottom: 15px;">
+                    <div class="review-stars review-stars-display">
                         <span th:each="i : ${#numbers.sequence(1, 5)}"
                               th:text="${i <= userReview.rating} ? '★' : '☆'"
-                              style="color: #ffc107; font-size: 24px;">★</span>
-                        <span style="margin-left: 10px; color: #666;">
+                              class="star-icon">★</span>
+                        <span class="rating-text">
                             (<span th:text="${userReview.rating}">0</span>/5)
                         </span>
                     </div>
                     <p th:if="${userReview.comment != null and !userReview.comment.isEmpty()}"
-                       class="review-comment"
-                       th:text="${userReview.comment}"
-                       style="background: #f8f9fa; padding: 15px; border-radius: 8px; line-height: 1.6;">Review comment</p>
+                       class="review-comment review-comment-box"
+                       th:text="${userReview.comment}">Review comment</p>
                     <p th:if="${userReview.comment == null or userReview.comment.isEmpty()}"
-                       style="background: #f8f9fa; padding: 15px; border-radius: 8px; color: #999; font-style: italic;">
+                       class="review-comment review-comment-box empty-comment">
 
                     </p>
-                    <div style="margin-top: 15px; color: #999; font-size: 14px;">
+                    <div class="review-meta">
                         <span th:text="${#temporals.format(userReview.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024</span>
                     </div>
                 </div>
@@ -173,15 +176,14 @@
                             maxlength="1000"
                             th:text="${userReview.comment}"></textarea>
 
-                    <div style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 15px;">
+                    <div class="char-limit-hint">
                         Maximum 1000 characters
                     </div>
                 </div>
 
-                <div style="display: flex; gap: 10px;">
+                <div class="button-group">
                     <button type="submit" class="submit-review-btn">Update Review</button>
-                    <button type="button" class="submit-review-btn" onclick="cancelEdit()"
-                            style="background-color: #6c757d;">Cancel</button>
+                    <button type="button" class="submit-review-btn cancel-btn" onclick="cancelEdit()">Cancel</button>
                 </div>
             </form>
         </div>
@@ -221,7 +223,7 @@
                             placeholder="Write your review..."
                             maxlength="1000"></textarea>
 
-                    <div style="color: #666; font-size: 14px; margin-top: -10px; margin-bottom: 15px;">
+                    <div class="char-limit-hint">
                         Maximum 1000 characters
                     </div>
                 </div>
@@ -236,7 +238,7 @@
         </div>
 
         <div class="reviews-list" th:if="${!#lists.isEmpty(reviews)}">
-            <h3 style="margin: 30px 0 20px 0; font-size: 24px; color: #333;">All Reviews</h3>
+            <h3 class="all-reviews-title">All Reviews</h3>
             <div class="review-item" th:each="review : ${reviews}">
                 <div class="review-header">
                     <span class="review-user"
@@ -248,7 +250,7 @@
                 <div class="review-stars">
                     <span th:each="i : ${#numbers.sequence(1, 5)}"
                           th:text="${i <= review.rating} ? '★' : '☆'">★</span>
-                    <span style="margin-left: 10px; color: #666; font-size: 16px;">
+                    <span class="rating-text">
                         (<span th:text="${review.rating}">0</span>/5)
                     </span>
                 </div>
@@ -257,8 +259,7 @@
                    class="review-comment"
                    th:text="${review.comment}">Review comment</p>
                 <p th:if="${review.comment == null or review.comment.isEmpty()}"
-                   class="review-comment"
-                   style="color: #999; font-style: italic;">
+                   class="review-comment empty-comment">
 
                 </p>
             </div>

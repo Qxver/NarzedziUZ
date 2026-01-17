@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
+    <script th:src="@{/js/theme.js}"></script>
     <title>NarzedziUZ</title>
 </head>
 <body>
 
-<div th:insert="~{fragments/navbar :: navbar(searchQuery=${searchQuery}, selectedCategory=${selectedCategory}, selectedSort=${selectedSort})}"></div>
+<div th:insert="~{fragments/navbar :: navbar}"></div>
 
 <div class="home-container">
     <div class="products-grid">

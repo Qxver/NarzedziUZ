@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -82,5 +83,9 @@ public class UserService {
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

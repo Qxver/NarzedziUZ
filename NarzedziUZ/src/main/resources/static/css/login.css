@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    background-color: var(--bg-primary, #f4f4f9);
     margin: 0;
     padding: 0;
 }
@@ -13,16 +13,16 @@ body {
 }
 
 .login {
-    background: #fff;
+    background: var(--bg-card, #fff);
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1));
     width: 320px;
     text-align: center;
 }
 
 h1 {
-    color: #333;
+    color: var(--text-primary, #333);
     margin-bottom: 20px;
 }
 
@@ -34,20 +34,23 @@ form label {
     display: block;
     margin-top: 10px;
     font-weight: bold;
+    color: var(--text-primary, #333);
 }
 
 form input {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-input, #ccc);
     border-radius: 4px;
+    background-color: var(--bg-input, #fff);
+    color: var(--text-primary, #333);
 }
 
 form button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: var(--accent-primary, #007bff);
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -57,16 +60,29 @@ form button {
 }
 
 form button:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-primary-hover, #0056b3);
 }
 
 .content a {
     display: block;
     margin-top: 15px;
-    color: #007bff;
+    color: var(--accent-primary, #007bff);
     text-decoration: none;
 }
 
 a:hover {
     text-decoration: underline;
+}
+
+.error-message {
+    color: var(--accent-danger, #dc3545);
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: var(--input-error-bg, #f8d7da);
+    border: 1px solid var(--accent-danger, #f5c6cb);
+    border-radius: 4px;
+}
+
+.error-message p {
+    margin: 0;
 }
