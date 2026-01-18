@@ -1,8 +1,12 @@
 package org.store.narzedziuz.service;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.store.narzedziuz.entity.Cart;
 import org.store.narzedziuz.entity.CartItem;
+import org.store.narzedziuz.entity.DiscountCode;
 import org.store.narzedziuz.entity.Product;
 import org.store.narzedziuz.repository.CartItemRepository;
 import org.store.narzedziuz.repository.CartRepository;
@@ -93,4 +97,22 @@ public class CartService {
     public Optional<CartItem> findCartItemById(Long cartItemId) {
         return cartItemRepository.findById(cartItemId);
     }
+
+    public BigDecimal calculateCartTotal(Cart cart, DiscountCode discount) {
+        BigDecimal total = cart.getCartItems().stream()
+                .map(item -> item.getProduct().getPrice()
+                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        if (discount != null) {
+            BigDecimal multiplier =
+                    BigDecimal.valueOf(100 - discount.getPercent())
+                            .divide(BigDecimal.valueOf(100));
+            total = total.multiply(multiplier);
+        }
+
+        return total;
+    }
+
+
 }

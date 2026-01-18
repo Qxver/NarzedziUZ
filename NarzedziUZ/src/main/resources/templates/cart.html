@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/cart.css}">
     <link rel="stylesheet" th:href="@{/css/purchase_form.css}">
+    <script th:src="@{/js/theme.js}"></script>
     <title>Twój Koszyk - NarzedziUZ</title>
 </head>
 <body>
@@ -278,196 +280,57 @@
 
                     <label><b>Street Address</b></label>
                     <input type="text" placeholder="Baker Street" name="street" required>
+    <div th:if="${not #lists.isEmpty(cartItems)}"
+         class="cart-summary"
+         th:with="
+            totalAmount=${#aggregates.sum(cartItems.![product.price * quantity])},
+            discountPercent=${discount != null ? discount.percent : 0},
+            finalAmount=${totalAmount * (100 - discountPercent) / 100}
+         ">
 
-                    <label><b>House / Apt Number</b></label>
-                    <input type="text" placeholder="221B" name="houseNumber" required>
+        <p th:if="${successMessage}" style="color:green" th:text="${successMessage}"></p>
+        <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
 
-                </div>
-            </details>
+        <form th:action="@{/cart/apply-discount}" method="post" class="discount-form">
+            <input type="text" name="code" placeholder="Kod rabatowy">
+            <button type="submit">Zastosuj</button>
+        </form>
 
-            <details name="checkout-step">
-                <summary>Payment Method</summary>
+        <p th:if="${discount != null}">
+            Zastosowany kod:
+            <b th:text="${discount.code}"></b>
+            (-<span th:text="${discount.percent}"></span>%)
+        </p>
 
-                <div style="padding: 10px 0;">
-                    <p>Select payment method:</p>
+        <h3>
+            Suma przed rabatem:
+            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN
+        </h3>
 
-                    <div class="payment-choosing-control">
-                        <label style="display:block; margin: 10px 0;">
-                            <input type="radio" id="blik-choose" name="paymentMethod" value="BLIK" required>
-                            BLIK
-                        </label>
+        <h3 th:if="${discount != null}">
+            Do zapłaty:
+            <span th:text="${#numbers.formatDecimal(finalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN
+        </h3>
 
-                        <label style="display:block; margin: 10px 0;">
-                            <input type="radio" id="transfer-choose" name="paymentMethod" value="TRANSFER">
-                            Bank Transfer
-                        </label>
+        <button class="checkout-button" onclick="openForm()">Przejdź do Kasy</button>
+    </div>
 
-                        <label style="display:block; margin: 10px 0;">
-                            <input type="radio" id="card-choose" name="paymentMethod" value="CARD">
-                            Credit Card
-                        </label>
-
-                        <label style="display:block; margin: 10px 0;">
-                            <input type="radio" id="paypal-choose" name="paymentMethod" value="PAYPAL">
-                            PayPal
-                        </label>
-                    </div>
-                    <!-- Pamiętaj dodać id="payment-section" lub klasę, jeśli potrzebujesz styli,
-     ale tutaj kluczowe są klasy dla JS -->
-
-                    <div class="dynamic-fields">
-
-                        <!-- BLIK Section -->
-                        <div class="number-input-wrapper blik-enter payment-input-group">
-                            <label><b>BLIK Code</b></label>
-                            <!-- Added ID: blik-code -->
-                            <input type="number" id="blik-code" name="blikCode" placeholder="000 000" maxlength="6">
-                            <span class="error-text">Please enter a valid 6-digit BLIK code.</span>
-                        </div>
-
-                        <!-- Bank Transfer Section -->
-                        <div class="number-input-wrapper transfer-enter">
-                            <p style="font-size: 0.9em; color: #555;">
-                                Payment details will be sent to your email address.
-                            </p>
-                        </div>
-
-                        <!-- Credit Card Section -->
-                        <div class="number-input-wrapper card-enter payment-input-group">
-                            <label><b>Card Number</b></label>
-                            <!-- Added ID: card-number -->
-                            <input type="text" id="card-number" name="cardNumber" placeholder="0000 0000 0000 0000" pattern="\d{16}">
-                            <span class="error-text">Card number must be 16 digits.</span>
-
-                            <div style="display: flex; gap: 10px;">
-                                <div style="flex: 1;">
-                                    <label><b>Expiry</b></label>
-                                    <!-- Added ID: card-expiry -->
-                                    <input type="text" id="card-expiry" name="cardExpiry" placeholder="MM/YY" pattern="\d{2}/\d{2}">
-                                    <span class="error-text">Format: MM/YY</span>
-                                </div>
-                                <div style="flex: 1;">
-                                    <label><b>CVC</b></label>
-                                    <!-- Added ID: card-cvc -->
-                                    <input type="text" id="card-cvc" name="cardCvc" placeholder="123" pattern="\d{3}">
-                                    <span class="error-text">3 digits required.</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- PayPal Section -->
-                        <div class="number-input-wrapper paypal-enter">
-                            <p style="font-size: 0.9em; color: #555;">
-                                You will be redirected to PayPal to complete your purchase.
-                            </p>
-                        </div>
-                    </div>
-
-
-                    <button type="submit" class="btn">Place Order</button>
-                    <button type="button" class="btn cancel" onclick="document.getElementById('myForm').style.display='none'">Cancel</button>
-                </div>
-            </details>
+    <div class="form-popup" id="myForm">
+        <form action="/process-shipping" method="post" class="form-container" novalidate>
+            <h2>Checkout</h2>
 
         </form>
     </div>
+
     <script>
-        // Configuration: Map Radio Button IDs to Input IDs that must be required
-        const paymentMap = {
-            'blik-choose':     ['blik-code'],
-            'transfer-choose': [], // Transfer needs no extra inputs
-            'card-choose':     ['card-number', 'card-expiry', 'card-cvc'],
-            'paypal-choose':   []
-        };
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.querySelector('.form-container');
-            const inputs = form.querySelectorAll('input, select');
-            const radioButtons = document.getElementsByName('paymentMethod');
-
-            // A. Listen for payment method changes
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', updatePaymentRequirements);
-            });
-
-            // B. Live validation (when user leaves a field)
-            inputs.forEach(input => {
-                input.addEventListener('blur', function() {
-                    validateField(this);
-                });
-                // Remove red border immediately when user starts typing
-                input.addEventListener('input', function() {
-                    this.classList.remove('invalid');
-                });
-            });
-
-            // C. Validate on Submit
-            form.addEventListener('submit', function(event) {
-                let isValid = true;
-
-                // Check all visible inputs
-                inputs.forEach(input => {
-                    if (!validateField(input)) {
-                        isValid = false;
-                    }
-                });
-
-                if (!isValid) {
-                    event.preventDefault(); // Stop form submission
-                    alert("Please fill in all required fields correctly.");
-                }
-            });
-        });
-
-        // Function to toggle 'required' attributes based on payment method
-        function updatePaymentRequirements() {
-            // 1. Clear 'required' from ALL payment inputs first
-            document.querySelectorAll('.payment-input-group input').forEach(input => {
-                input.required = false;
-                input.classList.remove('invalid'); // clear errors
-                input.value = ''; // Optional: clear value when switching
-            });
-
-            // 2. Find selected radio
-            const selectedRadio = document.querySelector('input[name="paymentMethod"]:checked');
-            if (!selectedRadio) return;
-
-            // 3. Get IDs to require from map
-            const fieldsToRequire = paymentMap[selectedRadio.id];
-
-            // 4. Set 'required' = true for relevant fields
-            if (fieldsToRequire) {
-                fieldsToRequire.forEach(fieldId => {
-                    const el = document.getElementById(fieldId);
-                    if (el) el.required = true;
-                });
-            }
-        }
-
-        // Helper: Validate a single field
-        function validateField(input) {
-            // Ignore hidden fields (e.g., hidden payment inputs)
-            if (input.offsetParent === null) return true;
-
-            // Use HTML5 validation API
-            if (!input.checkValidity()) {
-                input.classList.add('invalid');
-                return false;
-            } else {
-                input.classList.remove('invalid');
-                return true;
-            }
-        }
-
-        // Popup Logic
         function openForm() {
             document.getElementById("myForm").style.display = "block";
         }
-
         function closeForm() {
             document.getElementById("myForm").style.display = "none";
         }
     </script>
+
 </div>
 </body>
 </html>
