@@ -5,17 +5,17 @@
     </div>
 
     <div class="search-bar">
-        <input type="text" placeholder="Search for products...">
+        <input type="text" th:placeholder="#{nav.search_placeholder}">
         <select>
-            <option value="">Filter</option>
-            <option value="filter1">By price (descending)</option>
-            <option value="filter2">By price (ascending)</option>
-            <option value="filter3">By rating (descending)</option>
-            <option value="filter4">By rating (ascending)</option>
+            <option value="" th:text="#{nav.filter_default}">Filter</option>
+            <option value="filter1" th:text="#{nav.filter_price_desc}">By price (descending)</option>
+            <option value="filter2" th:text="#{nav.filter_price_asc}">By price (ascending)</option>
+            <option value="filter3" th:text="#{nav.filter_rating_desc}">By rating (descending)</option>
+            <option value="filter4" th:text="#{nav.filter_rating_asc}">By rating (ascending)</option>
         </select>
 
         <select>
-            <option value="">All Categories</option>
+            <option value="" th:text="#{nav.categories_all}">All Categories</option>
             <option value="category1">Category1</option>
             <option value="category2">Category2</option>
             <option value="category3">Category3</option>
@@ -25,11 +25,25 @@
     </div>
 
     <div class="navbar-buttons">
-        <a href="/cart" class="navbar-button">Cart</a>
+        <div class="navbar-buttons">
+            <div class="lang-container">
+                <a th:href="@{${#httpServletRequest.requestURI}(lang='pl')}"
+                   class="lang-link"
+                   th:classappend="${#locale.language == 'pl'} ? 'active' : ''">PL</a>
+
+                <span class="lang-separator">|</span>
+
+                <a th:href="@{${#httpServletRequest.requestURI}(lang='en')}"
+                   class="lang-link"
+                   th:classappend="${#locale.language == 'en'} ? 'active' : ''">EN</a>
+            </div>
+
+            <a href="/cart" class="navbar-button" th:text="#{nav.cart}">Cart</a>
+
 
         <!-- ZAMIAST isLoggedIn UŻYWAJ session.user -->
-        <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
-        <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
-    </div>
+            <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
+            <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button" th:text="#{nav.login}">Log in</a>
+        </div>
 
 </div>
