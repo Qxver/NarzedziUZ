@@ -22,7 +22,7 @@
         <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button">wish list</a>
       </div>
       <div>
-        <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Log Out</a>
+        <a th:if="${session.user != null}" th:href="@{/logout}" class="profile-button">Log Out</a>
       </div>
     </div>
     <div class="profile-header">
@@ -49,20 +49,25 @@
       <div class="section">
         <h2 class="section-title" th:id="'purchaseHistoryTitle'" th:text="${purchaseHistoryTitle}">Purchase History</h2>
         <div th:id="'purchasesList'">
-          <div th:each="purchase : ${purchases}" class="purchase-card" th:id="'purchase-'+${purchase.id}">
+          <div th:each="purchase : ${purchases}" class="purchase-card" th:id="'purchase-'+${purchase.orderId}">
             <div class="purchase-header">
-              <div class="purchase-date" th:text="${purchase.formattedDate}">15 grudnia 2024</div>
-              <div class="purchase-status" th:text="${purchase.status}">Dostarczone</div>
+              <div class="purchase-date" th:text="${#temporals.format(purchase.orderDate, 'dd-MM-yyyy HH:mm')}">15.12.2024</div>
+
+              <div class="purchase-status" th:text="${purchase.orderStatus}">Dostarczone</div>
             </div>
+
             <div class="purchase-items">
-              <div th:each="item : ${purchase.items}" class="purchase-item">
-                <span class="item-name" th:text="${item.productName}">Wiertarka</span>
-                <span class="item-price" th:text="${item.price}">899 zł</span>
+              <div th:each="item : ${purchase.orderItems}" class="purchase-item">
+
+                <span class="item-name" th:text="${item.product.name}">Wiertarka</span>
+
+                <span class="item-price" th:text="${item.price} + ' zł'">899 zł</span>
               </div>
             </div>
+
             <div class="purchase-total">
               <span class="total-label">Suma:</span>
-              <span class="total-amount" th:text="${purchase.total}">988 zł</span>
+              <span class="total-amount" th:text="${purchase.priceSum} + ' zł'">988 zł</span>
             </div>
           </div>
           <div th:if="${purchases.isEmpty()}" class="no-data">Brak zakupów</div>

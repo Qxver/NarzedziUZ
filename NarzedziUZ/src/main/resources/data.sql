@@ -296,3 +296,12 @@ FROM category c WHERE c.name = 'Osprzęt i akcesoria'
 UNION ALL
 SELECT 'Zestaw wierteł do metalu DeWalt PRO', 'Zestaw wierteł tytanowych.', 171.97, 13, c.category_id, 'DeWalt', 'products_images/zestaw_generic.jpg'
 FROM category c WHERE c.name = 'Osprzęt i akcesoria';
+
+INSERT INTO users (email, password, first_name, last_name, role)
+VALUES (
+    'admin@admin.pl',
+    '$2a$10$GRLdNijSQMUvl/au9ofL.eDwmoohzzS7.rmjMaJJJwal3vSRl0ep2',
+    'Admin',
+    'Systemowy',
+    'ADMIN'
+);
