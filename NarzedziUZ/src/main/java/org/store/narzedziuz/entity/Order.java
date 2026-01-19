@@ -2,6 +2,7 @@ package org.store.narzedziuz.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,13 +39,16 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @ToString.Exclude // <--- DODAJ TO (wymaga importu lombok.ToString)
     private User user;
 
     @OneToMany(mappedBy = "order")
+    @ToString.Exclude // <--- I TO TEŻ
     private List<OrderItem> orderItems;
 
     @OneToOne(mappedBy = "order")
     private Invoice invoice;
+
 
     @PrePersist
     protected void onCreate() {

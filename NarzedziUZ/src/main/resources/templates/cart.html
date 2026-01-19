@@ -73,6 +73,53 @@
         <p th:if="${successMessage}" style="color:green" th:text="${successMessage}"></p>
         <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
 
+                </div>
+            </details>
+
+            <details name="checkout-step">
+                <summary>Payment Method</summary>
+
+                <div style="padding: 10px 0;">
+                    <p>Select payment method:</p>
+
+                    <div class="payment-choosing-control">
+                        <label style="display:block; margin: 10px 0;">
+                            <input type="radio" id="blik-choose" name="paymentMethod" value="BLIK" required>
+                            BLIK
+                        </label>
+
+                        <label style="display:block; margin: 10px 0;">
+                            <input type="radio" id="transfer-choose" name="paymentMethod" value="TRANSFER">
+                            Bank Transfer
+                        </label>
+
+                        <label style="display:block; margin: 10px 0;">
+                            <input type="radio" id="card-choose" name="paymentMethod" value="CARD">
+                            Credit Card
+                        </label>
+
+                        <label style="display:block; margin: 10px 0;">
+                            <input type="radio" id="paypal-choose" name="paymentMethod" value="PAYPAL">
+                            PayPal
+                        </label>
+                    </div>
+
+                    <div class="dynamic-fields">
+
+                        <!-- BLIK Section -->
+                        <div class="number-input-wrapper blik-enter payment-input-group">
+                            <label><b>BLIK Code</b></label>
+                            <!-- Added ID: blik-code -->
+                            <input type="number" id="blik-code" name="blikCode" placeholder="000 000" maxlength="6">
+                            <span class="error-text">Please enter a valid 6-digit BLIK code.</span>
+                        </div>
+
+                        <!-- Bank Transfer Section -->
+                        <div class="number-input-wrapper transfer-enter">
+                            <p style="font-size: 0.9em; color: #555;">
+                                Payment details will be sent to your email address.
+                            </p>
+                        </div>
         <form th:action="@{/cart/apply-discount}" method="post" class="discount-form">
             <input type="text" name="code" placeholder="Kod rabatowy">
             <button type="submit">Zastosuj</button>
