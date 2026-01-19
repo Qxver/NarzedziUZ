@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    background-color: var(--bg-primary, #f5f5f5);
 }
 
 .content {
@@ -17,14 +17,14 @@ body {
 .admin-container {
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
+    background: var(--bg-card, white);
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-md, 0 2px 4px rgba(0,0,0,0.1));
 }
 
 .admin-container h1 {
-    color: #333;
+    color: var(--text-primary, #333);
     margin-bottom: 20px;
 }
 
@@ -36,27 +36,27 @@ body {
 }
 
 .admin-card {
-    background: #f9f9f9;
+    background: var(--bg-tertiary, #f9f9f9);
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color, #ddd);
 }
 
 .admin-card h2 {
-    color: #333;
+    color: var(--text-primary, #333);
     margin-bottom: 10px;
     font-size: 1.5em;
 }
 
 .admin-card p {
-    color: #666;
+    color: var(--text-muted, #666);
     margin-bottom: 15px;
 }
 
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #007bff;
+    background-color: var(--accent-primary, #007bff);
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -64,12 +64,12 @@ body {
 }
 
 .btn:hover {
-    background-color: #0056b3;
+    background-color: var(--accent-primary-hover, #0056b3);
 }
 
 .back-link {
     display: inline-block;
-    color: #007bff;
+    color: var(--accent-primary, #007bff);
     text-decoration: none;
     margin-bottom: 20px;
 }
@@ -86,21 +86,26 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
+    background-color: var(--bg-card, white);
 }
 
 thead {
-    background-color: #f8f9fa;
+    background-color: var(--bg-tertiary, #f8f9fa);
 }
 
 th, td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-color, #ddd);
 }
 
 th {
     font-weight: bold;
-    color: #333;
+    color: var(--text-primary, #333);
+}
+
+td {
+    color: var(--text-secondary, #555);
 }
 
 .btn-edit, .btn-delete {
@@ -113,7 +118,7 @@ th {
 }
 
 .btn-edit {
-    background-color: #28a745;
+    background-color: var(--accent-success, #28a745);
     color: white;
 }
 
@@ -122,7 +127,7 @@ th {
 }
 
 .btn-delete {
-    background-color: #dc3545;
+    background-color: var(--accent-danger, #dc3545);
     color: white;
 }
 

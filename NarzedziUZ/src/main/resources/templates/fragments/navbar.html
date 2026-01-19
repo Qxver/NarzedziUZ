@@ -6,23 +6,28 @@
         <a th:href="@{/}">NarzedziUZ</a>
     </div>
 
-    <form class="search-bar" method="get" action="/">
+    <form class="search-bar" method="get" action="/" id="filterForm">
         <input type="text"
                name="q"
+               th:value="${searchQuery}"
                placeholder="Search for products..."/>
 
-        <select>
-            <option value="">Filter</option>
-            <option value="filter1">By price (descending)</option>
-            <option value="filter2">By price (ascending)</option>
-            <option value="filter3">By rating (descending)</option>
-            <option value="filter4">By rating (ascending)</option>
+        <select name="sortBy" id="sortBy" onchange="document.getElementById('filterForm').submit()">
+            <option value="">Sort By</option>
+            <option value="price-asc" th:selected="${selectedSort == 'price-asc'}">Price: Low to High</option>
+            <option value="price-desc" th:selected="${selectedSort == 'price-desc'}">Price: High to Low</option>
+            <option value="rating-asc" th:selected="${selectedSort == 'rating-asc'}">Rating: Low to High</option>
+            <option value="rating-desc" th:selected="${selectedSort == 'rating-desc'}">Rating: High to Low</option>
         </select>
-        <select>
+
+        <select name="categoryId" id="categoryId" onchange="document.getElementById('filterForm').submit()">
             <option value="">All Categories</option>
-            <option value="category1">Category1</option>
-            <option value="category2">Category2</option>
-            <option value="category3">Category3</option>
+            <option th:each="category : ${categories}"
+                    th:value="${category.categoryId}"
+                    th:text="${category.name}"
+                    th:selected="${selectedCategory == category.categoryId}">
+                Category
+            </option>
         </select>
 
         <button type="submit" class="search-button">Search</button>
@@ -33,10 +38,25 @@
         <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
         <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
         <a href="/add-product" class="navbar-button">Add Product</a>
+        <button id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle dark/light theme">
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+        </button>
     </div>
 
     <ul>
-        <!-- Admin panel link, visible only to logged-in users with ADMIN role -->
         <li th:if="${session.user != null && session.user.role == 'ADMIN'}">
             <a th:href="@{/admin}">Admin Panel</a>
         </li>
