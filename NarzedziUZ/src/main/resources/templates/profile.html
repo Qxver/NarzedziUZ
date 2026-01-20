@@ -18,7 +18,7 @@
   <div class="profile-container">
     <div class="profile-buttons">
       <div>
-        <a th:if="${session.user != null}" th:href="@{/login}" class="profile-button">Admin Panel</a>
+        <a th:if="${session.user.role == 'ADMIN'}" th:href="@{/admin}" class="profile-button">Admin Panel</a>
       </div>
       <div>
         <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button">wish list</a>

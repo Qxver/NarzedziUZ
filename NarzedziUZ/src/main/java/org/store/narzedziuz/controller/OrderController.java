@@ -86,7 +86,7 @@ public class OrderController {
             Order order = orderService.getOrderWithDetails(orderId);
 
             if (!order.getUserId().equals(user.getUserId())) {
-                return "redirect:/profile";
+                return "redirect:/user/profile";
             }
 
             model.addAttribute("order", order);
@@ -95,7 +95,7 @@ public class OrderController {
             return "purchase_summary";
 
         } catch (Exception e) {
-            return "redirect:/profile";
+            return "redirect:/user/profile";
         }
     }
 
