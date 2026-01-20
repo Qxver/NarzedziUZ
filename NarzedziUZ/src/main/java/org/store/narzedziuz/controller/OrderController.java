@@ -27,12 +27,11 @@ public class OrderController {
     public String processShipping(@ModelAttribute OrderFormDto form, HttpSession session) {
         User user = (User) session.getAttribute("user");
 
-        // Zabezpieczenie: jeśli sesja wygasła, wracamy do logowania
         if (user == null) {
             return "redirect:/login";
         }
 
-        // Budowanie adresu dostawy
+        // 1. Adres dostawy
         String fullAddress = String.format("%s %s, %s %s, %s",
                 form.getStreet() != null ? form.getStreet() : "",
                 form.getHouseNumber() != null ? form.getHouseNumber() : "",
@@ -41,38 +40,56 @@ public class OrderController {
                 form.getCountry() != null ? form.getCountry() : ""
         ).trim();
 
-        // Budowanie szczegółów płatności
-        String paymentDetails = form.getPaymentMethod();
-        if ("BLIK".equals(form.getPaymentMethod())) {
-            String code = form.getBlikCode() != null ? form.getBlikCode() : "BRAK";
-            paymentDetails += " (Kod: " + code + ")";
-        } else if ("CARD".equals(form.getPaymentMethod())) {
-            String cardNum = form.getCardNumber();
-            if (cardNum != null && cardNum.length() >= 4) {
-                String last4 = cardNum.substring(cardNum.length() - 4);
-                paymentDetails += " (Karta: ****" + last4 + ")";
-            } else {
-                paymentDetails += " (Karta: Błąd nr)";
-            }
+        // 2. Budowanie ładnego opisu płatności (Bezpieczniej i czytelniej)
+        String paymentDetails = form.getPaymentMethod(); // Domyślnie np. "BLIK", "PAYPAL"
+
+        switch (form.getPaymentMethod()) {
+            case "BLIK":
+                // Nie zapisujemy kodu BLIK (jest jednorazowy i tajny), tylko informację
+                paymentDetails = "BLIK (Platnosc mobilna)";
+                break;
+
+            case "CARD":
+                String cardNum = form.getCardNumber();
+                if (cardNum != null && cardNum.length() >= 4) {
+                    String last4 = cardNum.substring(cardNum.length() - 4);
+                    paymentDetails = "Karta Platnicza (**** " + last4 + ")";
+                } else {
+                    paymentDetails = "Karta Platnicza";
+                }
+                break;
+
+            case "PAYPAL":
+                // Dla PayPal zazwyczaj zapisuje się ID transakcji, tu uproszczamy
+                paymentDetails = "PayPal (Online)";
+                break;
+
+            case "TRANSFER":
+                paymentDetails = "Przelew Tradycyjny";
+                break;
+
+            default:
+                paymentDetails = "Inna: " + form.getPaymentMethod();
+                break;
         }
 
         try {
-            // 1. Tworzymy zamówienie
+            // 3. Tworzymy zamówienie
             Order savedOrder = orderService.createOrderFromCart(
                     user.getUserId(),
                     fullAddress,
-                    fullAddress, // billing = shipping (uproszczenie)
-                    paymentDetails
+                    fullAddress,
+                    paymentDetails // Teraz do bazy trafi ładny opis
             );
 
-            // 2. Przekierowujemy konkretnie do tego zamówienia
             return "redirect:/user/purchase/" + savedOrder.getOrderId();
 
         } catch (RuntimeException e) {
-            System.err.println("Błąd podczas składania zamówienia: " + e.getMessage());
+            System.err.println("Błąd: " + e.getMessage());
             return "redirect:/cart?error=true";
         }
     }
+
 
     @GetMapping("/user/purchase/{id}")
     public String showPurchaseSummary(@PathVariable("id") Long orderId, Model model, HttpSession session) {
@@ -106,13 +123,10 @@ public class OrderController {
 
         Order order = orderService.getOrderWithDetails(orderId);
 
-        // Zabezpieczenie: czy użytkownik ma prawo do tego zamówienia
         if (!order.getUserId().equals(user.getUserId())) {
             return ResponseEntity.status(403).build();
         }
 
-        // --- POPRAWIONA CZĘŚĆ ---
-        // Generujemy PDF używając nowej metody, która przyjmuje obiekt Order
         byte[] pdfBytes = pdfService.generateInvoicePdf(order);
         // ------------------------
 
@@ -121,7 +135,6 @@ public class OrderController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
-    // W jakimś kontrolerze
     @Autowired
     private EmailService emailService;
 
@@ -129,7 +142,7 @@ public class OrderController {
     @ResponseBody
     public String testEmail() {
         try {
-            // Podmień na swój prywatny adres, żeby sprawdzić czy dochodzi
+
             emailService.sendEmailWithAttachment(
                     "janeksp18@gmail.com",
                     "Test maila",
