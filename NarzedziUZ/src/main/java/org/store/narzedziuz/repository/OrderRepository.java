@@ -13,6 +13,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems WHERE o.userId = :userId")
     List<Order> findByUserIdWithItems(@Param("userId") Long userId);
     List<Order> findByOrderStatus(String status);
-    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderItems WHERE o.orderId = :id")
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderItems oi LEFT JOIN FETCH oi.product WHERE o.orderId = :id")
     Optional<Order> findByIdWithItems(@Param("id") Long id);
+
+
+
 }
