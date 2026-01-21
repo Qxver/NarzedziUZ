@@ -7,6 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
     <script th:src="@{/js/theme.js}"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>Login</title>
 </head>
 <body>
@@ -24,6 +25,8 @@
         <form method="post" action="/login">
             <input type="email" id="email" name="email" placeholder="E-mail" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
+
+            <div class="g-recaptcha" th:data-sitekey="${recaptchaSiteKey}" style="margin: 15px 0;"></div>
 
             <button type="submit">Login</button>
         </form>

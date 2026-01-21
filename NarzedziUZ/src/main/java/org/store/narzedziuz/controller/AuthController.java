@@ -2,7 +2,9 @@ package org.store.narzedziuz.controller;
 
 import org.store.narzedziuz.entity.User;
 import org.store.narzedziuz.service.UserService;
+import org.store.narzedziuz.service.RecaptchaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,20 +16,33 @@ import jakarta.servlet.http.HttpSession;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
+    private final RecaptchaService recaptchaService;
+
+    @Value("${recaptcha.site-key}")
+    private String recaptchaSiteKey;
 
     @GetMapping("/login")
     public String loginPage(HttpSession session, Model model) {
         if (session.getAttribute("user") != null) {
             return "redirect:/";
         }
+        model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
         return "login";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam String email,
                         @RequestParam String password,
+                        @RequestParam(name = "g-recaptcha-response", required = false) String recaptchaResponse,
                         Model model,
                         HttpSession session) {
+        model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
+        
+        if (!recaptchaService.verifyRecaptcha(recaptchaResponse)) {
+            model.addAttribute("error", "Please complete the reCAPTCHA verification");
+            return "login";
+        }
+        
         try {
             User user = userService.loginUser(email, password);
             // Zmieniamy klucz na "loggedInUser", żeby pasował do UserProfileController
@@ -45,11 +60,12 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String registerPage(HttpSession session) {
+    public String registerPage(HttpSession session, Model model) {
         // If already logged in, redirect to home
         if (session.getAttribute("user") != null) {
             return "redirect:/";
         }
+        model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
         return "register";
     }
 
@@ -59,8 +75,16 @@ public class AuthController {
                            @RequestParam String email,
                            @RequestParam String password,
                            @RequestParam String confirmPassword,
+                           @RequestParam(name = "g-recaptcha-response", required = false) String recaptchaResponse,
                            Model model,
                            HttpSession session) {
+        model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
+        
+        if (!recaptchaService.verifyRecaptcha(recaptchaResponse)) {
+            model.addAttribute("error", "Please complete the reCAPTCHA verification");
+            return "register";
+        }
+        
         try {
             if (!password.equals(confirmPassword)) {
                 model.addAttribute("error", "Passwords do not match");
