@@ -18,30 +18,30 @@
   <div class="profile-container">
     <div class="profile-buttons">
       <div>
-        <a th:if="${session.user.role == 'ADMIN'}" th:href="@{/admin}" class="profile-button">Admin Panel</a>
+        <a th:if="${session.user.role == 'ADMIN'}" th:href="@{/admin}" class="profile-button" th:text="#{profile.btn.admin}"></a>
       </div>
       <div>
-        <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button">wish list</a>
+        <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button" th:text="#{profile.btn.wishlist}"></a>
       </div>
       <div>
-        <a th:if="${session.user != null}" th:href="@{/logout}" class="profile-button">Log Out</a>
+        <a th:if="${session.user != null}" th:href="@{/logout}" class="profile-button" th:text="#{profile.btn.logout}"></a>
       </div>
     </div>
     <div class="profile-header">
-      <h1 class="profile-title" th:id="'pageTitle'" th:text="${pageTitle}">My Profile</h1>
-      <p class="welcome-text" th:id="'welcomeMessage'" th:text="${welcomeMessage}">Welcome Back</p>
+      <h1 class="profile-title" th:id="'pageTitle'" th:text="#{profile.title}"></h1>
+      <p class="welcome-text" th:id="'welcomeMessage'" th:text="#{profile.welcome}"></p>
       <div class="profile-avatar" th:id="'avatar'" th:text="${initials}">JK</div>
       <div class="profile-info">
         <div class="info-item">
-          <div class="info-label">Purchases</div>
+          <div class="info-label" th:text="#{profile.stats.purchases}">Purchases</div>
           <div class="info-value" th:id="'totalPurchases'" th:text="${totalPurchases}">12</div>
         </div>
         <div class="info-item">
-          <div class="info-label">Spent</div>
-          <div class="info-value" th:id="'totalSpent'" th:text="${totalSpent} + ' zł'">3 450 zł</div>
+          <div class="info-label" th:text="#{profile.stats.spent}">Spent</div>
+          <div class="info-value" th:id="'totalSpent'" th:text="${totalSpent} ' ' + #{currency}">3 450 zł</div>
         </div>
         <div class="info-item">
-          <div class="info-label">Ratings</div>
+          <div class="info-label" th:text="#{profile.stats.ratings}">Ratings</div>
           <div class="info-value" th:id="'totalRatings'" th:text="${totalRatings}">8</div>
         </div>
       </div>
@@ -49,7 +49,7 @@
 
     <div class="profile-content">
       <div class="section">
-        <h2 class="section-title" th:id="'purchaseHistoryTitle'" th:text="${purchaseHistoryTitle}">Purchase History</h2>
+        <h2 class="section-title" th:id="'purchaseHistoryTitle'" th:text="#{profile.history.title}"></h2>
         <div th:id="'purchasesList'">
           <div th:each="purchase : ${purchases}" class="purchase-card" th:id="'purchase-'+${purchase.orderId}">
             <div class="purchase-header">
@@ -75,7 +75,7 @@
 
         <div class="profile-content">
             <div class="section">
-                <h2 class="section-title" th:text="#{profile.history.title}">Purchase History</h2>
+                <h2 class="section-title" th:text="#{profile.history.title}"></h2>
                 <div id="purchasesList">
                     <div th:each="purchase : ${purchases}" class="purchase-card">
                         <div class="purchase-header">
