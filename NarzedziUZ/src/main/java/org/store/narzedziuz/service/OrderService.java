@@ -26,11 +26,9 @@ public class OrderService {
 
     @Transactional
     public Order createOrderFromCart(Long userId, String deliverAddress, String billingAddress, String paymentMethod, BigDecimal finalPriceFromForm) {
-        // 1. Pobranie użytkownika (WAŻNE DO PDF)
+        // 1. Pobranie usera i koszyka
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // 2. Pobranie koszyka
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
@@ -38,63 +36,74 @@ public class OrderService {
             throw new RuntimeException("Cart is empty");
         }
 
-        // 3. Tworzenie zamówienia
+        // 2. Wstępny zapis zamówienia (żeby dostać ID)
         Order order = new Order();
-        order.setUser(user);         // <-- TUTAJ NAPRAWA: Przypisujemy obiekt User
-        order.setUserId(userId);     // Ustawiamy też ID dla pewności
+        order.setUser(user);
+        order.setUserId(userId);
         order.setDeliverAddress(deliverAddress);
         order.setBillingAddress(billingAddress);
         order.setPaymentMethod(paymentMethod);
         order.setOrderStatus("NOWE");
         order.setOrderDate(LocalDateTime.now());
 
-        BigDecimal total = BigDecimal.ZERO;
-
+        // Zapiszmy, żeby mieć ID do pozycji
         order = orderRepository.save(order);
 
-        // 4. Przenoszenie produktów
+        BigDecimal total = BigDecimal.ZERO;
+
+        // 3. Przenoszenie produktów
+        // Tworzymy tymczasową listę, żeby potem ręcznie wpiąć ją do obiektu Order (dla PDF)
+        // JPA i tak to ogarnie przez relację w OrderItem, ale dla pewności w pamięci robimy tak:
+        List<OrderItem> newOrderItems = new java.util.ArrayList<>();
+
         for (CartItem cartItem : cart.getCartItems()) {
             OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order); // WAŻNE: Ustawiamy relację obiektową
             orderItem.setOrderId(order.getOrderId());
             orderItem.setProductId(cartItem.getProductId());
+            orderItem.setProduct(cartItem.getProduct()); // Ustawiamy produkt
             orderItem.setQuantity(cartItem.getQuantity());
 
             BigDecimal price = cartItem.getProduct().getPrice();
             orderItem.setPrice(price);
-            orderItem.setProduct(cartItem.getProduct()); // Ustawiamy produkt dla PDF
-
-            orderItemRepository.save(orderItem);
 
             total = total.add(price.multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+
+            // ZAPISUJEMY POZYCJĘ!
+            orderItemRepository.save(orderItem);
+
+            newOrderItems.add(orderItem); // Dodajemy do naszej listy
         }
 
-        // 5. Czyszczenie koszyka
-        cart.getCartItems().clear();
-        cartRepository.save(cart);
-
-        // 6. Aktualizacja sumy
+        // 4. Aktualizacja sumy w zamówieniu
         order.setPriceSum(total);
         if (finalPriceFromForm != null && finalPriceFromForm.compareTo(BigDecimal.ZERO) > 0) {
             order.setPriceSum(finalPriceFromForm);
         }
-        orderRepository.save(order);
 
-        // 7. Pobranie pełnego obiektu
-        Order fullOrder = getOrderWithDetails(order.getOrderId());
+        // RĘCZNE WPIĘCIE LISTY DO OBIEKTU (Dla pewności przed Flushem)
+        order.setOrderItems(newOrderItems);
 
-        // ZABEZPIECZENIE: Jeśli repozytorium nie dociągnęło usera, ustawiamy go ręcznie
-        if (fullOrder.getUser() == null) {
-            fullOrder.setUser(user);
-        }
+        // 5. FLUSH - Wysyłamy wszystko do bazy
+        // To zapisze zaktualizowaną cenę ORAZ upewni się, że OrderItems są w bazie
+        orderRepository.saveAndFlush(order);
 
-        // ==================================================================
-        // 8. WYSYŁKA MAILA
-        // ==================================================================
+        // 6. Czyszczenie koszyka
+        cart.getCartItems().clear();
+        cartRepository.save(cart);
+
+        // 7. Pobieramy "Full Order" dla PDF
+        // Dzięki flushowi wyżej, to zapytanie zwróci komplet danych
+        Order fullOrder = orderRepository.findByIdWithItems(order.getOrderId())
+                .orElse(order);
+
+        // Zabezpieczenie Usera (czasem fetch może nie zaciągnąć usera w tym samym query)
+        if (fullOrder.getUser() == null) fullOrder.setUser(user);
+
+        // 8. Generowanie PDF i Wysyłka
         try {
-            System.out.println(">>> Generowanie PDF dla: " + fullOrder.getOrderId());
             byte[] invoicePdf = pdfService.generateInvoicePdf(fullOrder);
 
-            System.out.println(">>> Wysyłka maila do: " + user.getEmail());
             emailService.sendEmailWithAttachment(
                     user.getEmail(),
                     "Potwierdzenie zamówienia nr " + fullOrder.getOrderId(),
@@ -102,9 +111,8 @@ public class OrderService {
                     invoicePdf,
                     "Faktura_" + fullOrder.getOrderId() + ".pdf"
             );
-
         } catch (Exception e) {
-            System.err.println(">>> BŁĄD WYSYŁKI MAILA: " + e.getMessage());
+            // Logujemy, ale nie przerywamy procesu zamówienia
             e.printStackTrace();
         }
 

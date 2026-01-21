@@ -64,7 +64,6 @@
         <p><a th:href="@{/}">Wróć do strony głównej i zacznij zakupy.</a></p>
     </div>
 
-    <!-- SEKCJA 3: Podsumowanie (Naprawiony merge: Rabaty + Przycisk Kasy) -->
     <div th:if="${not #lists.isEmpty(cartItems)}"
          class="cart-summary"
          th:with="
@@ -106,7 +105,7 @@
         <form action="/process-shipping" method="post" class="form-container" novalidate>
 
             <input type="hidden" name="finalPrice"
-                   th:value="${#aggregates.sum(cartItems.![product.price * quantity]) * (100 - (discount != null ? discount.percent : 0)) / 100}" />
+                   th:value="${cartItems != null and not #lists.isEmpty(cartItems) ? (#aggregates.sum(cartItems.![product.price * quantity]) ?: 0) * (100 - (discount != null ? discount.percent : 0)) / 100 : 0}" />
             <h2>Checkout</h2>
 
             <details name="checkout-step" open>
