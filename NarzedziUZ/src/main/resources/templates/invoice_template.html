@@ -289,11 +289,11 @@
             <td th:text="${item.product.name}">Wiertarka elektryczna</td>
             <td class="text-center" th:text="${item.quantity}">2</td>
             <td class="text-right" th:text="${item.price} + ' zł'">899,00 zł</td>
-            <td class="text-right">0,00 zł</td>
+            <td class="text-right" th:text="${item.price - order.priceSum + ' zł'}">0,00 zł</td>
             <td class="text-right" th:with="vat=${item.price * 0.23}">
                 <span th:text="${#numbers.formatDecimal(vat, 2, 2)} + ' zł'">206,77 zł</span>
             </td>
-            <td class="text-right" th:text="${item.price} + ' zł'">1798,00 zł</td>
+            <td class="text-right" th:text="${order.priceSum} + ' zł'">1798,00 zł</td>
         </tr>
         </tbody>
     </table>
