@@ -102,9 +102,11 @@
         <button class="checkout-button" onclick="openForm()">Przejdź do Kasy</button>
     </div>
 
-    <!-- SEKCJA 4: Popup Formularza Checkout (Z Twojego kodu) -->
     <div class="form-popup" id="myForm">
         <form action="/process-shipping" method="post" class="form-container" novalidate>
+
+            <input type="hidden" name="finalPrice"
+                   th:value="${#aggregates.sum(cartItems.![product.price * quantity]) * (100 - (discount != null ? discount.percent : 0)) / 100}" />
             <h2>Checkout</h2>
 
             <details name="checkout-step" open>
@@ -219,7 +221,6 @@
         </form>
     </div>
 
-    <!-- SEKCJA 5: JavaScript (Z Twojego kodu) -->
     <script>
         // Configuration: Map Radio Button IDs to Input IDs that must be required
         const paymentMap = {

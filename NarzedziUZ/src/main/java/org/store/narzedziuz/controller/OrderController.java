@@ -79,7 +79,8 @@ public class OrderController {
                     user.getUserId(),
                     fullAddress,
                     fullAddress,
-                    paymentDetails // Teraz do bazy trafi ładny opis
+                    paymentDetails, // Teraz do bazy trafi ładny opis
+                    form.getFinalPrice()
             );
 
             return "redirect:/user/purchase/" + savedOrder.getOrderId();

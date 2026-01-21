@@ -25,8 +25,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Order createOrderFromCart(Long userId, String deliverAddress,
-                                     String billingAddress, String paymentMethod) {
+    public Order createOrderFromCart(Long userId, String deliverAddress, String billingAddress, String paymentMethod, BigDecimal finalPriceFromForm) {
         // 1. Pobranie użytkownika (WAŻNE DO PDF)
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -75,6 +74,9 @@ public class OrderService {
 
         // 6. Aktualizacja sumy
         order.setPriceSum(total);
+        if (finalPriceFromForm != null && finalPriceFromForm.compareTo(BigDecimal.ZERO) > 0) {
+            order.setPriceSum(finalPriceFromForm);
+        }
         orderRepository.save(order);
 
         // 7. Pobranie pełnego obiektu
