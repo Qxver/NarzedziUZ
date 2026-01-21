@@ -37,7 +37,6 @@
         <a href="/cart" class="navbar-button">Cart</a>
         <a th:if="${session.user != null}" th:href="@{/user/profile}" class="navbar-button" th:text="${session.userName}">User</a>
         <a th:if="${session.user == null}" th:href="@{/login}" class="navbar-button">Log in</a>
-        <a href="/add-product" class="navbar-button">Add Product</a>
         <button id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle dark/light theme">
             <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
@@ -55,12 +54,6 @@
             </svg>
         </button>
     </div>
-
-    <ul>
-        <li th:if="${session.user != null && session.user.role == 'ADMIN'}">
-            <a th:href="@{/admin}">Admin Panel</a>
-        </li>
-    </ul>
 </nav>
 </body>
 </html>

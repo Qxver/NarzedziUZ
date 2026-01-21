@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:th="http://www.thymeleaf.org" lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle}">Podsumowanie</title>
+    <link th:href="@{/css/purchase_summary.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header">
+            <h2 class="h4 mb-0">Thanks for purchase!</h2>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Your order number <span th:text="${order.orderId}">#1</span> is being processed.</h5>
+            <p class="card-text">Status: <strong th:text="${order.orderStatus}">NEW</strong></p>
+
+            <hr>
+
+            <h6>Order detail:</h6>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>quantity</th>
+                        <th>Unit price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Pętla po elementach zamówienia -->
+                    <tr th:each="item : ${order.orderItems}">
+                        <!-- Pamiętaj o nazwach pól w OrderItem! Zakładam product.name itp. -->
+                        <td th:text="${item.product.name}">Wiertarka</td>
+                        <td th:text="${item.quantity}">1</td>
+                        <td th:text="${item.price} + ' zł'">150.00 zł</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="text-end mt-3">
+                <h4>Sum: <span class="text-success" th:text="${order.priceSum} + ' zł'">150.00 zł</span></h4>
+            </div>
+
+            <div class="d-flex justify-content-between mt-4">
+                <a th:href="@{/}" class="btn btn-outline-primary">Back to shop</a>
+                <a th:href="@{/user/profile}" class="btn btn-primary">Check in profile</a>
+                <a th:href="@{/user/purchase/{id}/pdf(id=${order.orderId})}" class="btn btn-outline-primary">Download PDF</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
