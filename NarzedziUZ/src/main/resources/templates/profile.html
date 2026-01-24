@@ -38,7 +38,7 @@
         </div>
         <div class="info-item">
           <div class="info-label" th:text="#{profile.stats.spent}">Spent</div>
-          <div class="info-value" th:id="'totalSpent'" th:text="${totalSpent} ' ' + #{currency}">3 450 zł</div>
+            <div class="info-value" th:id="'totalSpent'" th:text="|${totalSpent} #{currency}|">3 450 zł</div>
         </div>
         <div class="info-item">
           <div class="info-label" th:text="#{profile.stats.ratings}">Ratings</div>
