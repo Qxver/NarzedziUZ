@@ -5,6 +5,8 @@ import org.store.narzedziuz.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
@@ -80,9 +82,23 @@ public class UserService {
         return user;
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
+
+    public List<User> searchUsersByEmail(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            findAllUsers();
+        }
+        return userRepository.findByEmailContainingIgnoreCase(query);
     }
 
     public List<User> getAllUsers() {
