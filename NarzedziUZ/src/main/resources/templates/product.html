@@ -272,13 +272,28 @@
 </div>
 
 <script th:inline="javascript">
+    function showToast(message, type = "success") {
+        Toastify({
+            text: message,
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: {
+                background: type === "success" ? "#4cfd00" : "#dc3545",
+                borderRadius: "8px"
+            }
+        }).showToast();
+    }
+
     function addToCart() {
         const quantityInput = document.getElementById('quantity');
         const quantity = parseInt(quantityInput.value);
         const productId = [[${product.productId}]];
+        const maxQuantity = [[${product.quantity}]];
 
-        if (quantity < 1 || quantity > [[${product.quantity}]]) {
-            alert('Please enter a valid quantity.');
+        if (quantity < 1 || quantity > maxQuantity) {
+            showToast('Please enter a correct quantity.', 'error');
             return;
         }
 
@@ -296,19 +311,18 @@
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Product added to cart!');
+                    showToast('Product added to cart!');
                 } else if (response.status === 401) {
-                    alert('You must be logged in to add products to cart.');
                     window.location.href = '/login';
                 } else if (response.status === 400 || response.status === 404) {
-                    response.text().then(errorMessage => alert('Error: ' + errorMessage));
+                    response.text().then(errorMessage => showToast('Error: ' + errorMessage, 'error'));
                 } else {
-                    alert('Unknown error while adding product to cart.');
+                    showToast('Unknown error while adding product to cart.', 'error');
                 }
             })
             .catch(error => {
                 console.error('Network or server error:', error);
-                alert('Unable to connect to server.');
+                showToast('Cannot connect to server.', 'error');
             });
     }
 

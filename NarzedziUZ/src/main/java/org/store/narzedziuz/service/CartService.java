@@ -13,7 +13,6 @@ import org.store.narzedziuz.repository.CartRepository;
 import org.store.narzedziuz.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -33,33 +32,40 @@ public class CartService {
     }
 
     @Transactional
-    public CartItem addProductToCart(Long userId, Long productId, int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Ilość musi być większa niż 0.");
+    public CartItem addProductToCart(Long userId, Long productId, int quantityToAdd) {
+        if (quantityToAdd <= 0) {
+            throw new IllegalArgumentException("Quantity has to be higher than 0.");
         }
 
         Cart cart = getOrCreateCartByUserId(userId);
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Produkt o ID " + productId + " nie znaleziony."));
+                .orElseThrow(() -> new RuntimeException("ID of product " + productId + " not found."));
+
 
         Optional<CartItem> existingItemOpt = cart.getCartItems().stream()
                 .filter(item -> item.getProductId().equals(productId))
                 .findFirst();
+        int currentQuantityInCart = existingItemOpt.map(CartItem::getQuantity).orElse(0);
+        int newTotalQuantity = currentQuantityInCart + quantityToAdd;
+
+        if (newTotalQuantity > product.getQuantity()) {
+            throw new IllegalArgumentException("You cant add more products. In the werehouse are : "
+                    + product.getQuantity() + " . You have in cart: " + currentQuantityInCart);
+        }
 
         CartItem cartItem;
         if (existingItemOpt.isPresent()) {
             cartItem = existingItemOpt.get();
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            cartItem.setQuantity(newTotalQuantity);
             cartItem.setPrice(product.getPrice());
         } else {
             cartItem = new CartItem();
             cartItem.setCartId(cart.getCartId());
             cartItem.setProductId(productId);
-            cartItem.setQuantity(quantity);
-            cartItem.setPrice(product.getPrice()); // Ustal cenę
+            cartItem.setQuantity(quantityToAdd);
+            cartItem.setPrice(product.getPrice());
             cartItem.setCart(cart);
             cartItem.setProduct(product);
-
             cart.getCartItems().add(cartItem);
         }
 
