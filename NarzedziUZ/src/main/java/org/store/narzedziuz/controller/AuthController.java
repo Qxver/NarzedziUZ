@@ -38,11 +38,6 @@ public class AuthController {
                         HttpSession session) {
         model.addAttribute("recaptchaSiteKey", recaptchaSiteKey);
         
-        if (!recaptchaService.verifyRecaptcha(recaptchaResponse)) {
-            model.addAttribute("error", "Please complete the reCAPTCHA verification");
-            return "login";
-        }
-        
         try {
             User user = userService.loginUser(email, password);
             // Zmieniamy klucz na "loggedInUser", żeby pasował do UserProfileController
