@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -54,6 +55,13 @@ public class Order {
     protected void onCreate() {
         orderDate = LocalDateTime.now();
         orderStatus = "PENDING";
+    }
+    public String getFormattedDate() {
+        if (this.orderDate == null) {
+            return "";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return this.orderDate.format(formatter);
     }
 }
 
