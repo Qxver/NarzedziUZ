@@ -13,7 +13,7 @@
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Open Sans', Arial, sans-serif;
             background-color: #fff;
             color: #333;
             line-height: 1.6;
@@ -221,12 +221,12 @@
 
 <div class="invoice-container">
 
-    <!-- Naglowek z logo i numerem faktury -->
+    <!-- Nagłówek z logo i numerem faktury -->
     <div class="invoice-header">
         <div class="company-info">
-            <h1>NARZEDZIUZ</h1>
-            <p>Sklep z Narzedziami</p>
-            <p>ul. Warsztatowa 15, 65-001 Zielona Gora</p>
+            <h1>NARZĘDZIUZ</h1>
+            <p>Sklep z Narzędziami</p>
+            <p>ul. Warsztatowa 15, 65-001 Zielona Góra</p>
             <p>NIP: 12-345-67-890</p>
             <p>Email: narzedziuz@gmail.com</p>
             <p>Tel: +48 68 000 0000</p>
@@ -242,7 +242,7 @@
                 <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy')}">18.01.2026</span>
             </div>
             <div class="meta-row">
-                <strong>Termin platnosci:</strong>
+                <strong>Termin płatności:</strong>
                 <span th:text="${#temporals.format(paymentDueDate, 'dd.MM.yyyy')}">18.02.2026</span>
             </div>
             <div class="meta-row">
@@ -252,34 +252,32 @@
         </div>
     </div>
 
-    <!-- Dane sprzedawcy i kupujacego -->
+    <!-- Dane sprzedawcy i kupującego -->
     <div class="addresses-section">
         <div class="address-block">
             <h3>Sprzedawca</h3>
-            <p><strong>NARZEDZIUZ Sp. z o.o.</strong></p>
+            <p><strong>NARZĘDZIUZ Sp. z o.o.</strong></p>
             <p>ul. Warsztatowa 15</p>
-            <p>65-001 Zielona Gora</p>
+            <p>65-001 Zielona Góra</p>
             <p>NIP: 12-345-67-890</p>
             <p>Regon: 98-765-43-210</p>
         </div>
         <div class="address-block">
             <h3>Nabywca</h3>
-            <!-- Wymuszenie braku polskich znakow w imieniu i nazwisku nie jest latwe w samym HTML,
-                 ale etykiety statyczne sa juz bez 'polskich ogonkow' -->
             <p><strong th:text="${order.user.firstName} + ' ' + ${order.user.lastName}">Jan Kowalski</strong></p>
-            <p th:text="${order.deliverAddress}">ul. Przykladowa 123, 65-002 Zielona Gora</p>
+            <p th:text="${order.deliverAddress}">ul. Przykładowa 123, 65-002 Zielona Góra</p>
             <p th:text="${order.user.email}">jan.kowalski@email.com</p>
         </div>
     </div>
 
-    <!-- Tabela z pozycjami zamowienia -->
+    <!-- Tabela z pozycjami zamówienia -->
     <table class="items-table">
         <thead>
         <tr>
             <th>Lp.</th>
             <th>Nazwa produktu</th>
-            <th class="text-center">Ilosc</th>
-            <th class="text-right">Cena jedn.</th>
+            <th class="text-center">Ilość</th>
+            <th class="text-right">Cena jednostkowa</th>
             <th class="text-right">Rabat</th>
             <th class="text-right">VAT (23%)</th>
             <th class="text-right">Razem</th>
@@ -290,12 +288,12 @@
             <td class="text-center" th:text="${iterStat.count}">1</td>
             <td th:text="${item.product.name}">Wiertarka elektryczna</td>
             <td class="text-center" th:text="${item.quantity}">2</td>
-            <td class="text-right" th:text="${item.price} + ' zl'">899,00 zl</td>
-            <td class="text-right">0,00 zl</td>
+            <td class="text-right" th:text="${item.price} + ' zł'">899,00 zł</td>
+            <td class="text-right" th:text="${item.price - order.priceSum + ' zł'}">0,00 zł</td>
             <td class="text-right" th:with="vat=${item.price * 0.23}">
-                <span th:text="${#numbers.formatDecimal(vat, 2, 2)} + ' zl'">206,77 zl</span>
+                <span th:text="${#numbers.formatDecimal(vat, 2, 2)} + ' zł'">206,77 zł</span>
             </td>
-            <td class="text-right" th:text="${item.price} + ' zl'">1798,00 zl</td>
+            <td class="text-right" th:text="${order.priceSum} + ' zł'">1798,00 zł</td>
         </tr>
         </tbody>
     </table>
@@ -305,15 +303,15 @@
         <div class="summary-box">
             <div class="summary-row">
                 <span class="summary-label">Netto:</span>
-                <span class="summary-value" th:text="${#numbers.formatDecimal(order.priceSum / 1.23, 2, 2)} + ' zl'">1462,60 zl</span>
+                <span class="summary-value" th:text="${#numbers.formatDecimal(order.priceSum / 1.23, 2, 2)} + ' zł'">1462,60 zł</span>
             </div>
             <div class="summary-row">
                 <span class="summary-label">VAT (23%):</span>
-                <span class="summary-value" th:text="${#numbers.formatDecimal(order.priceSum - (order.priceSum / 1.23), 2, 2)} + ' zl'">335,40 zl</span>
+                <span class="summary-value" th:text="${#numbers.formatDecimal(order.priceSum - (order.priceSum / 1.23), 2, 2)} + ' zł'">335,40 zł</span>
             </div>
             <div class="summary-row total">
-                <span class="summary-label">Razem do zaplaty:</span>
-                <span class="summary-value" th:text="${order.priceSum} + ' zl'">1798,00 zl</span>
+                <span class="summary-label">Razem do zapłaty:</span>
+                <span class="summary-value" th:text="${order.priceSum} + ' zł'">1798,00 zł</span>
             </div>
         </div>
     </div>
@@ -322,26 +320,44 @@
     <div class="notes-section">
         <h3>Informacje o dostawie</h3>
         <p>
-            <strong>Metoda dostawy:</strong> Przesylka kurierska InPost<br/>
+            <strong>Metoda dostawy:</strong> Przesyłka kurierska DPD<br/>
             <strong>Spodziewana data dostawy:</strong> 20-22.01.2026<br/>
-            <strong>Koszt dostawy:</strong> 0,00 zl (bezplatnie)
+            <strong>Koszt dostawy:</strong> 0,00 zł (bezpłatnie)
         </p>
     </div>
 
+    <!-- Warunki płatności -->
     <!-- Warunki platnosci -->
     <div class="notes-section">
-        <h3>Warunki platnosci</h3>
+        <h3>Metoda platnosci</h3>
+
+        <!-- Wyświetla to, co zbudowaliśmy w kontrolerze (np. "PayPal (Online)") -->
         <p>
-            Faktura platna jest w ciagu 30 dni od daty wystawienia.<br/>
-            Przelew na konto: NARZEDZIUZ Sp. z o.o.<br/>
-            Numer konta: PL 12 3456 0010 0000 0123 4567 8901<br/>
-            Swift: BPKOPLPW
+            <strong>Wybrano:</strong> <span th:text="${order.paymentMethod}">Metoda</span>
         </p>
+
+        <!-- Pokaż instrukcję przelewu TYLKO JEŚLI wybrano przelew tradycyjny -->
+        <div th:if="${#strings.contains(order.paymentMethod, 'Przelew') or #strings.contains(order.paymentMethod, 'TRANSFER')}">
+            <p style="margin-top: 5px;">
+                Prosimy o wplate na konto:<br/>
+                <strong>NARZEDZIUZ Sp. z o.o.</strong><br/>
+                PL 12 3456 0000 0000 0000 0000 1234<br/>
+                W tytule prosimy podac numer faktury: <span th:text="${order.orderId}"></span>
+            </p>
+        </div>
+
+        <!-- Informacja dla opłaconych zamówień (BLIK, Karta, PayPal) -->
+        <div th:unless="${#strings.contains(order.paymentMethod, 'Przelew') or #strings.contains(order.paymentMethod, 'TRANSFER')}">
+            <p style="margin-top: 5px; color: green;">
+                Status: OPLACONE (Dziekujemy!)
+            </p>
+        </div>
     </div>
+
 
     <!-- Stopka -->
     <div class="invoice-footer">
-        <p>Dziekujemy za zakupy! | Faktura wygenerowana automatycznie | narzedziuz.pl</p>
+        <p>Dziękujemy za zakupy! | Faktura wygenerowana automatycznie | narzędziuz.pl</p>
     </div>
 
 </div>

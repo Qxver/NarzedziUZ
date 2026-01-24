@@ -2,6 +2,9 @@ package org.store.narzedziuz.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,6 +23,11 @@ public class Cart {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    @OneToMany(mappedBy = "cart")
-    private List<CartItem> cartItems;
+    @OneToMany(
+            mappedBy = "cart",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true // <--- TO JEST KLUCZOWE!
+    )
+    @ToString.Exclude
+    private List<CartItem> cartItems = new ArrayList<>();
 }
