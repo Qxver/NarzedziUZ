@@ -16,7 +16,6 @@
 
 <div class="home-container">
 
-    <!-- SEKJA 1: Lista produktów (Wspólna) -->
     <div class="products-grid">
         <div class="product-card" th:each="item : ${cartItems}">
 
@@ -59,7 +58,6 @@
         </div>
     </div>
 
-    <!-- SEKJA 2: Pusty koszyk -->
     <div th:if="${#lists.isEmpty(cartItems)}" class="no-products">
         <p th:text="#{cart.empty}">Twój koszyk jest pusty.</p>
         <p><a th:href="@{/}" th:text="#{cart.back_to_shop}">Wróć do strony głównej i zacznij zakupy.</a></p>
@@ -76,11 +74,7 @@
         <p th:if="${successMessage}" style="color:green" th:text="${successMessage}"></p>
         <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
 
-        <form th:action="@{/cart/apply-discount}" method="post" class="discount-form">
-            <input type="text" name="code" th:placeholder="#{cart.discount_placeholder}">
-            <button type="submit" th:text="#{cart.discount_apply}">Apply</button>
-        </form>
-        <!-- Formularz rabatowy z Main -->
+
 
         <p th:if="${discount != null}">
             <span th:text="#{cart.discount_active} + ':'">Applied code:</span>
@@ -101,8 +95,8 @@
             <span th:text="#{currency}">PLN</span>
         </h3>
         <form th:action="@{/cart/apply-discount}" method="post" class="form-container">
-            <input type="text" name="code" placeholder="Kod rabatowy">
-            <button type="submit">Zastosuj</button>
+            <input type="text" name="code" th:placeholder="#{cart.discount_placeholder}">
+            <button type="submit" th:text="#{cart.discount_apply}">Apply</button>
         </form>
 
         <button class="checkout-button" onclick="openForm()" th:text="#{cart.checkout}">Proceed to Checkout</button>
@@ -113,66 +107,71 @@
 
             <input type="hidden" name="finalPrice"
                    th:value="${cartItems != null and not #lists.isEmpty(cartItems) ? (#aggregates.sum(cartItems.![product.price * quantity]) ?: 0) * (100 - (discount != null ? discount.percent : 0)) / 100 : 0}" />
-            <h2>Checkout</h2>
-            <button type="button" class="btn cancel" onclick="closeForm()" th:text="#{product.cancel}">Close</button>
+
+            <h2 th:text="#{checkout.title}">Checkout</h2>
 
             <details name="checkout-step" open>
-                <summary>Shipping Address</summary>
+                <summary th:text="#{checkout.shipping_address}">Shipping Address</summary>
 
                 <div style="padding: 10px 0;">
-                    <label><b>Email</b></label>
-                    <input type="email" placeholder="john.doe@example.com" name="email" required>
+                    <!-- Email -->
+                    <label><b th:text="#{checkout.email}">Email</b></label>
+                    <input type="email" th:placeholder="#{checkout.email_placeholder}" name="email" required>
 
-                    <label for="country-select"><b>Country</b></label>
+                    <!-- Country -->
+                    <label for="country-select"><b th:text="#{checkout.country}">Country</b></label>
                     <select name="country" id="country-select">
                         <option value="PL" selected>Polska</option>
-                        <!-- Skrócona lista dla czytelności - tutaj wklej resztę krajów z Twojego kodu jeśli potrzebujesz -->
                         <option value="DE">Niemcy</option>
                         <option value="GB">Wielka Brytania</option>
                         <option value="US">Stany Zjednoczone</option>
                         <option value="FR">Francja</option>
                     </select>
 
-                    <label><b>City</b></label>
-                    <input type="text" placeholder="London" name="city" required>
+                    <!-- City -->
+                    <label><b th:text="#{checkout.city}">City</b></label>
+                    <input type="text" th:placeholder="#{checkout.city_placeholder}" name="city" required>
 
-                    <label><b>Postal Code</b></label>
-                    <input type="text" placeholder="SW1A 1AA" name="zipCode" required>
+                    <!-- Zip Code -->
+                    <label><b th:text="#{checkout.zip}">Postal Code</b></label>
+                    <input type="text" th:placeholder="#{checkout.zip_placeholder}" name="zipCode" required>
 
-                    <label><b>Street Address</b></label>
-                    <input type="text" placeholder="Baker Street" name="street" required>
+                    <!-- Street -->
+                    <label><b th:text="#{checkout.street}">Street Address</b></label>
+                    <input type="text" th:placeholder="#{checkout.street_placeholder}" name="street" required>
 
-                    <label><b>House / Apt Number</b></label>
-                    <input type="text" placeholder="221B" name="houseNumber" required>
+                    <!-- House Number -->
+                    <label><b th:text="#{checkout.house}">House / Apt Number</b></label>
+                    <input type="text" th:placeholder="#{checkout.house_placeholder}" name="houseNumber" required>
 
                 </div>
             </details>
 
             <details name="checkout-step">
-                <summary>Payment Method</summary>
+                <summary th:text="#{checkout.payment_method}">Payment Method</summary>
 
                 <div style="padding: 10px 0;">
-                    <p>Select payment method:</p>
+                    <p th:text="#{checkout.select_payment}">Select payment method:</p>
 
                     <div class="payment-choosing-control">
                         <label style="display:block; margin: 10px 0;">
                             <input type="radio" id="blik-choose" name="paymentMethod" value="BLIK" required>
-                            BLIK
+                            <span th:text="#{checkout.payment.blik}">BLIK</span>
                         </label>
 
                         <label style="display:block; margin: 10px 0;">
                             <input type="radio" id="transfer-choose" name="paymentMethod" value="TRANSFER">
-                            Bank Transfer
+                            <span th:text="#{checkout.payment.transfer}">Bank Transfer</span>
                         </label>
 
                         <label style="display:block; margin: 10px 0;">
                             <input type="radio" id="card-choose" name="paymentMethod" value="CARD">
-                            Credit Card
+                            <span th:text="#{checkout.payment.card}">Credit Card</span>
                         </label>
 
                         <label style="display:block; margin: 10px 0;">
                             <input type="radio" id="paypal-choose" name="paymentMethod" value="PAYPAL">
-                            PayPal
+                            <span th:text="#{checkout.payment.paypal}">PayPal</span>
                         </label>
                     </div>
 
@@ -180,51 +179,51 @@
 
                         <!-- BLIK Section -->
                         <div class="number-input-wrapper blik-enter payment-input-group">
-                            <label><b>BLIK Code</b></label>
+                            <label><b th:text="#{checkout.blik_code}">BLIK Code</b></label>
                             <input type="text" id="blik-code" name="blikCode" placeholder="000000" maxlength="6" pattern="[0-9]{6}" title="Wymagany 6-cyfrowy kod BLIK">
                         </div>
 
                         <!-- Bank Transfer Section -->
                         <div class="number-input-wrapper transfer-enter">
-                            <p style="font-size: 0.9em; color: #555;">
+                            <p style="font-size: 0.9em; color: #555;" th:text="#{checkout.transfer_info}">
                                 Payment details will be sent to your email address.
                             </p>
                         </div>
 
                         <!-- Credit Card Section -->
                         <div class="number-input-wrapper card-enter payment-input-group">
-                            <label><b>Card Number</b></label>
+                            <label><b th:text="#{checkout.card_number}">Card Number</b></label>
                             <input type="text" id="card-number" name="cardNumber" placeholder="0000 0000 0000 0000" pattern="\d{16}">
-                            <span class="error-text">Card number must be 16 digits.</span>
+                            <span class="error-text" th:text="#{checkout.card_error_length}">Card number must be 16 digits.</span>
 
                             <div style="display: flex; gap: 10px;">
                                 <div style="flex: 1;">
-                                    <label><b>Expiry</b></label>
-                                    <input type="text" id="card-expiry" name="cardExpiry" placeholder="MM/YY" pattern="\d{2}/\d{2}">
-                                    <span class="error-text">Format: MM/YY</span>
+                                    <label><b th:text="#{checkout.card_expiry}">Expiry</b></label>
+                                    <input type="text" id="card-expiry" name="cardExpiry" th:placeholder="#{checkout.card_error_format}" pattern="\d{2}/\d{2}">
+                                    <span class="error-text" th:text="#{checkout.card_error_format}">Format: MM/YY</span>
                                 </div>
                                 <div style="flex: 1;">
-                                    <label><b>CVC</b></label>
+                                    <label><b th:text="#{checkout.card_cvc}">CVC</b></label>
                                     <input type="text" id="card-cvc" name="cardCvc" placeholder="123" pattern="\d{3}">
-                                    <span class="error-text">3 digits required.</span>
+                                    <span class="error-text" th:text="#{checkout.card_error_cvc}">3 digits required.</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- PayPal Section -->
                         <div class="number-input-wrapper paypal-enter">
-                            <p style="font-size: 0.9em; color: #555;">
+                            <p style="font-size: 0.9em; color: #555;" th:text="#{checkout.paypal_info}">
                                 You will be redirected to PayPal to complete your purchase.
                             </p>
                         </div>
                     </div>
-
-
                 </div>
             </details>
-            <button type="submit" class="btn">Place Order</button>
-            <button type="button" class="btn cancel" onclick="closeForm()">Cancel</button>
+
+            <button type="submit" class="btn" th:text="#{checkout.btn_place_order}">Place Order</button>
+            <button type="button" class="btn cancel" onclick="closeForm()" th:text="#{checkout.btn_close}">Close</button>
         </form>
+
     </div>
 
     <script>// Configuration: Map Radio Button IDs to Input IDs that must be required

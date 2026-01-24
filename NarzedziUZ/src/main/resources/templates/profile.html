@@ -15,96 +15,89 @@
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="profile-wrapper">
-  <div class="profile-container">
-    <div class="profile-buttons">
-      <div>
-        <a th:if="${session.user.role == 'ADMIN'}" th:href="@{/admin}" class="profile-button" th:text="#{profile.btn.admin}"></a>
-      </div>
-      <div>
-        <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button" th:text="#{profile.btn.wishlist}"></a>
-      </div>
-      <div>
-        <a th:if="${session.user != null}" th:href="@{/logout}" class="profile-button" th:text="#{profile.btn.logout}"></a>
-      </div>
-    </div>
-    <div class="profile-header">
-      <h1 class="profile-title" th:id="'pageTitle'" th:text="#{profile.title}"></h1>
-      <p class="welcome-text" th:id="'welcomeMessage'" th:text="#{profile.welcome}"></p>
-      <div class="profile-avatar" th:id="'avatar'" th:text="${initials}">JK</div>
-      <div class="profile-info">
-        <div class="info-item">
-          <div class="info-label" th:text="#{profile.stats.purchases}">Purchases</div>
-          <div class="info-value" th:id="'totalPurchases'" th:text="${totalPurchases}">12</div>
-        </div>
-        <div class="info-item">
-          <div class="info-label" th:text="#{profile.stats.spent}">Spent</div>
-            <div class="info-value" th:id="'totalSpent'" th:text="|${totalSpent} #{currency}|">3 450 zł</div>
-        </div>
-        <div class="info-item">
-          <div class="info-label" th:text="#{profile.stats.ratings}">Ratings</div>
-          <div class="info-value" th:id="'totalRatings'" th:text="${totalRatings}">8</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="profile-content">
-      <div class="section">
-        <h2 class="section-title" th:id="'purchaseHistoryTitle'" th:text="#{profile.history.title}"></h2>
-        <div th:id="'purchasesList'">
-          <div th:each="purchase : ${purchases}" class="purchase-card" th:id="'purchase-'+${purchase.orderId}">
-            <div class="purchase-header">
-              <div class="purchase-date" th:text="${#temporals.format(purchase.orderDate, 'dd-MM-yyyy HH:mm')}">15.12.2024</div>
-
-              <div class="purchase-status" th:text="${purchase.orderStatus}">Dostarczone</div>
+    <div class="profile-container">
+        <!-- Przyciski profilu -->
+        <div class="profile-buttons">
+            <div>
+                <a th:if="${session.user != null and session.user.role == 'ADMIN'}" th:href="@{/admin}" class="profile-button" th:text="#{profile.btn.admin}">Admin Panel</a>
             </div>
-
-            <div class="purchase-items">
-              <div th:each="item : ${purchase.orderItems}" class="purchase-item">
-
-                <span class="item-name" th:text="${item.product.name}">Wiertarka</span>
-
-                <span class="item-price" th:text="${item.price} + ' zł'">899 zł</span>
-              </div>
+            <div>
+                <a th:if="${session.user != null}" th:href="@{/user/wish-list}" class="profile-button" th:text="#{profile.btn.wishlist}">Lista życzeń</a>
             </div>
+            <div>
+                <a th:if="${session.user != null}" th:href="@{/logout}" class="profile-button" th:text="#{profile.btn.logout}">Wyloguj</a>
+            </div>
+        </div>
 
-            <div class="purchase-total">
-              <span class="total-label">Suma:</span>
-              <span class="total-amount" th:text="${purchase.priceSum} + ' zł'">988 zł</span>
+        <!-- Nagłówek profilu -->
+        <div class="profile-header">
+            <h1 class="profile-title" th:id="'pageTitle'" th:text="#{profile.title}">Profil</h1>
+            <p class="welcome-text" th:id="'welcomeMessage'" th:text="#{profile.welcome}">Witaj</p>
+            <div class="profile-avatar" th:id="'avatar'" th:text="${initials}">JK</div>
+            <div class="profile-info">
+                <div class="info-item">
+                    <div class="info-label" th:text="#{profile.stats.purchases}">Purchases</div>
+                    <div class="info-value" th:id="'totalPurchases'" th:text="${totalPurchases}">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" th:text="#{profile.stats.spent}">Spent</div>
+                    <div class="info-value" th:id="'totalSpent'" th:text="|${totalSpent} #{currency}|">0 zł</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" th:text="#{profile.stats.ratings}">Ratings</div>
+                    <div class="info-value" th:id="'totalRatings'" th:text="${totalRatings}">0</div>
+                </div>
             </div>
         </div>
 
         <div class="profile-content">
+            <!-- SEKCJA 1: HISTORIA ZAKUPÓW -->
             <div class="section">
-                <h2 class="section-title" th:text="#{profile.history.title}"></h2>
-                <div id="purchasesList">
-                    <div th:each="purchase : ${purchases}" class="purchase-card">
+                <h2 class="section-title" th:id="'purchaseHistoryTitle'" th:text="#{profile.history.title}">Historia zakupów</h2>
+
+                <div th:id="'purchasesList'">
+                    <!-- Pętla po zamówieniach -->
+                    <div th:each="purchase : ${purchases}" class="purchase-card" th:id="'purchase-'+${purchase.orderId}">
+
                         <div class="purchase-header">
-                            <div class="purchase-date" th:text="${purchase.formattedDate}">15 grudnia 2024</div>
-                            <div class="purchase-status" th:text="${purchase.status}">Dostarczone</div>
+                            <!-- Data zamówienia -->
+                            <div class="purchase-date" th:text="${purchase.getFormattedDate()}">15.12.2024</div>
+                            <!-- Status zamówienia (poprawna nazwa pola) -->
+                            <div class="purchase-status" th:text="${purchase.orderStatus}">Dostarczone</div>
                         </div>
+
                         <div class="purchase-items">
-                            <div th:each="item : ${purchase.items}" class="purchase-item">
-                                <span class="item-name" th:text="${item.productName}">Wiertarka</span>
+                            <!-- Pętla po elementach zamówienia (poprawna nazwa pola: orderItems) -->
+                            <div th:each="item : ${purchase.orderItems}" class="purchase-item">
+                                <!-- Nazwa produktu (przez relację product.name) -->
+                                <span class="item-name" th:text="${item.product.name}">Wiertarka</span>
+
                                 <span class="item-price">
-                   <span th:text="${#numbers.formatDecimal(item.price, 1, 'DEFAULT', 2, 'DEFAULT')}"></span>
-                   <span th:text="#{currency}"></span>
-                </span>
+                                   <!-- Cena z formatowaniem -->
+                                   <span th:text="${#numbers.formatDecimal(item.price, 1, 'DEFAULT', 2, 'DEFAULT')}"></span>
+                                   <span th:text="#{currency}">zł</span>
+                                </span>
                             </div>
                         </div>
+
                         <div class="purchase-total">
                             <span class="total-label" th:text="#{profile.total}">Suma:</span>
                             <span class="total-amount">
-                 <span th:text="${#numbers.formatDecimal(purchase.total, 1, 'DEFAULT', 2, 'DEFAULT')}"></span>
-                 <span th:text="#{currency}"></span>
-              </span>
+                                 <!-- Suma zamówienia (poprawna nazwa pola: priceSum) -->
+                                 <span th:text="${#numbers.formatDecimal(purchase.priceSum, 1, 'DEFAULT', 2, 'DEFAULT')}"></span>
+                                 <span th:text="#{currency}">zł</span>
+                            </span>
                         </div>
                     </div>
+
+                    <!-- Komunikat gdy brak zakupów -->
                     <div th:if="${purchases.isEmpty()}" class="no-data" th:text="#{profile.history.empty}">Brak zakupów</div>
                 </div>
             </div>
 
+            <!-- SEKCJA 2: OCENY -->
             <div class="section">
-                <h2 class="section-title" th:text="#{profile.ratings.title}">Your Ratings</h2>
+                <h2 class="section-title" th:text="#{profile.ratings.title}">Twoje Oceny</h2>
 
                 <div th:each="rating : ${ratings}" class="rating-card">
                     <div class="rating-header">
@@ -115,17 +108,18 @@
                         </a>
 
                         <div class="stars" th:data-rating="${rating.rating}">
-                <span th:each="i : ${#numbers.sequence(1,5)}"
-                      th:class="${i <= rating.rating} ? 'star filled' : 'star'"
-                      th:text="${i <= rating.rating} ? '⭐' : '☆'">⭐</span>
+                            <span th:each="i : ${#numbers.sequence(1,5)}"
+                                  th:class="${i <= rating.rating} ? 'star filled' : 'star'"
+                                  th:text="${i <= rating.rating} ? '⭐' : '☆'">⭐</span>
                         </div>
                     </div>
 
                     <div class="rating-comment" th:text="${rating.comment}">Comment</div>
+                    <!-- Zakładam, że w Rating pole daty nazywa się createdAt -->
                     <div class="rating-date" th:text="${#temporals.format(rating.createdAt, 'dd.MM.yyyy')}"></div>
                 </div>
 
-                <div th:if="${ratings.isEmpty()}" class="no-data" th:text="#{profile.ratings.empty}">No ratings</div>
+                <div th:if="${ratings.isEmpty()}" class="no-data" th:text="#{profile.ratings.empty}">Brak ocen</div>
             </div>
         </div>
     </div>

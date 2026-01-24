@@ -1,4 +1,54 @@
--- 1. Wstawianie kategorii (bez podawania ID, baza sama nada)
+-- KROK 1: Bezpieczne czyszczenie tabel
+-- Używamy bloku anonimowego PL/pgSQL, aby uniknąć błędów, gdy tabele jeszcze nie istnieją.
+
+DO $$
+BEGIN
+    -- Wyłączamy sprawdzanie kluczy obcych na czas operacji
+    SET session_replication_role = 'replica';
+
+    -- Sprawdź i wyczyść tabelę cart_item
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'cart_item') THEN
+        TRUNCATE TABLE cart_item RESTART IDENTITY CASCADE;
+END IF;
+
+    -- Sprawdź i wyczyść tabelę cart
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'cart') THEN
+        TRUNCATE TABLE cart RESTART IDENTITY CASCADE;
+END IF;
+
+    -- Sprawdź i wyczyść tabelę discount
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'discount') THEN
+        TRUNCATE TABLE discount RESTART IDENTITY CASCADE;
+END IF;
+
+    -- Sprawdź i wyczyść tabelę product
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'product') THEN
+        TRUNCATE TABLE product RESTART IDENTITY CASCADE;
+END IF;
+
+    -- Sprawdź i wyczyść tabelę category
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'category') THEN
+        TRUNCATE TABLE category RESTART IDENTITY CASCADE;
+END IF;
+
+    -- Opcjonalnie zamówienia (jeśli masz tabele "order" lub order_)
+    -- Pamiętaj o cudzysłowie dla "order", bo to słowo kluczowe SQL
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'order') THEN
+        TRUNCATE TABLE orders RESTART IDENTITY CASCADE;
+END IF;
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'order_item') THEN
+        TRUNCATE TABLE order_item RESTART IDENTITY CASCADE;
+END IF;
+
+    -- Przywróć sprawdzanie kluczy obcych
+    SET session_replication_role = 'origin';
+END $$;;
+
+-- KROK 2: Wstawianie Kategorii (To się wykona tylko jeśli tabela istnieje i jest pusta po TRUNCATE)
+-- (Tutaj wklej resztę swojego pliku od INSERT INTO category...)
+
+
+-- KROK 2: Wstawianie Kategorii
 INSERT INTO category (name) VALUES
                                 ('Elektronarzędzia'),
                                 ('Narzędzia ręczne'),
@@ -8,8 +58,8 @@ INSERT INTO category (name) VALUES
                                 ('Artykuły BHP'),
                                 ('Osprzęt i akcesoria');
 
--- 2. Wstawianie produktów z dynamicznym pobieraniem ID kategorii
--- Dzięki temu nie ma znaczenia, czy ID to 1, czy 50.
+
+-- KROK 3: Wstawianie Produktów (z dynamicznym ID kategorii)
 
 -- Część 1: Elektronarzędzia
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -29,7 +79,7 @@ SELECT 'Wkrętarka akumulatorowa Makita 18V', 'Niezawodna wkrętarka do codzienn
 FROM category c WHERE c.name = 'Elektronarzędzia'
 UNION ALL
 SELECT 'Wkrętarka akumulatorowa Bosch 20V', 'Wkrętarka z systemem szybkiego ładowania. Wariant: 20V.', 277.60, 27, c.category_id, 'Bosch', 'products_images/wkretarka_akumulatorowa_1.jpg'
-FROM category c WHERE c.name = 'Elektronarzędzia';
+FROM category c WHERE c.name = 'Elektronarzędzia';;
 
 -- Część 2: Szlifierki i inne Elektronarzędzia
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -49,7 +99,7 @@ SELECT 'Wyrzynarka Makita 650W', 'Wyrzynarka z regulacją obrotów i podcinaniem
 FROM category c WHERE c.name = 'Elektronarzędzia'
 UNION ALL
 SELECT 'Wyrzynarka Stanley 800W', 'Wyrzynarka do precyzyjnego cięcia krzywoliniowego.', 447.23, 18, c.category_id, 'Stanley', 'products_images/wyrzynarka_5.jpg'
-FROM category c WHERE c.name = 'Elektronarzędzia';
+FROM category c WHERE c.name = 'Elektronarzędzia';;
 
 -- Część 3: Narzędzia ręczne
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -69,7 +119,7 @@ SELECT 'Młotek gumowy Stanley czarny', 'Młotek gumowy do prac blacharskich i k
 FROM category c WHERE c.name = 'Narzędzia ręczne'
 UNION ALL
 SELECT 'Młotek ciesielski Neo Tools 600g', 'Młotek ciesielski z magnesem do przytrzymywania gwoździ.', 65.06, 30, c.category_id, 'Neo Tools', 'products_images/mlotek_ciesielski_2.jpg'
-FROM category c WHERE c.name = 'Narzędzia ręczne';
+FROM category c WHERE c.name = 'Narzędzia ręczne';;
 
 -- Część 4: Klucze i Śrubokręty (Narzędzia ręczne)
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -95,7 +145,7 @@ SELECT 'Kombinerki uniwersalne Dedra 160mm', 'Szczypce uniwersalne wykonane z ut
 FROM category c WHERE c.name = 'Narzędzia ręczne'
 UNION ALL
 SELECT 'Kombinerki uniwersalne Stanley 180mm', 'Profesjonalne kombinerki z obcinakiem bocznym.', 48.57, 16, c.category_id, 'Stanley', 'products_images/kombinerki_3.jpg'
-FROM category c WHERE c.name = 'Narzędzia ręczne';
+FROM category c WHERE c.name = 'Narzędzia ręczne';;
 
 
 -- Część 5: Ogród
@@ -116,7 +166,7 @@ SELECT 'Sekator ręczny Makita nożycowy', 'Sekator do precyzyjnego cięcia kwia
 FROM category c WHERE c.name = 'Ogród'
 UNION ALL
 SELECT 'Łopata piaskowa DeWalt szeroka', 'Lekka łopata aluminiowa do materiałów sypkich.', 79.87, 6, c.category_id, 'DeWalt', 'products_images/lopata_piaskowa_2.jpg'
-FROM category c WHERE c.name = 'Ogród';
+FROM category c WHERE c.name = 'Ogród';;
 
 -- Część 6: Artykuły malarskie
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -133,7 +183,7 @@ SELECT 'Wałek malarski Stanley 25cm', 'Szeroki wałek malarski niekapiący.', 3
 FROM category c WHERE c.name = 'Artykuły malarskie'
 UNION ALL
 SELECT 'Kuweta malarska Stanley mała', 'Kuweta z tworzywa sztucznego odporna na rozpuszczalniki.', 16.60, 34, c.category_id, 'Stanley', 'products_images/kuweta_malarska_2.jpg'
-FROM category c WHERE c.name = 'Artykuły malarskie';
+FROM category c WHERE c.name = 'Artykuły malarskie';;
 
 -- Część 7: Miernictwo
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -156,7 +206,7 @@ SELECT 'Kątownik stolarski Neo Tools 250mm', 'Kątownik stalowy do wyznaczania 
 FROM category c WHERE c.name = 'Miernictwo'
 UNION ALL
 SELECT 'Kątownik stolarski Dedra 300mm', 'Kątownik z podziałką milimetrową.', 34.22, 7, c.category_id, 'Dedra', 'products_images/katownik_1.jpg'
-FROM category c WHERE c.name = 'Miernictwo';
+FROM category c WHERE c.name = 'Miernictwo';;
 
 -- Część 8: Artykuły BHP
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -179,7 +229,7 @@ SELECT 'Kask budowlany Żółty', 'Kask ochronny z regulacją obwodu, atestowany
 FROM category c WHERE c.name = 'Artykuły BHP'
 UNION ALL
 SELECT 'Kask budowlany Biały', 'Kask ochronny dla kadry kierowniczej.', 52.30, 34, c.category_id, 'Śnieżka', 'products_images/kask_budowlany_1.jpg'
-FROM category c WHERE c.name = 'Artykuły BHP';
+FROM category c WHERE c.name = 'Artykuły BHP';;
 
 -- Część 9: Osprzęt i akcesoria
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -193,9 +243,9 @@ SELECT 'Zestaw wierteł do metalu HSS 1-10mm', 'Zestaw wierteł ze stali szybkot
 FROM category c WHERE c.name = 'Osprzęt i akcesoria'
 UNION ALL
 SELECT 'Zestaw wierteł do betonu SDS+ 5-12mm', 'Wiertła udarowe z końcówką z węglika spiekanego.', 65.83, 34, c.category_id, 'Makita', 'products_images/wiertla_beton_1.jpg'
-FROM category c WHERE c.name = 'Osprzęt i akcesoria';
+FROM category c WHERE c.name = 'Osprzęt i akcesoria';;
 
--- Część 10: Produkty PRO (Różne kategorie - trzeba dopasować)
+-- Część 10: Produkty PRO
 -- Wiertarka/Szlifierka -> Elektronarzędzia
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
 SELECT 'Szlifierka kątowa Neo Tools PRO', 'Wersja Heavy Duty do pracy ciągłej.', 422.89, 85, c.category_id, 'Neo Tools', 'products_images/szlifierka_generic.jpg'
@@ -214,7 +264,7 @@ SELECT 'Pilarka tarczowa Yato PRO', 'Pilarka z tarczą widiową w zestawie.', 32
 FROM category c WHERE c.name = 'Elektronarzędzia'
 UNION ALL
 SELECT 'Szlifierka kątowa Stanley PRO', 'Szlifierka z regulacją obrotów 3000-11000.', 224.92, 15, c.category_id, 'Stanley', 'products_images/szlifierka_generic.jpg'
-FROM category c WHERE c.name = 'Elektronarzędzia';
+FROM category c WHERE c.name = 'Elektronarzędzia';;
 
 -- Młotek/Śrubokręt -> Narzędzia ręczne
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -231,7 +281,7 @@ SELECT 'Śrubokręt płaski Neo Tools PRO', 'Wkrętak do pobijania ze stalowym k
 FROM category c WHERE c.name = 'Narzędzia ręczne'
 UNION ALL
 SELECT 'Śrubokręt krzyżakowy Bosch PH3 PRO', 'Wkrętak izolowany 1000V dla elektryków.', 40.99, 65, c.category_id, 'Bosch', 'products_images/srubokret_generic.jpg'
-FROM category c WHERE c.name = 'Narzędzia ręczne';
+FROM category c WHERE c.name = 'Narzędzia ręczne';;
 
 -- Malarskie
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -242,7 +292,7 @@ SELECT 'Pędzel angielski DeWalt 50mm PRO', 'Profesjonalny pędzel z naturalnego
 FROM category c WHERE c.name = 'Artykuły malarskie'
 UNION ALL
 SELECT 'Kuweta malarska Fiskars mała PRO', 'Kuweta z ociekaczem, wzmocniona.', 17.83, 49, c.category_id, 'Fiskars', 'products_images/kuweta_generic.jpg'
-FROM category c WHERE c.name = 'Artykuły malarskie';
+FROM category c WHERE c.name = 'Artykuły malarskie';;
 
 -- Miernictwo
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -256,7 +306,7 @@ SELECT 'Kątownik stolarski Fiskars 300mm PRO', 'Kątownik aluminiowy, lekki.', 
 FROM category c WHERE c.name = 'Miernictwo'
 UNION ALL
 SELECT 'Miara zwijana Śnieżka 3m PRO', 'Kompaktowa miara kieszonkowa.', 16.61, 65, c.category_id, 'Śnieżka', 'products_images/miara_generic.jpg'
-FROM category c WHERE c.name = 'Miernictwo';
+FROM category c WHERE c.name = 'Miernictwo';;
 
 -- Ogród
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -273,7 +323,7 @@ SELECT 'Grabie ogrodowe Dedra PRO', 'Grabie do siana, tworzywo sztuczne.', 27.23
 FROM category c WHERE c.name = 'Ogród'
 UNION ALL
 SELECT 'Szpadel prosty Śnieżka PRO', 'Szpadel drenarski, wąski.', 73.76, 100, c.category_id, 'Śnieżka', 'products_images/szpadel_generic.jpg'
-FROM category c WHERE c.name = 'Ogród';
+FROM category c WHERE c.name = 'Ogród';;
 
 -- BHP
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -281,7 +331,7 @@ SELECT 'Kask budowlany DeWalt PRO', 'Kask z wentylacją i uchwytem na latarkę.'
 FROM category c WHERE c.name = 'Artykuły BHP'
 UNION ALL
 SELECT 'Okulary ochronne Bosch PRO', 'Okulary gogle, pełna ochrona oczu.', 51.64, 95, c.category_id, 'Bosch', 'products_images/okulary_generic.jpg'
-FROM category c WHERE c.name = 'Artykuły BHP';
+FROM category c WHERE c.name = 'Artykuły BHP';;
 
 -- Osprzęt
 INSERT INTO product (name, description, price, quantity, category_id, manufacturer, photo)
@@ -295,21 +345,13 @@ SELECT 'Zestaw wierteł do metalu Makita PRO', 'Wiertła kobaltowe do stali nier
 FROM category c WHERE c.name = 'Osprzęt i akcesoria'
 UNION ALL
 SELECT 'Zestaw wierteł do metalu DeWalt PRO', 'Zestaw wierteł tytanowych.', 171.97, 13, c.category_id, 'DeWalt', 'products_images/zestaw_generic.jpg'
-FROM category c WHERE c.name = 'Osprzęt i akcesoria';
+FROM category c WHERE c.name = 'Osprzęt i akcesoria';;
+
+-- KROK 4: Bezpieczne dodawanie Userów (Tylko jeśli nie istnieją)
+INSERT INTO users (email, password, first_name, last_name, role)
+SELECT 'admin@admin.pl', '$2a$12$KslKQQntLdH1KhwOxDbhb.7aQwqCtP6tG12UsFRlcMmo56xgKnrGO', 'Admin', 'Systemowy', 'ADMIN'
+    WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'admin@admin.pl');
 
 INSERT INTO users (email, password, first_name, last_name, role)
-VALUES (
-    'admin@admin.pl',
-    '$2a$12$KslKQQntLdH1KhwOxDbhb.7aQwqCtP6tG12UsFRlcMmo56xgKnrGO',
-    'Admin',
-    'Systemowy',
-    'ADMIN'
-);
-INSERT INTO users (email, password, first_name, last_name, role)
-VALUES (
-           'janeksp18@gmail.com',
-           '$2a$12$R.mWJz6qzUnHWWYR4Ob3vO5VbzklVyI1mok/2gdLB2CLJ.27f2BA.',
-           'Jan',
-           'Świątek',
-           'USER'
-       );
+SELECT 'janeksp18@gmail.com', '$2a$12$R.mWJz6qzUnHWWYR4Ob3vO5VbzklVyI1mok/2gdLB2CLJ.27f2BA.', 'Jan', 'Świątek', 'USER'
+    WHERE NOT EXISTS (SELECT 1 FROM users WHERE email = 'janeksp18@gmail.com');;
