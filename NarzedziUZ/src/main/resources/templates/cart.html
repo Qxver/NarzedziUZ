@@ -65,7 +65,6 @@
         <p><a th:href="@{/}" th:text="#{cart.back_to_shop}">Wróć do strony głównej i zacznij zakupy.</a></p>
     </div>
 
-    <!-- SEKCJA 3: Podsumowanie (Naprawiony merge: Rabaty + Przycisk Kasy) -->
     <div th:if="${not #lists.isEmpty(cartItems)}"
          class="cart-summary"
          th:with="
@@ -109,9 +108,11 @@
         <button class="checkout-button" onclick="openForm()" th:text="#{cart.checkout}">Proceed to Checkout</button>
     </div>
 
-    <!-- SEKCJA 4: Popup Formularza Checkout (Z Twojego kodu) -->
     <div class="form-popup" id="myForm">
         <form action="/process-shipping" method="post" class="form-container" novalidate>
+
+            <input type="hidden" name="finalPrice"
+                   th:value="${cartItems != null and not #lists.isEmpty(cartItems) ? (#aggregates.sum(cartItems.![product.price * quantity]) ?: 0) * (100 - (discount != null ? discount.percent : 0)) / 100 : 0}" />
             <h2>Checkout</h2>
             <button type="button" class="btn cancel" onclick="closeForm()" th:text="#{product.cancel}">Close</button>
 
@@ -227,7 +228,6 @@
         </form>
     </div>
 
-    <!-- SEKCJA 5: JavaScript (Z Twojego kodu) -->
     <script>
         // Configuration: Map Radio Button IDs to Input IDs that must be required
         const paymentMap = {

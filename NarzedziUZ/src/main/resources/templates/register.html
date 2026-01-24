@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/register.css}">
     <script th:src="@{/js/theme.js}"></script>
     <title th:text="#{register.title}">Register</title>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body>
@@ -45,6 +46,8 @@
             <span class="error-message" id="confirmPasswordError" th:text="#{register.error.password_match}">Passwords do not match</span>
 
             <button type="submit" th:text="#{register.btn}">Register</button>
+            <div class="g-recaptcha" th:data-sitekey="${recaptchaSiteKey}" style="margin: 15px 0;"></div>
+
         </form>
 
         <a href="/login" th:text="#{register.login_link}">Already have an account? Login</a>
