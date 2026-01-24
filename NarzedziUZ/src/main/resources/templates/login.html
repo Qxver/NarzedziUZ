@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
     <script th:src="@{/js/theme.js}"></script>
-    <title>Login</title>
+    <title th:text="#{login.title}">Login</title>
 </head>
 <body>
 
@@ -15,20 +15,23 @@
 
 <div class="content">
     <div class="login">
-        <h1>Login</h1>
+        <h1 th:text="#{login.header}">Login</h1>
 
         <div th:if="${error}" class="error-message">
             <p th:text="${error}"></p>
         </div>
 
         <form method="post" action="/login">
-            <input type="email" id="email" name="email" placeholder="E-mail" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="email" id="email" name="email"
+                   th:placeholder="#{login.email_placeholder}" required>
 
-            <button type="submit">Login</button>
+            <input type="password" id="password" name="password"
+                   th:placeholder="#{login.password_placeholder}" required>
+
+            <button type="submit" th:text="#{login.button}">Login</button>
         </form>
 
-        <a href="/register">Create a new account</a>
+        <a href="/register" th:text="#{login.register_link}">Create a new account</a>
     </div>
 </div>
 </body>

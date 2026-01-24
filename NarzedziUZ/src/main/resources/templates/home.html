@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/home.css}">
     <script th:src="@{/js/theme.js}"></script>
-    <title>NarzedziUZ</title>
+    <title th:text="#{home.title}">NarzedziUZ</title>
 </head>
 <body>
 
@@ -21,7 +21,9 @@
                     <img th:if="${product.photo != null and !product.photo.isEmpty()}"
                          th:src="@{${product.photo}}"
                          th:alt="${product.name}">
-                    <div th:if="${product.photo == null or product.photo.isEmpty()}" class="no-image">No Image</div>
+                    <div th:if="${product.photo == null or product.photo.isEmpty()}"
+                         class="no-image"
+                         th:text="#{home.no_image}">No Image</div>
                 </div>
                 <div class="product-info">
                     <h3 th:text="${product.name}">Product Name</h3>
@@ -38,21 +40,28 @@
                         </span>
                     </div>
 
-                    <p class="product-price" th:text="${product.price} + ' PLN'">0.00 PLN</p>
+                    <p class="product-price">
+                        <span th:text="${product.price}"></span>
+                        <span th:text="#{currency}">PLN</span>
+                    </p>
                     <p class="product-manufacturer" th:text="${product.manufacturer}">Manufacturer</p>
-                    <p class="product-stock" th:if="${product.quantity > 0}" th:text="'In stock: ' + ${product.quantity}">In stock</p>
-                    <p class="product-stock out-of-stock" th:if="${product.quantity <= 0}">Out of stock</p>
+                    <p class="product-stock" th:if="${product.quantity > 0}"
+                       th:text="#{home.in_stock(${product.quantity})}">In stock</p>
+                    <p class="product-stock out-of-stock" th:if="${product.quantity <= 0}"
+                       th:text="#{home.out_of_stock}">Out of stock</p>
                 </div>
             </a>
         </div>
     </div>
 
     <div th:if="${#lists.isEmpty(products)}" class="no-products">
-        <p th:if="${searchPerformed}">
-            No products found matching "<span th:text="${searchQuery}"></span>".
+        <p th:if="${searchPerformed}"
+           th:text="#{home.no_search_results(${searchQuery})}">
+            No products found matching.
         </p>
-        <p th:if="${!searchPerformed}">
-            No products available at the moment.
+        <p th:if="${!searchPerformed}"
+           th:text="#{home.no_products}">
+            No products available.
         </p>
     </div>
 </div>

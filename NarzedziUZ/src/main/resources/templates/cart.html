@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/cart.css}">
     <link rel="stylesheet" th:href="@{/css/purchase_form.css}">
     <script th:src="@{/js/theme.js}"></script>
-    <title>Twój Koszyk - NarzedziUZ</title>
+    <title th:text="#{cart.title}">Your Cart - NarzedziUZ</title>
 </head>
 <body>
 
@@ -27,31 +27,32 @@
                              th:src="@{${item.product.photo}}"
                              th:alt="${item.product.name}">
                         <div th:if="${item.product.photo == null or item.product.photo.isEmpty()}"
-                             class="no-image">Brak Zdjęcia</div>
+                             class="no-image" th:text="#{cart.no_image}">No image</div>
                     </div>
                 </a>
             </div>
 
             <div class="product-details">
                 <a th:href="@{/product/{id}(id=${item.product.productId})}" class="product-title-link">
-                    <h3 th:text="${item.product.name}">Nazwa Produktu</h3>
+                    <h3 th:text="${item.product.name}">Product name</h3>
                 </a>
 
-                <p class="product-manufacturer" th:text="${item.product.manufacturer}">Producent</p>
+                <p class="product-manufacturer" th:text="${item.product.manufacturer}">Manufacturer</p>
                 <p class="product-quantity">
-                    Ilość: <span th:text="${item.quantity}">1</span>
+                    <span th:text="#{cart.quantity} + ':'">Quantity:</span>
+                    <span th:text="${item.quantity}">1</span>
                 </p>
 
                 <div class="price-and-remove">
                     <p class="product-total-price">
-                        Suma:
-                        <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')}"></span>
-                        PLN
+                        <span th:text="#{cart.sum} + ':'">Total:</span>
+                        <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'DEFAULT', 2, 'DEFAULT')}"></span>
+                        <span th:text="#{currency}">PLN</span>
                     </p>
 
                     <form th:action="@{/cart/remove/{cartItemId}(cartItemId=${item.cartItemId})}" method="post">
                         <input type="hidden" name="_method" value="delete" />
-                        <button type="submit" class="remove-button">Usuń</button>
+                        <button type="submit" class="remove-button" th:text="#{cart.remove}">Remove</button>
                     </form>
                 </div>
             </div>
@@ -60,8 +61,8 @@
 
     <!-- SEKJA 2: Pusty koszyk -->
     <div th:if="${#lists.isEmpty(cartItems)}" class="no-products">
-        <p>Twój koszyk jest pusty.</p>
-        <p><a th:href="@{/}">Wróć do strony głównej i zacznij zakupy.</a></p>
+        <p th:text="#{cart.empty}">Twój koszyk jest pusty.</p>
+        <p><a th:href="@{/}" th:text="#{cart.back_to_shop}">Wróć do strony głównej i zacznij zakupy.</a></p>
     </div>
 
     <div th:if="${not #lists.isEmpty(cartItems)}"
@@ -75,30 +76,36 @@
         <p th:if="${successMessage}" style="color:green" th:text="${successMessage}"></p>
         <p th:if="${errorMessage}" style="color:red" th:text="${errorMessage}"></p>
 
+        <form th:action="@{/cart/apply-discount}" method="post" class="discount-form">
+            <input type="text" name="code" th:placeholder="#{cart.discount_placeholder}">
+            <button type="submit" th:text="#{cart.discount_apply}">Apply</button>
+        </form>
         <!-- Formularz rabatowy z Main -->
 
         <p th:if="${discount != null}">
-            Zastosowany kod:
+            <span th:text="#{cart.discount_active} + ':'">Applied code:</span>
             <b th:text="${discount.code}"></b>
             (-<span th:text="${discount.percent}"></span>%)
         </p>
 
         <h3>
-            Suma przed rabatem:
-            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN
+            <span th:text="#{cart.subtotal} + ':'">Subtotal:</span>
+            <span th:text="${#numbers.formatDecimal(totalAmount, 0, 'DEFAULT', 2, 'DEFAULT')}"></span>
+            <span th:text="#{currency}">PLN</span>
         </h3>
 
         <!-- Pokazuje ostateczną cenę tylko jeśli jest rabat, w przeciwnym razie tylko górną sumę -->
         <h3 th:if="${discount != null}">
-            Do zapłaty:
-            <span th:text="${#numbers.formatDecimal(finalAmount, 0, 'COMMA', 2, 'POINT')}"></span> PLN
+            <span th:text="#{cart.final_total} + ':'">To pay:</span>
+            <span th:text="${#numbers.formatDecimal(finalAmount, 0, 'DEFAULT', 2, 'DEFAULT')}"></span>
+            <span th:text="#{currency}">PLN</span>
         </h3>
         <form th:action="@{/cart/apply-discount}" method="post" class="form-container">
             <input type="text" name="code" placeholder="Kod rabatowy">
             <button type="submit">Zastosuj</button>
         </form>
 
-        <button class="checkout-button" onclick="openForm()">Przejdź do Kasy</button>
+        <button class="checkout-button" onclick="openForm()" th:text="#{cart.checkout}">Proceed to Checkout</button>
     </div>
 
     <div class="form-popup" id="myForm">
@@ -107,6 +114,7 @@
             <input type="hidden" name="finalPrice"
                    th:value="${cartItems != null and not #lists.isEmpty(cartItems) ? (#aggregates.sum(cartItems.![product.price * quantity]) ?: 0) * (100 - (discount != null ? discount.percent : 0)) / 100 : 0}" />
             <h2>Checkout</h2>
+            <button type="button" class="btn cancel" onclick="closeForm()" th:text="#{product.cancel}">Close</button>
 
             <details name="checkout-step" open>
                 <summary>Shipping Address</summary>

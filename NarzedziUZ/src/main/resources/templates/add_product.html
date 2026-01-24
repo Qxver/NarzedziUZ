@@ -7,7 +7,7 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/add_product.css}">
     <script th:src="@{/js/theme.js}"></script>
-    <title th:text="${isEdit} ? 'Edit Product' : 'Add Product'">Add product</title>
+    <title th:text="${isEdit} ? #{admin.product.edit_title} : #{admin.product.add_title}">Add product</title>
 </head>
 
 <body>
@@ -16,15 +16,15 @@
 
 <div class="content">
     <div class="product-form">
-        <h1 th:text="${isEdit} ? 'Edit Product' : 'Add Product'">Add product</h1>
+        <h1 th:text="${isEdit} ? #{admin.product.edit_title} : #{admin.product.add_title}">Add product</h1>
 
-        <div th:if="${param.success}" class="alert alert-success">
+        <div th:if="${param.success}" class="alert alert-success" th:text="#{admin.product.success_add}">
             Product added successfully!
         </div>
-        <div th:if="${param.updated}" class="alert alert-success">
+        <div th:if="${param.updated}" class="alert alert-success" th:text="#{admin.product.success_update}">
             Product updated successfully!
         </div>
-        <div th:if="${param.error}" class="alert alert-error">
+        <div th:if="${param.error}" class="alert alert-error" th:text="#{admin.product.error}">
             Error processing product. Please try again.
         </div>
 
@@ -32,46 +32,47 @@
               th:object="${product}" 
               method="post" 
               enctype="multipart/form-data">
-            
-            <label for="name">Name:</label>
+
+            <label for="name" th:text="#{admin.product.name} + ':'">Name:</label>
             <input type="text" id="name" th:field="*{name}" required>
 
-            <label for="description">Description:</label>
+            <label for="description" th:text="#{admin.product.description} + ':'">Description:</label>
             <textarea id="description" th:field="*{description}" rows="3" required></textarea>
 
-            <label for="price">Price:</label>
+            <label for="price" th:text="#{admin.product.price} + ':'">Price:</label>
             <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required>
 
-            <label for="quantity">Quantity:</label>
+            <label for="quantity" th:text="#{admin.product.quantity} + ':'">Quantity:</label>
             <input type="number" id="quantity" th:field="*{quantity}" min="0" required>
 
-            <label for="categoryId">Category:</label>
+            <label for="categoryId" th:text="#{admin.product.category} + ':'">Category:</label>
             <select id="categoryId" th:field="*{categoryId}" required>
-                <option value="">-- Select Category --</option>
-                <option th:each="category : ${categories}" 
-                        th:value="${category.categoryId}" 
+                <option value="" th:text="#{admin.product.category_select}">-- Select Category --</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.categoryId}"
                         th:text="${category.name}">
                     Category Name
                 </option>
             </select>
 
-            <label for="manufacturer">Manufacturer:</label>
+            <label for="manufacturer" th:text="#{admin.product.manufacturer} + ':'">Manufacturer:</label>
             <input type="text" id="manufacturer" th:field="*{manufacturer}" required>
 
-            <label for="image">Product Image:</label>
+            <label for="image" th:text="#{admin.product.image} + ':'">Product Image:</label>
             <div th:if="${currentPhoto}" class="current-image-wrapper">
-                <img th:src="@{/product_image/{photo}(photo=${currentPhoto})}" 
-                     alt="Current product image" 
+                <img th:src="@{/product_image/{photo}(photo=${currentPhoto})}"
+                     alt="Current product image"
                      class="current-image-preview">
-                <p class="image-hint">Current image</p>
+                <p class="image-hint" th:text="#{admin.product.current_image}">Current image</p>
             </div>
+
             <input type="file" id="image" th:field="*{image}" accept="image/*">
             <p class="image-hint">
-                <span th:if="${isEdit}">Leave empty to keep current image</span>
+                <span th:if="${isEdit}" th:text="#{admin.product.image_hint}">Leave empty to keep current image</span>
             </p>
 
-            <button type="submit" th:text="${isEdit} ? 'Update Product' : 'Add Product'">Add product</button>
-            <a th:if="${isEdit}" href="/admin/products" class="btn" style="margin-left: 10px; text-decoration: none;">Cancel</a>
+            <button type="submit" th:text="${isEdit} ? #{admin.product.btn_update} : #{admin.product.btn_add}">Add product</button>
+            <a th:if="${isEdit}" href="/admin/products" class="btn" style="margin-left: 10px; text-decoration: none;" th:text="#{admin.product.btn_cancel}">Cancel</a>
         </form>
     </div>
 </div>

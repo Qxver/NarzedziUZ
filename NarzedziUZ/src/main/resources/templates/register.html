@@ -7,8 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/navbar.css}">
     <link rel="stylesheet" th:href="@{/css/register.css}">
     <script th:src="@{/js/theme.js}"></script>
+    <title th:text="#{register.title}">Register</title>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <title>Register</title>
 </head>
 
 <body>
@@ -17,44 +17,51 @@
 
 <div class="content">
     <div class="register">
-        <h1>Create new account</h1>
+        <h1 th:text="#{register.header}">Create new account</h1>
 
         <div th:if="${error}" style="color: red; margin-bottom: 15px;">
             <p th:text="${error}"></p>
         </div>
 
         <form method="post" action="/register" id="registerForm" onsubmit="return validateForm()">
-            <input type="text" id="firstName" name="firstName" placeholder="First name" required>
-            <span class="error-message" id="firstNameError">First name is required</span>
+            <input type="text" id="firstName" name="firstName" th:placeholder="#{register.first_name}" required>
+            <span class="error-message" id="firstNameError" th:text="#{register.error.first_name}">First name is required</span>
 
-            <input type="text" id="lastName" name="lastName" placeholder="Last name" required>
-            <span class="error-message" id="lastNameError">Last name is required</span>
+            <input type="text" id="lastName" name="lastName" th:placeholder="#{register.last_name}" required>
+            <span class="error-message" id="lastNameError" th:text="#{register.error.last_name}">Last name is required</span>
 
-            <input type="email" id="email" name="email" placeholder="E-mail" required>
-            <span class="error-message" id="emailError">Please enter a valid email address</span>
+            <input type="email" id="email" name="email" th:placeholder="#{register.email}" required>
+            <span class="error-message" id="emailError" th:text="#{register.error.email}">Please enter a valid email address</span>
 
-            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="password" id="password" name="password" th:placeholder="#{register.password}" required>
             <div class="password-requirements">
-                <div class="requirement" id="lengthReq">✗ At least 8 characters</div>
-                <div class="requirement" id="uppercaseReq">✗ At least 1 uppercase letter</div>
-                <div class="requirement" id="numberReq">✗ At least 1 number</div>
-                <div class="requirement" id="specialReq">✗ At least 1 special character</div>
+                <div class="requirement" id="lengthReq">✗ [[#{register.req.length}]]</div>
+                <div class="requirement" id="uppercaseReq">✗ [[#{register.req.uppercase}]]</div>
+                <div class="requirement" id="numberReq">✗ [[#{register.req.number}]]</div>
+                <div class="requirement" id="specialReq">✗ [[#{register.req.special}]]</div>
             </div>
-            <span class="error-message" id="passwordError">Password does not meet requirements</span>
+            <span class="error-message" id="passwordError" th:text="#{register.error.password_req}">Password does not meet requirements</span>
 
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
-            <span class="error-message" id="confirmPasswordError">Passwords do not match</span>
+            <input type="password" id="confirmPassword" name="confirmPassword" th:placeholder="#{register.confirm_password}" required>
+            <span class="error-message" id="confirmPasswordError" th:text="#{register.error.password_match}">Passwords do not match</span>
 
+            <button type="submit" th:text="#{register.btn}">Register</button>
             <div class="g-recaptcha" th:data-sitekey="${recaptchaSiteKey}" style="margin: 15px 0;"></div>
 
-            <button type="submit">Register</button>
         </form>
 
-        <a href="/login">Already have an account? Login</a>
+        <a href="/login" th:text="#{register.login_link}">Already have an account? Login</a>
     </div>
 </div>
 
 <script>
+   //error messages translate
+    const msgReq = {
+        length: [[#{register.req.length}]],
+    uppercase: [[#{register.req.uppercase}]],
+    number: [[#{register.req.number}]],
+    special: [[#{register.req.special}]]
+    };
     const emailPattern = /^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
     const passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
 
@@ -65,44 +72,44 @@
         if (password.length >= 8) {
             lengthReq.classList.remove('invalid');
             lengthReq.classList.add('valid');
-            lengthReq.textContent = '✓ At least 8 characters';
+            lengthReq.textContent = '✓' + msgReq.length;
         } else {
             lengthReq.classList.remove('valid');
             lengthReq.classList.add('invalid');
-            lengthReq.textContent = '✗ At least 8 characters';
+            lengthReq.textContent = '✗' + msgReq.length;
         }
 
         const uppercaseReq = document.getElementById('uppercaseReq');
         if (/[A-Z]/.test(password)) {
             uppercaseReq.classList.remove('invalid');
             uppercaseReq.classList.add('valid');
-            uppercaseReq.textContent = '✓ At least 1 uppercase letter';
+            uppercaseReq.textContent = '✓' + msgReq.uppercase;
         } else {
             uppercaseReq.classList.remove('valid');
             uppercaseReq.classList.add('invalid');
-            uppercaseReq.textContent = '✗ At least 1 uppercase letter';
+            uppercaseReq.textContent = '✗' + msgReq.uppercase;
         }
 
         const numberReq = document.getElementById('numberReq');
         if (/[0-9]/.test(password)) {
             numberReq.classList.remove('invalid');
             numberReq.classList.add('valid');
-            numberReq.textContent = '✓ At least 1 number';
+            numberReq.textContent = '✓' + msgReq.number;
         } else {
             numberReq.classList.remove('valid');
             numberReq.classList.add('invalid');
-            numberReq.textContent = '✗ At least 1 number';
+            numberReq.textContent = '✗' + msgReq.number;
         }
 
         const specialReq = document.getElementById('specialReq');
         if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
             specialReq.classList.remove('invalid');
             specialReq.classList.add('valid');
-            specialReq.textContent = '✓ At least 1 special character';
+            specialReq.textContent = '✓' + msgReq.special;
         } else {
             specialReq.classList.remove('valid');
             specialReq.classList.add('invalid');
-            specialReq.textContent = '✗ At least 1 special character';
+            specialReq.textContent = '✗' + msgReq.special;
         }
     });
 
